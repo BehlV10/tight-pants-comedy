@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // CONFIGURATION
-// DRY_RUN is TRUE by default - safe preview mode only.
+// DRY_RUN is TRUE by default - safe draft/preview mode only.
 // Set DRY_RUN=false in environment or when ready to send live.
 const IS_DRY_RUN = process.env.DRY_RUN !== 'false';
 
@@ -69,16 +69,75 @@ Submitting an upcoming East Village comedy showcase for your weekly cheap/free e
 Thank you!`
   };
 
-  // 3. Reddit r/nyc & r/EastVillage Megathread Comment
-  const redditComment = 
-`**👖 ${show.title} (${show.dayOfWeek}, ${show.displayDate} @ 8:30 PM)**
+  // 3. Tailored Reddit Drafts for Specific Subreddits
+  const redditDrafts = [
+    {
+      subreddit: 'r/nycevents',
+      subUrl: 'https://www.reddit.com/r/nycevents',
+      title: `[Event] [Comedy] ${show.title} @ ${show.venue} (East Village) - ${show.dayOfWeek} ${show.displayDate}, 8:30 PM (${show.price})`,
+      body: 
+`**${show.title}** is back at **${show.venue}** (12 St. Marks Place) in the East Village on **${show.date} @ 8:30 PM** (Doors 8:00 PM).
 
-If you're looking for fun plans in the East Village, indie collective Tight Pants Comedy is back at **${show.venue}** (12 St. Marks Place) for a fast-paced stand-up showcase.
+• **The Show:** Tight Pants Comedy's curated stand-up showcase. Fast-paced sets from comedians featured on Netflix, Comedy Central, Hulu, and the Comedy Cellar. For the Halloween edition, comics are performing in full costume, with audience costume prizes!
+• **The Room:** Intimate ~60 seat subterranean speakeasy room with craft cocktails and Filipino-inspired bites.
+• **Tickets:** ${show.price} GA
+• **In-Page Checkout & Info:** [tightpantscomedy.com](${WEBSITE_URL})
 
-• **Lineup:** Stand-up comics featured on Netflix, Comedy Central, Hulu & Comedy Cellar  
-• **Room:** Speakeasy-style ~60 seat subterranean room with cocktails  
-• **Price:** ${show.price} GA  
-• **Tickets & in-page checkout:** [tightpantscomedy.com](${WEBSITE_URL})`;
+Grab tickets early as this showroom has limited seating!`,
+      prefilledUrl: ''
+    },
+    {
+      subreddit: 'r/WhatsHappeningNYC',
+      subUrl: 'https://www.reddit.com/r/WhatsHappeningNYC',
+      title: `[${show.displayDate}] ${show.title} @ St. Marks Comedy Club in East Village`,
+      body: 
+`If you're looking for weekend or date night plans in lower Manhattan, **Tight Pants Comedy** is producing **${show.title}** at St. Marks Comedy Club (12 St. Marks Place) on **${show.date} @ 8:30 PM**.
+
+• **Vibe:** Basement speakeasy club right in the heart of St. Marks Place.
+• **Talent:** Lineup of NYC club headliners (Netflix, Kill Tony, Comedy Cellar regulars).
+• **Cost:** ${show.price} GA
+• **Tickets & Schedule:** [tightpantscomedy.com](${WEBSITE_URL})`,
+      prefilledUrl: ''
+    },
+    {
+      subreddit: 'r/lowereastside',
+      subUrl: 'https://www.reddit.com/r/lowereastside',
+      title: `Upcoming Comedy on St. Marks Place: ${show.title} (${show.dayOfWeek} ${show.displayDate})`,
+      body: 
+`Hey neighbors! Wanted to share an upcoming local comedy show right by the LES / East Village border.
+
+**Tight Pants Comedy** is hosting **${show.title}** at **St. Marks Comedy Club** (12 St. Marks Place) on **${show.date} at 8:30 PM**.
+
+• **Format:** Tight 7-minute sets from top club regulars (Netflix, HBO, Comedy Cellar).
+• **Halloween Theme:** Comics will be performing in full costume, with prizes for the best audience costume.
+• **Tickets:** ${show.price} GA, direct checkout without leaving the site: [tightpantscomedy.com](${WEBSITE_URL})
+
+Great intimate room for a local night out!`,
+      prefilledUrl: ''
+    },
+    {
+      subreddit: 'r/eastvillage',
+      subUrl: 'https://www.reddit.com/r/eastvillage',
+      title: `East Village Event: ${show.title} @ St. Marks Comedy Club (${show.dayOfWeek} ${show.displayDate})`,
+      body: 
+`For anyone looking for neighborhood events on St. Marks Place:
+
+**Tight Pants Comedy** is running **${show.title}** at **St. Marks Comedy Club** (12 St. Marks Place) on **${show.date} @ 8:30 PM**.
+
+• Curated lineup of NYC comics from the Comedy Cellar and national specials.
+• Audience costume contest + intimate speakeasy room.
+• Tickets are ${show.price} GA: [tightpantscomedy.com](${WEBSITE_URL})
+
+Hope to see some local neighborhood folks there!`,
+      prefilledUrl: ''
+    }
+  ];
+
+  // Generate 1-click prefilled Reddit submit links
+  redditDrafts.forEach((draft) => {
+    const subClean = draft.subreddit.replace('r/', '');
+    draft.prefilledUrl = `https://www.reddit.com/r/${subClean}/submit?title=${encodeURIComponent(draft.title)}&text=${encodeURIComponent(draft.body)}`;
+  });
 
   // 4. Social & Comics Promo Kit
   const socialKit = {
@@ -104,7 +163,7 @@ Tickets are live at the link in our bio! Grab yours early before the room caps.
     flierImg,
     donyc,
     pressPitch,
-    redditComment,
+    redditDrafts,
     socialKit
   };
 }
@@ -128,24 +187,59 @@ export function runPromoEngine() {
   console.log(`\n======================================================`);
   console.log(`🚀 TIGHT PANTS PROMO AUTOMATION ENGINE (DRY RUN: ${IS_DRY_RUN})`);
   console.log(`======================================================`);
-  console.log(`Target Show: ${payload.showTitle}`);
-  console.log(`Date:        ${payload.date} (${payload.daysUntil} days away)`);
-  console.log(`Flier Image: ${payload.flierImg}`);
-  console.log(`Status:      ${IS_DRY_RUN ? 'SIMULATION ONLY (No live posts sent)' : 'LIVE ARMED'}\n`);
+  console.log(`Target Show:   ${payload.showTitle}`);
+  console.log(`Date:          ${payload.date} (${payload.daysUntil} days away)`);
+  console.log(`Flier Image:   ${payload.flierImg}`);
+  console.log(`Status:        DRAFTS READY FOR REVIEW (Safe Mode: No live posts dispatched)\n`);
 
-  // Generate markdown preview artifact
-  const previewMarkdown = `# 👖 Tight Pants Comedy - Automated Promo Kit Preview
+  // 1. Build dedicated Reddit Review Drafts document
+  let redditDraftsDoc = `# 📝 Reddit Post Drafts for Review - ${payload.showTitle}
+
+**Status:** \`DRAFT (Review Mode - Not Posted)\`  
+**Target Show:** ${payload.showTitle} (${payload.date})  
+**Ticket Link:** ${WEBSITE_URL}  
+**Flier Art:** [View Official Flier](${payload.flierImg})
+
+You can review each post below. Each draft includes a **"1-Click Review & Submit"** link that will open Reddit with the Title and Body already pre-filled so you can review, edit, or post whenever you're ready.
+
+---
+`;
+
+  payload.redditDrafts.forEach((draft, idx) => {
+    redditDraftsDoc += `
+## Draft ${idx + 1}: ${draft.subreddit}
+* **Subreddit:** [${draft.subreddit}](${draft.subUrl})
+* **1-Click Pre-filled Submit Link:** [**Open in ${draft.subreddit} with pre-filled title & body**](${draft.prefilledUrl})
+
+### Proposed Title:
+\`\`\`text
+${draft.title}
+\`\`\`
+
+### Proposed Post Body:
+\`\`\`markdown
+${draft.body}
+\`\`\`
+
+---
+`;
+  });
+
+  const redditDraftsPath = path.join(__dirname, '../reddit-drafts.md');
+  fs.writeFileSync(redditDraftsPath, redditDraftsDoc);
+
+  // 2. Build complete master promo preview
+  const masterPreview = `# 👖 Tight Pants Comedy - Complete Promo Preview & Drafts
 
 **Generated At:** ${new Date().toISOString()}  
-**Mode:** \`${IS_DRY_RUN ? 'DRY_RUN (Simulation Only - Not Dispatched)' : 'LIVE'}\`  
+**Mode:** \`${IS_DRY_RUN ? 'DRY_RUN (Simulation / Review Only)' : 'LIVE'}\`  
 **Target Show:** ${payload.showTitle} (${payload.date}) — **${payload.daysUntil} days away**  
 **Official Flier:** [View Flier Image](${payload.flierImg})
 
 ---
 
-## 1. DoNYC Event Submission Payload
+## 1. DoNYC Event Submission Payload (Includes Required Flier)
 * **Submission Portal:** [https://donyc.com/events/new](https://donyc.com/events/new)  
-* **Image Required:** **YES** (Supplied below from Supabase flier asset)  
 * **Flier Asset URL:** \`${payload.flierImg}\`  
 
 \`\`\`json
@@ -165,10 +259,10 @@ ${payload.pressPitch.bodyText}
 
 ---
 
-## 3. Reddit Megathread Ready Post (r/nyc & r/EastVillage)
-\`\`\`markdown
-${payload.redditComment}
-\`\`\`
+## 3. Tailored Reddit Drafts for Review
+*Detailed review copy available in [\`reddit-drafts.md\`](./reddit-drafts.md).*
+
+${payload.redditDrafts.map(d => `* **${d.subreddit}:** [Open Pre-filled Draft](${d.prefilledUrl})`).join('\n')}
 
 ---
 
@@ -180,15 +274,13 @@ ${payload.socialKit.instagramCaption}
 
 * **Pre-Written Comic Text / DM:**
 > "${payload.socialKit.comicDmText}"
-
----
-*Note: This file was automatically prepared by \`scripts/promo-engine.js\`. To activate live dispatch, set \`DRY_RUN=false\`.*
 `;
 
   const outputPath = path.join(__dirname, '../promo-preview.md');
-  fs.writeFileSync(outputPath, previewMarkdown);
-  console.log(`✓ Wrote complete dry-run promotion kit to: ${outputPath}`);
-  console.log(`✓ Includes DoNYC payload with required image, Skint pitch, Reddit post, and comic text.\n`);
+  fs.writeFileSync(outputPath, masterPreview);
+
+  console.log(`✓ Wrote Reddit review drafts to: ${redditDraftsPath}`);
+  console.log(`✓ Wrote complete promo preview to: ${outputPath}`);
 }
 
 // Run if called directly
