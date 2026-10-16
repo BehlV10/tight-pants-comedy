@@ -1,0 +1,257 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const ST_MARKS_API = 'https://qfrmgyichufynswkwaxp.supabase.co/rest/v1/shows';
+const ST_MARKS_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmcm1neWljaHVmeW5zd2t3YXhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2NTE1MTgsImV4cCI6MjA3OTIyNzUxOH0.mdxf9-ONnUGrmLnTr4nGA546WKoDFCe2fT8PgBa7k5Q';
+
+// Format 2026-10-29 into display properties
+function formatShowDate(dateStr, timeStr) {
+  const [year, month, day] = dateStr.split('-');
+  const dateObj = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), 12, 0, 0));
+  
+  const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const fullMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const fullDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+  const monthIdx = Number(month) - 1;
+  const dayNum = Number(day);
+  const dayOfWeek = dayNames[dateObj.getUTCDay()];
+  const fullDayOfWeek = fullDays[dateObj.getUTCDay()];
+
+  // Format time (e.g. 20:30:00 -> 8:30 PM)
+  let formattedTime = "8:30 PM";
+  if (timeStr) {
+    const [hours, minutes] = timeStr.split(':');
+    const h = Number(hours);
+    const suffix = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12;
+    formattedTime = `${hour12}:${minutes} ${suffix}`;
+  }
+
+  return {
+    displayDate: `${monthNames[monthIdx]} ${dayNum < 10 ? '0' + dayNum : dayNum}`,
+    dayOfWeek,
+    fullDateString: `${fullDayOfWeek}, ${monthNames[monthIdx]} ${dayNum}, ${year}`,
+    timeFormatted: `${formattedTime} (Doors 8:00 PM)`
+  };
+}
+
+async function fetchStMarksShows() {
+  console.log('Fetching live shows from St. Marks Comedy Club database...');
+  
+  const queries = [
+    'show_name=ilike.*tight*&order=show_date.desc',
+    'show_name=ilike.*costume*&order=show_date.desc',
+    'show_name=ilike.*comfy clash*&order=show_date.desc'
+  ];
+
+  const fetchedShows = [];
+  const seenIds = new Set();
+
+  for (const q of queries) {
+    const url = `${ST_MARKS_API}?select=*&${q}`;
+    try {
+      const res = await fetch(url, {
+        headers: {
+          'apikey': ST_MARKS_ANON_KEY,
+          'Authorization': `Bearer ${ST_MARKS_ANON_KEY}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        for (const show of data) {
+          if (!seenIds.has(show.id)) {
+            seenIds.add(show.id);
+            fetchedShows.push(show);
+          }
+        }
+      }
+    } catch (e) {
+      console.error(`Failed to fetch query ${q}:`, e.message);
+    }
+  }
+
+  return fetchedShows;
+}
+
+async function sync() {
+  const stMarksShows = await fetchStMarksShows();
+  console.log(`Found ${stMarksShows.length} matching shows from St. Marks.`);
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  const formattedShows = stMarksShows.map((s) => {
+    const { displayDate, dayOfWeek, fullDateString, timeFormatted } = formatShowDate(s.show_date, s.show_time);
+    const isPast = s.show_date < today;
+
+    const isHalloween = s.show_name.toLowerCase().includes('costume') || s.show_date === '2026-10-29';
+    const isComfyClash = s.show_name.toLowerCase().includes('comfy');
+
+    let badge = 'Resident Showcase';
+    let color = 'amber';
+
+    if (isPast) {
+      badge = 'Concluded • Full House';
+      color = 'zinc';
+    } else if (isHalloween) {
+      badge = 'Halloween Special 🎃';
+      color = 'orange';
+    } else if (isComfyClash) {
+      badge = 'Tournament Registration';
+      color = 'purple';
+    } else {
+      badge = 'Tickets On Sale';
+      color = 'emerald';
+    }
+
+    return {
+      id: `stmarks-${s.id}`,
+      title: isHalloween ? "Comedians in Costumes: Halloween Show 🎃" : s.show_name,
+      venue: "St. Marks Comedy Club",
+      neighborhood: "East Village, NYC",
+      address: "12 St. Marks Place, New York, NY 10003",
+      date: fullDateString,
+      isoDate: s.show_date,
+      displayDate,
+      dayOfWeek,
+      time: timeFormatted,
+      price: `$${Math.round(s.price || 18)}`,
+      priceAfterFees: `$${Math.round(s.price || 18)}.00 GA`,
+      category: isComfyClash ? 'competition' : 'nyc',
+      statusBadge: badge,
+      badgeColor: color,
+      flierUrl: s.flier_url || null,
+      roomCapacityNote: "Intimate ~60 Seat Showroom",
+      ticketUrl: `https://www.stmarkscomedy.com/shows/tight-pants-comedy-show-${s.show_date}-${s.id.slice(0, 8)}`,
+      secondaryUrl: "https://tightpantscomedy.eventbrite.com",
+      credits: isHalloween 
+        ? ["Live In-Character Sets", "Audience Costume Contest", "Spooky Drink Specials", "Guest Judges"]
+        : ["Netflix", "Kill Tony", "Comedy Cellar", "Don't Tell Comedy"],
+      description: s.description || "The perfect Thursday date night with the Tight Pants crew right in the heart of the East Village! Rapid-fire sets and surprise guest drop-ins.",
+      isFeatured: isHalloween || (!isPast && s.show_date === '2026-11-19')
+    };
+  });
+
+  // Also include the touring shows like Punch Line Philly
+  const tourShows = [
+    {
+      id: "punchline-philly-oct01",
+      title: "Tight Pants Comedy: Live at Punch Line",
+      venue: "Punch Line Philly",
+      neighborhood: "Fishtown, Philadelphia",
+      address: "33 E Laurel St, Philadelphia, PA 19123",
+      date: "Thursday, Oct 1, 2026",
+      isoDate: "2026-10-01",
+      displayDate: "OCT 01",
+      dayOfWeek: "THU",
+      time: "8:00 PM (Doors 7:00 PM)",
+      price: "$20",
+      priceAfterFees: "$25 at door",
+      category: "tour",
+      statusBadge: "Concluded • Sold Out",
+      badgeColor: "zinc",
+      ticketUrl: "https://www.ticketmaster.com/tight-pants-comedy-philadelphia-pennsylvania-10-01-2026/event/020064C6F69CA49E",
+      secondaryUrl: "https://tightpantscomedy.eventbrite.com",
+      credits: ["Live Nation", "Punch Line Headliners", "Touring Killers"],
+      description: "Tight Pants took Philly! Bringing high-octane East Village energy to the historic Punch Line Philly stage.",
+      isFeatured: false
+    },
+    {
+      id: "comfy-clash-hv",
+      title: "2026 Comfy Clash Hudson Valley",
+      venue: "Hudson Valley Comedy Lounge",
+      neighborhood: "Hudson Valley, NY",
+      address: "Beacon & Kingston, NY",
+      date: "Friday, Nov 20, 2026",
+      isoDate: "2026-11-20",
+      displayDate: "NOV 20",
+      dayOfWeek: "FRI",
+      time: "7:30 PM",
+      price: "$18",
+      priceAfterFees: "$18 GA",
+      category: "competition",
+      statusBadge: "Tournament Registration",
+      badgeColor: "purple",
+      roomCapacityNote: "Limited Capacity",
+      ticketUrl: "https://www.sendyouravails.com/c/comfy-comedy/ClashHV",
+      secondaryUrl: "https://forms.gle/VZreKT7KXQFju9hG9",
+      credits: ["Comfy Comedy", "Send Your Avails", "Audience Vote"],
+      description: "Multi-round stand-up comedy clash where top comedians battle for the tightest set. Audience votes decide who takes the crown.",
+      isFeatured: false
+    }
+  ];
+
+  // Combine and sort by date descending for past, ascending for upcoming
+  const allShows = [...formattedShows, ...tourShows];
+
+  // Keep reviews and FAQs constant
+  const outputCode = `// Auto-generated by scripts/sync-shows.js from St. Marks Comedy Club & Eventbrite
+// Last synced: ${new Date().toISOString()}
+
+export const SHOWS_DATA = ${JSON.stringify(allShows, null, 2)};
+
+export const REVIEWS_DATA = [
+  {
+    id: 1,
+    name: "Danielle M.",
+    role: "East Village Local",
+    rating: 5,
+    comment: "Tight Pants is easily the best independent comedy room in NYC. The energy at St. Marks is wild, zero awkward silences, and the headliners they sneak in are crazy good.",
+    date: "Verified Attendee"
+  },
+  {
+    id: 2,
+    name: "Time Out New York",
+    role: "Critic's Pick",
+    rating: 5,
+    comment: "One of the standout underground comedy showcases in Manhattan. Rapid-fire lineups bringing together national touring talent and NYC's sharpest rising voices.",
+    date: "Press Feature"
+  },
+  {
+    id: 3,
+    name: "Marcus T.",
+    role: "Comedy Fanatic",
+    rating: 5,
+    comment: "Came for date night at St. Marks, stayed because every comic was an absolute murderer. Kyle and John run a phenomenal show. Tight sets, fast pacing, great drinks.",
+    date: "Verified Attendee"
+  }
+];
+
+export const FAQS = [
+  {
+    q: "Where is St. Marks Comedy Club located?",
+    a: "St. Marks Comedy Club is located in the heart of NYC's East Village at 12 St. Marks Place, New York, NY 10003 (between 2nd and 3rd Avenues). Accessible via the 6, N, R, W, and L subway lines."
+  },
+  {
+    q: "Is there a drink minimum?",
+    a: "Yes, like most NYC comedy showrooms, there is a two-drink minimum per person required in the showroom. Alcoholic drinks, mocktails, and non-alcoholic options all count."
+  },
+  {
+    q: "What time should we arrive?",
+    a: "Doors open 30 minutes prior to showtime (8:00 PM for the 8:30 PM show). Seating is assigned based on on-time check-in by groups as purchased, so we recommend arriving 20-30 minutes early."
+  },
+  {
+    q: "What are the age restrictions?",
+    a: "Shows at St. Marks Comedy Club are 18 and up only. Valid government-issued photo ID is required for entry and to purchase alcoholic beverages."
+  },
+  {
+    q: "How can comedians submit for booking?",
+    a: "We love scouting new talent with tight material! Comics can submit their video link, avails, and credits directly through our booking submission form (forms.gle/VZreKT7KXQFju9hG9) or register avails via sendyouravails.com."
+  }
+];
+`;
+
+  const outputPath = path.resolve(__dirname, '../src/data/shows.js');
+  fs.writeFileSync(outputPath, outputCode, 'utf-8');
+  console.log(`Successfully synced ${allShows.length} shows to ${outputPath}!`);
+}
+
+sync().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
