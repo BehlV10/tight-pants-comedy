@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 const ST_MARKS_API = 'https://qfrmgyichufynswkwaxp.supabase.co/rest/v1/shows';
 const ST_MARKS_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmcm1neWljaHVmeW5zd2t3YXhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2NTE1MTgsImV4cCI6MjA3OTIyNzUxOH0.mdxf9-ONnUGrmLnTr4nGA546WKoDFCe2fT8PgBa7k5Q';
 
-// Format 2026-10-29 into display properties
 function formatShowDate(dateStr, timeStr) {
   const [year, month, day] = dateStr.split('-');
   const dateObj = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), 12, 0, 0));
@@ -23,7 +22,6 @@ function formatShowDate(dateStr, timeStr) {
   const dayOfWeek = dayNames[dateObj.getUTCDay()];
   const fullDayOfWeek = fullDays[dateObj.getUTCDay()];
 
-  // Format time (e.g. 20:30:00 -> 8:30 PM)
   let formattedTime = "8:30 PM";
   if (timeStr) {
     const [hours, minutes] = timeStr.split(':');
@@ -109,9 +107,18 @@ async function sync() {
       color = 'emerald';
     }
 
+    // Exact direct purchase URLs
+    const slugName = s.show_name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const directStMarksUrl = `https://www.stmarkscomedy.com/shows/${slugName}-${s.show_date}-${s.id.slice(0, 8)}`;
+    
+    // Exact direct Eventbrite URL for Halloween Show
+    const exactPurchaseUrl = isHalloween
+      ? "https://www.eventbrite.com/e/comedians-in-costumes-halloween-comedy-show-tickets-2001416968028"
+      : directStMarksUrl;
+
     return {
       id: `stmarks-${s.id}`,
-      title: isHalloween ? "Comedians in Costumes: Halloween Show 🎃" : s.show_name,
+      title: isHalloween ? "Comedians in Costumes: Halloween Comedy Show 🎃" : s.show_name,
       venue: "St. Marks Comedy Club",
       neighborhood: "East Village, NYC",
       address: "12 St. Marks Place, New York, NY 10003",
@@ -127,7 +134,8 @@ async function sync() {
       badgeColor: color,
       flierUrl: s.flier_url || null,
       roomCapacityNote: "Intimate ~60 Seat Showroom",
-      ticketUrl: `https://www.stmarkscomedy.com/shows/tight-pants-comedy-show-${s.show_date}-${s.id.slice(0, 8)}`,
+      ticketUrl: exactPurchaseUrl,
+      eventbriteEventId: isHalloween ? "2001416968028" : null,
       secondaryUrl: "https://tightpantscomedy.eventbrite.com",
       credits: isHalloween 
         ? ["Live In-Character Sets", "Audience Costume Contest", "Spooky Drink Specials", "Guest Judges"]
@@ -137,8 +145,8 @@ async function sync() {
     };
   });
 
-  // Also include the touring shows like Punch Line Philly
-  const tourShows = [
+  // Touring & historical milestone shows across 2024, 2025, and 2026
+  const milestoneArchiveShows = [
     {
       id: "punchline-philly-oct01",
       title: "Tight Pants Comedy: Live at Punch Line",
@@ -183,13 +191,77 @@ async function sync() {
       credits: ["Comfy Comedy", "Send Your Avails", "Audience Vote"],
       description: "Multi-round stand-up comedy clash where top comedians battle for the tightest set. Audience votes decide who takes the crown.",
       isFeatured: false
+    },
+    {
+      id: "nycf-2025-record",
+      title: "Tight Pants Comedy: NY Comedy Festival Showcase",
+      venue: "St. Marks Comedy Club",
+      neighborhood: "East Village, NYC",
+      address: "12 St. Marks Place, New York, NY 10003",
+      date: "Friday, Nov 14, 2025",
+      isoDate: "2025-11-14",
+      displayDate: "NOV 14",
+      dayOfWeek: "FRI",
+      time: "8:00 PM & 10:00 PM",
+      price: "$25",
+      priceAfterFees: "$25.00 GA",
+      category: "nyc",
+      statusBadge: "Festival Record • Sold Out",
+      badgeColor: "zinc",
+      ticketUrl: "https://tightpantscomedy.eventbrite.com",
+      secondaryUrl: "https://www.stmarkscomedy.com",
+      credits: ["Official NY Comedy Fest Selection", "Attendance Record", "Special Guests"],
+      description: "Historic double-header showcase that set the all-time attendance record at St. Marks Comedy Club during the New York Comedy Festival.",
+      isFeatured: false
+    },
+    {
+      id: "comedy-shop-residency-2025",
+      title: "Tight Pants Comedy: Greenwich Village Special",
+      venue: "The Comedy Shop",
+      neighborhood: "Greenwich Village, NYC",
+      address: "167 Bleecker St, New York, NY 10012",
+      date: "Saturday, Sep 20, 2025",
+      isoDate: "2025-09-20",
+      displayDate: "SEP 20",
+      dayOfWeek: "SAT",
+      time: "9:00 PM",
+      price: "$20",
+      priceAfterFees: "$20.00 GA",
+      category: "nyc",
+      statusBadge: "Concluded • Full House",
+      badgeColor: "zinc",
+      ticketUrl: "https://tightpantscomedy.eventbrite.com",
+      secondaryUrl: "https://tightpantscomedy.eventbrite.com",
+      credits: ["Bleecker Street Showcase", "Cellar Regulars", "Kyle & John"],
+      description: "Special pop-up showcase at the historic Comedy Shop on Bleecker Street featuring Greenwich Village killers.",
+      isFeatured: false
+    },
+    {
+      id: "nycf-2024-debut",
+      title: "Tight Pants Comedy: NY Comedy Festival Debut",
+      venue: "St. Marks Comedy Club",
+      neighborhood: "East Village, NYC",
+      address: "12 St. Marks Place, New York, NY 10003",
+      date: "Thursday, Nov 07, 2024",
+      isoDate: "2024-11-07",
+      displayDate: "NOV 07",
+      dayOfWeek: "THU",
+      time: "8:30 PM",
+      price: "$20",
+      priceAfterFees: "$20.00 GA",
+      category: "nyc",
+      statusBadge: "Festival Debut • Sold Out",
+      badgeColor: "zinc",
+      ticketUrl: "https://tightpantscomedy.eventbrite.com",
+      secondaryUrl: "https://www.stmarkscomedy.com",
+      credits: ["Official Selection", "NYC Standouts", "Touring Headliners"],
+      description: "Tight Pants Comedy's first official selection showcase at the New York Comedy Festival, cementing their East Village residency.",
+      isFeatured: false
     }
   ];
 
-  // Combine and sort by date descending for past, ascending for upcoming
-  const allShows = [...formattedShows, ...tourShows];
+  const allShows = [...formattedShows, ...milestoneArchiveShows];
 
-  // Keep reviews and FAQs constant
   const outputCode = `// Auto-generated by scripts/sync-shows.js from St. Marks Comedy Club & Eventbrite
 // Last synced: ${new Date().toISOString()}
 

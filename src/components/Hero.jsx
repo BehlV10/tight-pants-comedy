@@ -11,7 +11,7 @@ export default function Hero({ onScrollTo }) {
   const nextShow = upcomingShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
 
   return (
-    <section className="relative pt-12 pb-20 md:pt-16 md:pb-28 overflow-hidden">
+    <section className="relative pt-10 pb-6 md:pt-14 md:pb-8 overflow-hidden">
       {/* Background glow effects */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[320px] bg-gradient-to-tr from-amber-500/15 via-rose-500/10 to-indigo-600/15 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute top-10 right-10 w-72 h-72 bg-indigo-500/10 blur-[90px] rounded-full pointer-events-none" />
@@ -132,7 +132,7 @@ export default function Hero({ onScrollTo }) {
         </div>
 
         {/* Quick Social Proof Grid */}
-        <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-center">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3.5 max-w-4xl mx-auto text-center">
           <div className="tight-glass p-4 rounded-2xl">
             <div className="text-2xl sm:text-3xl font-extrabold text-white mb-0.5">120+</div>
             <div className="text-xs text-zinc-400 font-medium">Shows Produced</div>

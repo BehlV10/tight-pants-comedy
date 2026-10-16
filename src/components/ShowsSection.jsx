@@ -5,6 +5,7 @@ import { SHOWS_DATA } from '../data/shows';
 export default function ShowsSection() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [pastYearFilter, setPastYearFilter] = useState('all');
 
   // Dynamic date evaluation
   const today = new Date().toISOString().slice(0, 10);
@@ -19,9 +20,35 @@ export default function ShowsSection() {
 
   // Filter within active tab
   const displayedShows = (activeTab === 'upcoming' ? upcomingShows : pastShows).filter((show) => {
-    if (filterCategory === 'all') return true;
-    return show.category === filterCategory;
+    if (activeTab === 'upcoming') {
+      if (filterCategory === 'all') return true;
+      return show.category === filterCategory;
+    } else {
+      if (pastYearFilter === 'all') return true;
+      return show.isoDate.startsWith(pastYearFilter);
+    }
   });
+
+  const handleTicketClick = (e, show) => {
+    // If show has Eventbrite Event ID and EBWidgets is loaded, trigger in-page embedded checkout
+    if (show.eventbriteEventId && window.EBWidgets) {
+      e.preventDefault();
+      try {
+        window.EBWidgets.createWidget({
+          widgetType: 'checkout',
+          eventId: show.eventbriteEventId,
+          modal: true,
+          modalTriggerElementId: `ticket-btn-${show.id}`,
+          onOrderComplete: () => {
+            console.log('Ticket order complete!');
+          }
+        });
+      } catch (err) {
+        // Fallback: navigate directly to ticketUrl
+        window.open(show.ticketUrl, '_blank', 'noopener,noreferrer');
+      }
+    }
+  };
 
   const getBadgeStyle = (color) => {
     switch (color) {
@@ -42,11 +69,11 @@ export default function ShowsSection() {
   };
 
   return (
-    <section id="shows" className="py-16 md:py-24 relative">
+    <section id="shows" className="pt-2 pb-14 md:pt-4 md:pb-16 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-6 border-b border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6 pb-5 border-b border-white/10">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">
               <Ticket className="w-4 h-4" /> Live Schedule & Tickets
@@ -54,10 +81,10 @@ export default function ShowsSection() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
               {activeTab === 'upcoming' ? 'Upcoming Shows' : 'Past Shows Archive'}
             </h2>
-            <p className="text-zinc-400 text-sm sm:text-base mt-2 max-w-xl">
+            <p className="text-zinc-400 text-sm sm:text-base mt-1.5 max-w-xl">
               {activeTab === 'upcoming'
-                ? "Browse upcoming dates at St. Marks Comedy Club and touring showcases. We recommend reserving early."
-                : "A look back at our recent packed houses in NYC, Philadelphia, and beyond."}
+                ? "Direct ticket links to St. Marks Comedy Club and Eventbrite. Seating is intimate (~60 seats), early booking recommended."
+                : "Archive of over 120+ sold out showcases across NYC, Philadelphia, and New York Comedy Festival."}
             </p>
           </div>
 
@@ -74,7 +101,7 @@ export default function ShowsSection() {
               Upcoming ({upcomingShows.length})
             </button>
             <button
-              onClick={() => { setActiveTab('past'); setFilterCategory('all'); }}
+              onClick={() => { setActiveTab('past'); setPastYearFilter('all'); }}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'past'
                   ? 'bg-zinc-800 text-white border border-white/10'
@@ -100,6 +127,31 @@ export default function ShowsSection() {
                 onClick={() => setFilterCategory(tab.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   filterCategory === tab.id
+                    ? 'bg-white/20 text-white font-bold'
+                    : 'bg-white/5 hover:bg-white/10 text-zinc-400 border border-white/5'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Year Filters for Past Archive */}
+        {activeTab === 'past' && (
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            <span className="text-xs text-zinc-400 font-semibold mr-1">Filter Year:</span>
+            {[
+              { id: 'all', label: `All Archive (${pastShows.length})` },
+              { id: '2026', label: '2026' },
+              { id: '2025', label: '2025' },
+              { id: '2024', label: '2024 & Earlier' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setPastYearFilter(tab.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  pastYearFilter === tab.id
                     ? 'bg-white/20 text-white font-bold'
                     : 'bg-white/5 hover:bg-white/10 text-zinc-400 border border-white/5'
                 }`}
@@ -173,7 +225,7 @@ export default function ShowsSection() {
                         {show.description}
                       </p>
 
-                      {/* Room capacity / authenticty note */}
+                      {/* Room capacity note */}
                       {show.roomCapacityNote && !isPastShow && (
                         <div className="text-xs text-amber-400/90 font-medium pt-0.5">
                           📍 {show.roomCapacityNote}
@@ -211,9 +263,11 @@ export default function ShowsSection() {
                       </div>
                     ) : (
                       <a
+                        id={`ticket-btn-${show.id}`}
                         href={show.ticketUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={(e) => handleTicketClick(e, show)}
                         className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap"
                       >
                         <Ticket className="w-4 h-4 fill-black" />
