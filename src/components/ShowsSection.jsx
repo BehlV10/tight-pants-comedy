@@ -29,6 +29,21 @@ export default function ShowsSection() {
     }
   });
 
+  const getProviderInfo = (url = '') => {
+    if (url.includes('eventbrite')) {
+      return { label: 'Buy on Eventbrite', source: 'Eventbrite' };
+    }
+    if (url.includes('stmarkscomedy')) {
+      return { label: 'Buy on St. Marks', source: 'St. Marks Box Office' };
+    }
+    if (url.includes('ticketmaster')) {
+      return { label: 'Buy on Ticketmaster', source: 'Ticketmaster' };
+    }
+    if (url.includes('sendyouravails')) {
+      return { label: 'Register via Avails', source: 'SendYourAvails' };
+    }
+    return { label: 'Buy Tickets', source: 'Official Box Office' };
+  };
 
   const getBadgeStyle = (color) => {
     switch (color) {
@@ -165,16 +180,29 @@ export default function ShowsSection() {
                   {/* Date Box + Title & Details */}
                   <div className="flex flex-col sm:flex-row sm:items-center gap-5 flex-1">
                     
-                    {/* Date Badge */}
-                    <div className={`shrink-0 flex sm:flex-col items-center justify-center border rounded-2xl w-full sm:w-24 p-3 text-center ${
-                      isPastShow ? 'bg-zinc-900 border-white/5' : 'bg-white/5 border-white/10'
-                    }`}>
-                      <span className="text-xs font-bold text-amber-400 uppercase tracking-wider mr-2 sm:mr-0">
-                        {show.dayOfWeek}
-                      </span>
-                      <span className={`text-2xl sm:text-3xl font-extrabold ${isPastShow ? 'text-zinc-400' : 'text-white'}`}>
-                        {show.displayDate}
-                      </span>
+                    {/* Date Badge & Flier */}
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className={`shrink-0 flex sm:flex-col items-center justify-center border rounded-2xl w-full sm:w-24 p-3 text-center ${
+                        isPastShow ? 'bg-zinc-900 border-white/5' : 'bg-white/5 border-white/10'
+                      }`}>
+                        <span className="text-xs font-bold text-amber-400 uppercase tracking-wider mr-2 sm:mr-0">
+                          {show.dayOfWeek}
+                        </span>
+                        <span className={`text-2xl sm:text-3xl font-extrabold ${isPastShow ? 'text-zinc-400' : 'text-white'}`}>
+                          {show.displayDate}
+                        </span>
+                      </div>
+
+                      {show.flierUrl && !isPastShow && (
+                        <div className="hidden sm:block w-16 h-20 rounded-xl overflow-hidden border border-white/10 shrink-0 bg-black/60 shadow">
+                          <img 
+                            src={show.flierUrl} 
+                            alt={show.title} 
+                            className="w-full h-full object-cover" 
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
                     </div>
 
                     {/* Main Info */}
@@ -227,7 +255,7 @@ export default function ShowsSection() {
                   </div>
 
                   {/* Right side: Price, and CTA */}
-                  <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 pt-4 sm:pt-0 border-t sm:border-t-0 border-white/10 lg:w-52">
+                  <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 pt-4 sm:pt-0 border-t sm:border-t-0 border-white/10 lg:w-56">
                     
                     <div className="text-xl sm:text-2xl font-black text-white">
                       {show.price}
@@ -242,17 +270,22 @@ export default function ShowsSection() {
                         <span>Show Concluded</span>
                       </div>
                     ) : (
-                      <a
-                        id={`ticket-btn-${show.id}`}
-                        href={show.ticketUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
-                      >
-                        <Ticket className="w-4 h-4 fill-black" />
-                        <span>Buy Tickets</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
+                      <div className="flex flex-col items-start sm:items-end gap-1.5 w-full sm:w-auto">
+                        <a
+                          id={`ticket-btn-${show.id}`}
+                          href={show.ticketUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0 min-h-[44px]"
+                        >
+                          <Ticket className="w-4 h-4 fill-black shrink-0" />
+                          <span>{getProviderInfo(show.ticketUrl).label}</span>
+                          <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                        </a>
+                        <span className="text-[11px] text-zinc-400 font-medium">
+                          Official checkout via {getProviderInfo(show.ticketUrl).source}
+                        </span>
+                      </div>
                     )}
 
                   </div>

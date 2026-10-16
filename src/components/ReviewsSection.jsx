@@ -39,6 +39,17 @@ export default function ReviewsSection() {
                   </span>
                 </div>
 
+                {item.id === 2 && (
+                  <div className="mb-4 rounded-xl overflow-hidden border border-white/10 max-h-36 bg-black/60 shadow-lg">
+                    <img
+                      src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png"
+                      alt="Tight Pants New York Comedy Festival Official Poster"
+                      className="w-full h-36 object-cover object-top"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+
                 <p className="text-zinc-200 text-sm leading-relaxed italic mb-6">
                   "{item.quote}"
                 </p>
@@ -62,7 +73,7 @@ export default function ReviewsSection() {
         {/* Comic Network Credits Strip */}
         <div className="mt-10 tight-glass rounded-2xl p-6 text-center max-w-4xl mx-auto">
           <div className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">
-            Comedians Headlining Tight Pants Have Appeared On
+            Guest Comedians & Drop-Ins on Tight Pants Lineups Have Appeared On
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-semibold text-zinc-300">
             <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">Netflix</span>

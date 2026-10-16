@@ -84,51 +84,64 @@ export default function Hero({ onScrollTo }) {
             </span>
           </div>
 
-          <div className="pt-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
-                {nextShow.title}
-              </h3>
-              <div className="space-y-1 text-sm text-zinc-300">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span className="font-semibold text-white">{nextShow.date} • {nextShow.time}</span>
+          <div className="pt-5 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            {nextShow.flierUrl && (
+              <div className="shrink-0 w-28 sm:w-36 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black/60 group">
+                <img 
+                  src={nextShow.flierUrl} 
+                  alt={nextShow.title} 
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="eager"
+                />
+              </div>
+            )}
+
+            <div className="flex-1 flex flex-col justify-between w-full space-y-3">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-1.5">
+                  {nextShow.title}
+                </h3>
+                <div className="space-y-1 text-sm text-zinc-300">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span className="font-semibold text-white">{nextShow.date} • {nextShow.time}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-rose-400 shrink-0" />
+                    <span>{nextShow.venue} ({nextShow.address.split(',')[0]}, NYC)</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>{nextShow.venue} ({nextShow.address.split(',')[0]}, NYC)</span>
+
+                {nextShow.roomCapacityNote && (
+                  <div className="text-xs text-amber-300/90 mt-2 font-medium">
+                    📍 {nextShow.roomCapacityNote} • Early arrival recommended
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                  {nextShow.credits.map((credit) => (
+                    <span key={credit} className="text-[11px] font-medium bg-white/5 text-zinc-300 px-2 py-0.5 rounded border border-white/5">
+                      {credit}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {nextShow.roomCapacityNote && (
-                <div className="text-xs text-amber-300/90 mt-2 font-medium">
-                  📍 {nextShow.roomCapacityNote} • Early arrival recommended
+              <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="text-2xl font-black text-white">
+                  {nextShow.price} <span className="text-xs text-zinc-400 font-normal">GA</span>
                 </div>
-              )}
-
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {nextShow.credits.map((credit) => (
-                  <span key={credit} className="text-[11px] font-medium bg-white/5 text-zinc-300 px-2 py-0.5 rounded border border-white/5">
-                    {credit}
-                  </span>
-                ))}
+                <a
+                  href={nextShow.ticketUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <Ticket className="w-4 h-4 fill-black" />
+                  <span>Buy Tickets {nextShow.ticketUrl.includes('eventbrite') ? '(via Eventbrite)' : '(via St. Marks)'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
               </div>
-            </div>
-
-            <div className="shrink-0 flex flex-col items-start md:items-end justify-center">
-              <div className="text-2xl font-black text-white mb-1">
-                {nextShow.price} <span className="text-xs text-zinc-400 font-normal">GA</span>
-              </div>
-              <a
-                href={nextShow.ticketUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
-              >
-                <Ticket className="w-4 h-4 fill-black" />
-                <span>Buy Tickets</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
             </div>
           </div>
         </div>

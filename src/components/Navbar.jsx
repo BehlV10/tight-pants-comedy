@@ -6,15 +6,24 @@ import { SHOWS_DATA } from '../data/shows';
 export default function Navbar({ onScrollTo }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Dynamically calculate the next upcoming show
+  const today = new Date().toISOString().slice(0, 10);
+  const upcomingShows = SHOWS_DATA
+    .filter((s) => s.isoDate >= today)
+    .sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+  const nextShow = upcomingShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
+
   return (
     <>
-      {/* Top Urgency / Info Bar (Goofs Style) */}
+      {/* Top Dynamic Urgency / Info Bar */}
       <div className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black text-xs font-bold py-1.5 px-4 text-center flex items-center justify-center gap-2">
         <span className="inline-block w-2 h-2 rounded-full bg-black animate-ping"></span>
-        <span>NEXT SHOW: THU, OCT 29 @ ST. MARKS COMEDY CLUB • HALLOWEEN SHOW 🎃</span>
+        <span className="truncate max-w-[280px] sm:max-w-none">
+          NEXT SHOW: {nextShow.dayOfWeek}, {nextShow.displayDate} @ {nextShow.venue.toUpperCase()} • {nextShow.title.toUpperCase()}
+        </span>
         <button 
           onClick={() => onScrollTo('shows')}
-          className="underline hover:text-zinc-800 transition-colors ml-1 hidden sm:inline cursor-pointer font-bold"
+          className="underline hover:text-zinc-800 transition-colors ml-1 hidden sm:inline cursor-pointer font-bold whitespace-nowrap"
         >
           GET TICKETS &rarr;
         </button>

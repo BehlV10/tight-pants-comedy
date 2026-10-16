@@ -1,115 +1,122 @@
 import React from 'react';
-import { Mic, Award, Sparkles, HeartHandshake, CheckCircle } from 'lucide-react';
+import { Mic, Award, Trophy, Users, CheckCircle, ExternalLink } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 
 export default function AboutSection() {
   return (
     <section id="about" className="py-16 md:py-24 relative overflow-hidden">
       {/* Decorative background glow */}
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-rose-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Left Column: The Story */}
+          {/* Left Column: The Real Story */}
           <div className="lg:col-span-7 space-y-6">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
-              <span>👖</span> The Origin & Vibe
+              <span>👖</span> The Collective & Story
             </div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
-              Two Millennials Who Refuse To Give Up Skinny Jeans.
+              An Independent NYC Stand-Up Collective
             </h2>
 
             <p className="text-base sm:text-lg text-zinc-300 leading-relaxed">
-              Gen Z declared skinny jeans dead. Comedians <strong className="text-white">Kyle Wayne</strong> and <strong className="text-white">John Bennett</strong> respectfully disagree. 
-              Named playfully after their shared millennial wardrobe allegiance, <strong className="text-amber-300">Tight Pants Comedy</strong> was born out of a simple promise: <em className="text-white">cut the filler, keep the sets tight, and make every minute count.</em>
+              Comedians <strong className="text-white">Kyle Wayne</strong> and <strong className="text-white">John Bennett</strong> joined forces to establish <strong className="text-amber-300">Tight Pants Comedy</strong>, an independent collective bringing curated comedy shows to their favorite venues in New York City.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              The name playfully pokes fun at the fact that Kyle and John are both millennials who refuse to give up their skinny jeans, despite Gen Z declaring them uncool. While the co-founders are millennials, Tight Pants represents a true cross-section of the NYC comedy scene—welcoming comics and audiences of all backgrounds.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
               <div className="tight-glass p-4 rounded-2xl border-white/5 space-y-1">
                 <div className="flex items-center gap-2 font-bold text-white text-sm">
                   <Mic className="w-4 h-4 text-amber-400" />
-                  <span>The "Tight Five" Philosophy</span>
+                  <span>Monthly Showcases</span>
                 </div>
                 <p className="text-xs text-zinc-400">
-                  Comics deliver only their sharpest, most polished material. Fast-paced, high energy, zero downtime.
+                  Curated lineups combining national touring headliners with NYC's sharpest underground club regulars.
                 </p>
               </div>
 
               <div className="tight-glass p-4 rounded-2xl border-white/5 space-y-1">
                 <div className="flex items-center gap-2 font-bold text-white text-sm">
-                  <Award className="w-4 h-4 text-rose-400" />
-                  <span>Curated Lineups</span>
+                  <Trophy className="w-4 h-4 text-rose-400" />
+                  <span>The $5 "Tight Five"</span>
                 </div>
                 <p className="text-xs text-zinc-400">
-                  A dynamic blend of national touring headliners, Comedy Cellar regulars, and underground NYC killers.
+                  Frustrated by festivals charging comics huge fees, Kyle & John launched an accessible $5 tournament with 150+ comics.
                 </p>
               </div>
             </div>
 
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              With over 120+ packed shows under their belt, Tight Pants has become a staple of New York’s indie comedy underground. From breaking attendance records at St. Marks Comedy Club during the New York Comedy Festival to hitting the road for touring showcases at venues like Punch Line Philly, the energy is consistently electric.
-            </p>
-
-            {/* Producers mini bio */}
-            <div className="pt-4 flex flex-wrap items-center gap-4 border-t border-white/10">
-              <span className="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Producers:</span>
-              <a 
-                href="https://www.instagram.com/lifestyleofkyle" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-200 hover:text-amber-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 transition-colors"
-              >
-                <InstagramIcon className="w-3.5 h-3.5" /> Kyle Wayne (@lifestyleofkyle)
-              </a>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-200 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                John Bennett
-              </span>
-            </div>
-          </div>
-
-          {/* Right Column: Visual Card Highlight */}
-          <div className="lg:col-span-5">
-            <div className="tight-glass-glow rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
-
-              <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-rose-400">
-                  The Tight Pants Experience
-                </span>
-                <h3 className="text-2xl font-bold text-white tracking-tight">
-                  Why Audiences Keep Coming Back
-                </h3>
+            {/* Producers Bios */}
+            <div className="pt-2 space-y-3">
+              <div className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                The Co-Producers
               </div>
 
-              <ul className="space-y-3.5 text-sm text-zinc-300">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span><strong>Intimate East Village Vibe:</strong> Hosted in speakeasy-style subterranean rooms with great cocktail menus.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span><strong>Secret Drop-Ins:</strong> You never know what Netflix or Comedy Central star might jump on the mic unannounced.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span><strong>Zero Snobbery:</strong> Accessible, punchy, unpretentious comedy with a crowd that's actually there to laugh.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span><strong>Tight Five Competitions:</strong> Audience voting formats where comedians battle for real cash and bragging rights.</span>
-                </li>
-              </ul>
-
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                <div>
-                  <div className="text-xs text-zinc-400">Featured in</div>
-                  <div className="text-sm font-bold text-white">Time Out New York</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white text-sm">Kyle Wayne</span>
+                    <a
+                      href="https://www.instagram.com/lifestyleofkyle"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-400 hover:text-amber-400 transition-colors"
+                      aria-label="Kyle Wayne on Instagram"
+                    >
+                      <InstagramIcon className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Brooklyn-based comic originally from Iowa. Draws material from his background in public health, dating history, and crowd work.
+                  </p>
                 </div>
-                <div>
-                  <div className="text-xs text-zinc-400">Official Selection</div>
-                  <div className="text-sm font-bold text-amber-300">NY Comedy Festival</div>
+
+                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white text-sm">John Bennett</span>
+                    <span className="text-[11px] text-zinc-500 font-medium">Co-Founder</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Attorney-turned-comedian residing in Manhattan. Known for high-energy stage presence and extended storytelling sets.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right Column: Real Stage Photography */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="tight-glass rounded-3xl p-3 sm:p-4 border border-white/10 shadow-2xl relative overflow-hidden group">
+              <div className="rounded-2xl overflow-hidden aspect-[4/3] bg-zinc-900 relative">
+                <img
+                  src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/66632345-2280-4c03-b9af-4f3ae8c25216/IMG_0211.jpg"
+                  alt="Tight Pants Comedy Live on Stage"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
+                  <div className="text-xs text-zinc-300">
+                    <span className="font-bold text-white block text-sm">Live in New York City</span>
+                    Kyle Wayne & John Bennett producing Tight Pants Comedy
+                  </div>
+                </div>
+              </div>
+
+              {/* Showroom Stats Banner */}
+              <div className="pt-4 px-2 pb-2 grid grid-cols-2 gap-4 text-center">
+                <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
+                  <div className="text-lg font-black text-amber-400">100+</div>
+                  <div className="text-[11px] text-zinc-400">NYC Shows Produced</div>
+                </div>
+                <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
+                  <div className="text-lg font-black text-white">St. Marks</div>
+                  <div className="text-[11px] text-zinc-400">Monthly Residency</div>
                 </div>
               </div>
             </div>
