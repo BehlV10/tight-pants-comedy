@@ -116,8 +116,13 @@ async function sync() {
       ? "https://www.eventbrite.com/e/comedians-in-costumes-halloween-comedy-show-tickets-2001416968028"
       : directStMarksUrl;
 
-    // Price: St. Marks shows are $18 + $2 box office fee = $20 subtotal, matching Eventbrite's $20 flat pricing
-    const finalPrice = isComfyClash ? Math.round(s.price || 8) : 20;
+    // Price: St. Marks Comedy Club box office adds a flat $2.00 venue service fee per ticket at checkout.
+    // Dynamically calculate total ticket price from the database base price + $2 fee:
+    const ST_MARKS_BOX_OFFICE_FEE = 2;
+    const basePrice = Math.round(Number(s.price) || 18);
+    const finalPrice = isHalloween
+      ? 20 // Eventbrite listing price
+      : (isComfyClash ? basePrice : basePrice + ST_MARKS_BOX_OFFICE_FEE);
 
     return {
       id: `stmarks-${s.id}`,
