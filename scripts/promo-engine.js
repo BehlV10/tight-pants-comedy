@@ -69,12 +69,22 @@ Submitting an upcoming East Village comedy showcase for your weekly cheap/free e
 Thank you!`
   };
 
-  // 3. Tailored Reddit Drafts for Specific Subreddits (with Embedded Flyer Image)
+  // 3. Tailored Reddit Drafts with Mandatory Flairs, Subreddit Guidelines & Image Body Text
   const redditDrafts = [
     {
       subreddit: 'r/nycevents',
       subUrl: 'https://www.reddit.com/r/nycevents',
+      flair: '🎭 Comedy',
+      guidelines: 'Requires [Event] and [Genre] tags in title, exact date/time/price, and Comedy flair.',
       title: `[Event] [Comedy] ${show.title} @ ${show.venue} (East Village) - ${show.dayOfWeek} ${show.displayDate}, 8:30 PM (${show.price})`,
+      imageBodyText: 
+`Comedians in Costumes: Halloween Comedy Show 🎃 is back at St. Marks Comedy Club (12 St. Marks Place) in the East Village on ${show.date} @ 8:30 PM (Doors 8:00 PM).
+
+• The Show: Tight Pants Comedy's annual Halloween special. Lineup of NYC comedians featured on Netflix, Comedy Central, Hulu, and the Comedy Cellar performing in full costume, plus audience costume prizes!
+• The Room: Intimate speakeasy-style ~60 seat subterranean room with craft cocktails and Filipino-inspired bites.
+• Tickets: ${show.price} GA with direct in-page checkout at: ${WEBSITE_URL}
+
+Seating is limited in this showroom so grabbing tickets early is recommended!`,
       body: 
 `![${show.title} Flyer](${flierImg})
 
@@ -91,7 +101,16 @@ Grab tickets early as this showroom has limited seating!`,
     {
       subreddit: 'r/WhatsHappeningNYC',
       subUrl: 'https://www.reddit.com/r/WhatsHappeningNYC',
+      flair: '📅 Event',
+      guidelines: 'Requires date tag in brackets and neighborhood context.',
       title: `[${show.displayDate}] ${show.title} @ St. Marks Comedy Club in East Village`,
+      imageBodyText: 
+`If you're looking for Halloween or date night plans in lower Manhattan, Tight Pants Comedy is producing their annual Halloween special at St. Marks Comedy Club (12 St. Marks Place) on ${show.date} @ 8:30 PM.
+
+• Vibe: Basement speakeasy club right in the heart of St. Marks Place.
+• Talent: Lineup of NYC club headliners from Netflix, Kill Tony, and Comedy Cellar performing in full costume + audience costume contest.
+• Cost: ${show.price} GA
+• Tickets & Schedule: ${WEBSITE_URL}`,
       body: 
 `![${show.title} Flyer](${flierImg})
 
@@ -106,7 +125,19 @@ If you're looking for weekend or date night plans in lower Manhattan, **Tight Pa
     {
       subreddit: 'r/lowereastside',
       subUrl: 'https://www.reddit.com/r/lowereastside',
+      flair: '📍 Event / Local',
+      guidelines: 'Must be relevant to Lower East Side / St. Marks corridor. Mention exact address.',
       title: `Upcoming Comedy on St. Marks Place: ${show.title} (${show.dayOfWeek} ${show.displayDate})`,
+      imageBodyText: 
+`Hey neighbors! Wanted to share an upcoming local comedy show right by the LES / East Village border.
+
+Tight Pants Comedy is hosting Comedians in Costumes: Halloween Comedy Show 🎃 at St. Marks Comedy Club (12 St. Marks Place) on ${show.date} at 8:30 PM.
+
+• Format: Tight 7-minute sets from top club regulars (Netflix, HBO, Comedy Cellar).
+• Halloween Theme: Comics will be performing in full costume, with prizes for the best audience costume.
+• Tickets: ${show.price} GA, direct checkout without leaving the site: ${WEBSITE_URL}
+
+Great intimate speakeasy room for a local night out!`,
       body: 
 `![${show.title} Flyer](${flierImg})
 
@@ -124,7 +155,19 @@ Great intimate room for a local night out!`,
     {
       subreddit: 'r/eastvillage',
       subUrl: 'https://www.reddit.com/r/eastvillage',
+      flair: '🎟️ Events',
+      guidelines: 'Strictly local to East Village (12 St. Marks Place). Community-focused tone.',
       title: `East Village Event: ${show.title} @ St. Marks Comedy Club (${show.dayOfWeek} ${show.displayDate})`,
+      imageBodyText: 
+`For anyone looking for neighborhood events on St. Marks Place:
+
+Tight Pants Comedy is running their annual Comedians in Costumes Halloween show at St. Marks Comedy Club (12 St. Marks Place) on ${show.date} @ 8:30 PM.
+
+• Curated lineup of NYC comics from the Comedy Cellar and national specials.
+• Audience costume contest + intimate speakeasy room.
+• Tickets are ${show.price} GA: ${WEBSITE_URL}
+
+Hope to see some local neighborhood folks there!`,
       body: 
 `![${show.title} Flyer](${flierImg})
 
@@ -220,6 +263,8 @@ You can review each post below. Each draft includes a **"1-Click Review & Submit
     redditDraftsDoc += `
 ## Draft ${idx + 1}: ${draft.subreddit}
 * **Subreddit:** [${draft.subreddit}](${draft.subUrl})
+* **Flair to Select:** \`${draft.flair}\`
+* **Subreddit Guidelines:** *${draft.guidelines}*
 * 🖼️ **1-Click Image Post Link (Pre-loads Flyer):** [**Open Image Post in ${draft.subreddit}**](${draft.prefilledImagePostUrl})
 * 📝 **1-Click Text Post Link (Full Markdown):** [**Open Text Post in ${draft.subreddit}**](${draft.prefilledUrl})
 
@@ -228,10 +273,18 @@ You can review each post below. Each draft includes a **"1-Click Review & Submit
 ${draft.title}
 \`\`\`
 
-### Proposed Post Body / Caption:
+### 📌 Body Text (Optional) — Paste into the box under the uploaded flyer:
+\`\`\`text
+${draft.imageBodyText}
+\`\`\`
+
+<details>
+<summary><b>View Alternative Markdown (For Text-only Posts)</b></summary>
+
 \`\`\`markdown
 ${draft.body}
 \`\`\`
+</details>
 
 ---
 `;
