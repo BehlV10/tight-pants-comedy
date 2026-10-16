@@ -1,6 +1,6 @@
 # 👖 Tight Pants Comedy - Complete Promo Preview & Drafts
 
-**Generated At:** 2026-10-16T18:50:53.591Z  
+**Generated At:** 2026-10-16T18:56:26.950Z  
 **Mode:** `DRY_RUN (Simulation / Review Only)`  
 **Target Show:** Comedians in Costumes: Halloween Comedy Show 🎃 (Thursday, OCT 29, 2026) — **13 days away**  
 **Official Flier:** [View Flier Image](https://qfrmgyichufynswkwaxp.supabase.co/storage/v1/object/public/show-fliers/0.9306832950402135.png)

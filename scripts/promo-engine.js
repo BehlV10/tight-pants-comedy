@@ -141,9 +141,12 @@ Hope to see some local neighborhood folks there!`,
     }
   ];
 
-  // Generate 1-click prefilled Reddit submit links
+  // Generate 1-click prefilled Reddit submit links for both Image Post & Text Post
   redditDrafts.forEach((draft) => {
     const subClean = draft.subreddit.replace('r/', '');
+    // 1-Click Link Post (Pre-loads the image directly into Reddit without manual upload!)
+    draft.prefilledImagePostUrl = `https://www.reddit.com/r/${subClean}/submit?url=${encodeURIComponent(flierImg)}&title=${encodeURIComponent(draft.title)}`;
+    // 1-Click Text Post (Markdown with details)
     draft.prefilledUrl = `https://www.reddit.com/r/${subClean}/submit?title=${encodeURIComponent(draft.title)}&text=${encodeURIComponent(draft.body)}`;
   });
 
@@ -217,14 +220,15 @@ You can review each post below. Each draft includes a **"1-Click Review & Submit
     redditDraftsDoc += `
 ## Draft ${idx + 1}: ${draft.subreddit}
 * **Subreddit:** [${draft.subreddit}](${draft.subUrl})
-* **1-Click Pre-filled Submit Link:** [**Open in ${draft.subreddit} with pre-filled title & body**](${draft.prefilledUrl})
+* 🖼️ **1-Click Image Post Link (Pre-loads Flyer):** [**Open Image Post in ${draft.subreddit}**](${draft.prefilledImagePostUrl})
+* 📝 **1-Click Text Post Link (Full Markdown):** [**Open Text Post in ${draft.subreddit}**](${draft.prefilledUrl})
 
 ### Proposed Title:
 \`\`\`text
 ${draft.title}
 \`\`\`
 
-### Proposed Post Body:
+### Proposed Post Body / Caption:
 \`\`\`markdown
 ${draft.body}
 \`\`\`
