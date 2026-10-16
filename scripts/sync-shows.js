@@ -116,8 +116,8 @@ async function sync() {
       ? "https://www.eventbrite.com/e/comedians-in-costumes-halloween-comedy-show-tickets-2001416968028"
       : directStMarksUrl;
 
-    // Price: Eventbrite Halloween Show is listed at $20 GA; St. Marks in-house shows use venue price
-    const finalPrice = isHalloween ? 20 : Math.round(s.price || 18);
+    // Price: St. Marks shows are $18 + $2 box office fee = $20 subtotal, matching Eventbrite's $20 flat pricing
+    const finalPrice = isComfyClash ? Math.round(s.price || 8) : 20;
 
     return {
       id: `stmarks-${s.id}`,
