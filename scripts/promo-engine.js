@@ -11,8 +11,8 @@ const __dirname = path.dirname(__filename);
 // Set DRY_RUN=false in environment or when ready to send live.
 const IS_DRY_RUN = process.env.DRY_RUN !== 'false';
 
-// Target website URL
-const WEBSITE_URL = 'https://behlv10.github.io/tight-pants-comedy/';
+// Target Eventbrite ticket URL (Direct link for all promo drafts)
+const TICKET_URL = 'https://www.eventbrite.com/e/comedians-in-costumes-halloween-comedy-show-tickets-2001416968028?aff=ebdsoporgprofile';
 
 function getDaysUntil(isoDate) {
   const today = new Date();
@@ -39,11 +39,11 @@ function buildPromoPayloads(show) {
       date: show.date,
       time: show.time,
       price: `${show.price} GA`,
-      ticketsUrl: WEBSITE_URL,
+      ticketsUrl: TICKET_URL,
       imageUrl: flierImg,
       description: `${show.title} presented by Tight Pants Comedy at ${show.venue} in the East Village NYC.\n\n` +
         `Featuring top comedians seen on Netflix, HBO, Comedy Central, and the Comedy Cellar. Fast-paced, curated sets in an intimate speakeasy room.\n\n` +
-        `Tickets & in-page checkout: ${WEBSITE_URL}`
+        `Tickets & Eventbrite checkout: ${TICKET_URL}`
     }
   };
 
@@ -63,7 +63,7 @@ Submitting an upcoming East Village comedy showcase for your weekly cheap/free e
 • Price: ${show.price} GA (under $25)
 • Accolades: Time Out New York featured showcase, New York Comedy Festival official selection.
 • About: Produced by Kyle Wayne & John Bennett. Curated, rapid-fire stand-up in an intimate subterranean showroom.
-• Direct Tickets & Info: ${WEBSITE_URL}
+• Direct Tickets & Info: ${TICKET_URL}
 • Official Flier Art: ${flierImg}
 
 Thank you!`
@@ -82,7 +82,7 @@ Thank you!`
 
 • The Show: Tight Pants Comedy's annual Halloween special. Lineup of NYC comedians featured on Netflix, Comedy Central, Hulu, and the Comedy Cellar performing in full costume, plus audience costume prizes!
 • The Room: Intimate speakeasy-style ~60 seat subterranean room with craft cocktails and Filipino-inspired bites.
-• Tickets: ${show.price} GA with direct in-page checkout at: ${WEBSITE_URL}
+• Tickets: ${show.price} GA on Eventbrite: ${TICKET_URL}
 
 Seating is limited in this showroom so grabbing tickets early is recommended!`,
       body: 
@@ -93,7 +93,7 @@ Seating is limited in this showroom so grabbing tickets early is recommended!`,
 • **The Show:** Tight Pants Comedy's curated stand-up showcase. Fast-paced sets from comedians featured on Netflix, Comedy Central, Hulu, and the Comedy Cellar. For the Halloween edition, comics are performing in full costume, with audience costume prizes!
 • **The Room:** Intimate ~60 seat subterranean speakeasy room with craft cocktails and Filipino-inspired bites.
 • **Tickets:** ${show.price} GA
-• **In-Page Checkout & Info:** [tightpantscomedy.com](${WEBSITE_URL})
+• **Eventbrite Checkout & Info:** [Eventbrite Link](${TICKET_URL})
 
 Grab tickets early as this showroom has limited seating!`,
       prefilledUrl: ''
@@ -110,7 +110,7 @@ Grab tickets early as this showroom has limited seating!`,
 • Vibe: Basement speakeasy club right in the heart of St. Marks Place.
 • Talent: Lineup of NYC club headliners from Netflix, Kill Tony, and Comedy Cellar performing in full costume + audience costume contest.
 • Cost: ${show.price} GA
-• Tickets & Schedule: ${WEBSITE_URL}`,
+• Eventbrite Tickets & Schedule: ${TICKET_URL}`,
       body: 
 `![${show.title} Flyer](${flierImg})
 
@@ -119,7 +119,7 @@ If you're looking for weekend or date night plans in lower Manhattan, **Tight Pa
 • **Vibe:** Basement speakeasy club right in the heart of St. Marks Place.
 • **Talent:** Lineup of NYC club headliners (Netflix, Kill Tony, Comedy Cellar regulars).
 • **Cost:** ${show.price} GA
-• **Tickets & Schedule:** [tightpantscomedy.com](${WEBSITE_URL})`,
+• **Eventbrite Tickets:** [Eventbrite Link](${TICKET_URL})`,
       prefilledUrl: ''
     },
     {
@@ -135,7 +135,7 @@ Tight Pants Comedy is hosting Comedians in Costumes: Halloween Comedy Show 🎃 
 
 • Format: Tight 7-minute sets from top club regulars (Netflix, HBO, Comedy Cellar).
 • Halloween Theme: Comics will be performing in full costume, with prizes for the best audience costume.
-• Tickets: ${show.price} GA, direct checkout without leaving the site: ${WEBSITE_URL}
+• Tickets: ${show.price} GA on Eventbrite: ${TICKET_URL}
 
 Great intimate speakeasy room for a local night out!`,
       body: 
@@ -147,7 +147,7 @@ Hey neighbors! Wanted to share an upcoming local comedy show right by the LES / 
 
 • **Format:** Tight 7-minute sets from top club regulars (Netflix, HBO, Comedy Cellar).
 • **Halloween Theme:** Comics will be performing in full costume, with prizes for the best audience costume.
-• **Tickets:** ${show.price} GA, direct checkout without leaving the site: [tightpantscomedy.com](${WEBSITE_URL})
+• **Tickets:** ${show.price} GA on [Eventbrite](${TICKET_URL})
 
 Great intimate room for a local night out!`,
       prefilledUrl: ''
@@ -165,7 +165,7 @@ Tight Pants Comedy is running their annual Comedians in Costumes Halloween show 
 
 • Curated lineup of NYC comics from the Comedy Cellar and national specials.
 • Audience costume contest + intimate speakeasy room.
-• Tickets are ${show.price} GA: ${WEBSITE_URL}
+• Tickets are ${show.price} GA on Eventbrite: ${TICKET_URL}
 
 Hope to see some local neighborhood folks there!`,
       body: 
@@ -177,7 +177,7 @@ For anyone looking for neighborhood events on St. Marks Place:
 
 • Curated lineup of NYC comics from the Comedy Cellar and national specials.
 • Audience costume contest + intimate speakeasy room.
-• Tickets are ${show.price} GA: [tightpantscomedy.com](${WEBSITE_URL})
+• Tickets are ${show.price} GA: [Eventbrite Link](${TICKET_URL})
 
 Hope to see some local neighborhood folks there!`,
       prefilledUrl: ''
@@ -205,7 +205,7 @@ Tickets are live at the link in our bio! Grab yours early before the room caps.
 
 #TightPantsComedy #StMarksComedyClub #EastVillageNYC #NYComedy #NYCStandup`,
     comicDmText: 
-`Hey! The flier and ticket link for ${show.date} @ St. Marks is live on the site: ${WEBSITE_URL} — drop it on your story when you get a chance!`,
+`Hey! The flier and Eventbrite ticket link for ${show.date} @ St. Marks is live: ${TICKET_URL} — drop it on your story when you get a chance!`,
     flyerDownload: flierImg
   };
 
@@ -251,7 +251,7 @@ export function runPromoEngine() {
 
 **Status:** \`DRAFT (Review Mode - Not Posted)\`  
 **Target Show:** ${payload.showTitle} (${payload.date})  
-**Ticket Link:** ${WEBSITE_URL}  
+**Ticket Link (Eventbrite):** ${TICKET_URL}  
 **Flier Art:** [View Official Flier](${payload.flierImg})
 
 You can review each post below. Each draft includes a **"1-Click Review & Submit"** link that will open Reddit with the Title and Body already pre-filled so you can review, edit, or post whenever you're ready.
