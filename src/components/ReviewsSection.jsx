@@ -1,6 +1,6 @@
 import React from 'react';
-import { Star, Quote, CheckCircle, MessageSquare } from 'lucide-react';
-import { REVIEWS_DATA } from '../data/shows';
+import { Quote, Award, Sparkles, Newspaper, Flame, Trophy } from 'lucide-react';
+import { PRESS_DATA } from '../data/shows';
 
 export default function ReviewsSection() {
   return (
@@ -10,69 +10,67 @@ export default function ReviewsSection() {
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest mb-3">
-            <Star className="w-4 h-4 fill-amber-400" /> Real Audience Social Proof
+            <Newspaper className="w-4 h-4" /> Press & Festival Acclaim
           </div>
           
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-            What Fans Are Saying
+            Recognized by NYC’s Comedy Scene
           </h2>
 
-          <div className="mt-4 flex items-center justify-center gap-2">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-amber-400" />
-              ))}
-            </div>
-            <span className="text-lg font-bold text-white">5.0</span>
-            <span className="text-zinc-400 text-sm">/ 5.0 (200+ Verified Audience Reviews)</span>
-          </div>
+          <p className="mt-3 text-zinc-400 text-sm sm:text-base">
+            From official features in <span className="text-white font-semibold">Time Out New York</span> to setting showroom attendance records at the <span className="text-amber-400 font-semibold">New York Comedy Festival</span>.
+          </p>
         </div>
 
-        {/* Reviews Grid */}
+        {/* Press & Accolades Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {REVIEWS_DATA.slice(0, 3).map((review) => (
+          {PRESS_DATA.map((item) => (
             <div
-              key={review.id}
+              key={item.id}
               className="tight-glass rounded-3xl p-6 relative flex flex-col justify-between hover:border-white/20 transition-all group"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex text-amber-400">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400" />
-                    ))}
-                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-300">
+                    <Sparkles className="w-3.5 h-3.5" /> {item.badge}
+                  </span>
                   <span className="text-[11px] font-medium text-zinc-500">
-                    {review.date}
+                    {item.year}
                   </span>
                 </div>
 
-                <p className="text-zinc-300 text-sm leading-relaxed italic mb-6">
-                  "{review.comment}"
+                <p className="text-zinc-200 text-sm leading-relaxed italic mb-6">
+                  "{item.quote}"
                 </p>
               </div>
 
               <div className="pt-4 border-t border-white/10 flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-white text-sm flex items-center gap-1.5">
-                    {review.name}
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <div className="font-bold text-white text-base">
+                    {item.publication}
                   </div>
-                  <div className="text-xs text-zinc-400">{review.role}</div>
+                  <div className="text-xs text-zinc-400 mt-0.5">{item.context}</div>
                 </div>
-                <div className="text-zinc-600 group-hover:text-amber-400 transition-colors">
-                  <Quote className="w-5 h-5 opacity-40" />
+                <div className="text-amber-400/30 group-hover:text-amber-400 transition-colors">
+                  <Quote className="w-6 h-6" />
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Extra press highlight banner */}
-        <div className="mt-8 tight-glass rounded-2xl p-6 text-center max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
-          <span className="text-2xl">📰</span>
-          <div className="text-sm text-zinc-300">
-            <strong className="text-white">“One of the standout underground comedy showcases in Manhattan.”</strong> — <em>Time Out New York</em>
+        {/* Comic Network Credits Strip */}
+        <div className="mt-10 tight-glass rounded-2xl p-6 text-center max-w-4xl mx-auto">
+          <div className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">
+            Comedians Headlining Tight Pants Have Appeared On
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-semibold text-zinc-300">
+            <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">Netflix</span>
+            <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">HBO / Max</span>
+            <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">Comedy Central</span>
+            <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">Hulu</span>
+            <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">The Comedy Cellar</span>
+            <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">Don't Tell Comedy</span>
           </div>
         </div>
 

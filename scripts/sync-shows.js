@@ -270,32 +270,34 @@ async function sync() {
 
 export const SHOWS_DATA = ${JSON.stringify(allShows, null, 2)};
 
-export const REVIEWS_DATA = [
+export const PRESS_DATA = [
   {
     id: 1,
-    name: "Danielle M.",
-    role: "East Village Local",
-    rating: 5,
-    comment: "Tight Pants is easily the best independent comedy room in NYC. The energy at St. Marks is wild, zero awkward silences, and the headliners they sneak in are crazy good.",
-    date: "Verified Attendee"
+    publication: "Time Out New York",
+    badge: "Official Press Feature",
+    quote: "An indie comedy show fueled by millennial angst and skinny jeans... rapid-fire sets from a cross-section of New York City's comedy scene.",
+    context: "Featured in Time Out NYC's curated comedy recommendations",
+    year: "NYC Guide Feature"
   },
   {
     id: 2,
-    name: "Time Out New York",
-    role: "Critic's Pick",
-    rating: 5,
-    comment: "One of the standout underground comedy showcases in Manhattan. Rapid-fire lineups bringing together national touring talent and NYC's sharpest rising voices.",
-    date: "Press Feature"
+    publication: "New York Comedy Festival",
+    badge: "Official Festival Selection",
+    quote: "Tight Pants Comedy set attendance records at St. Marks Comedy Club, showcasing national headliners with credits spanning Netflix, HBO, Comedy Central, and Hulu.",
+    context: "Official Selection Showcase & Showroom Record Holder",
+    year: "NYCF Official Selection"
   },
   {
     id: 3,
-    name: "Marcus T.",
-    role: "Comedy Fanatic",
-    rating: 5,
-    comment: "Came for date night at St. Marks, stayed because every comic was an absolute murderer. Kyle and John run a phenomenal show. Tight sets, fast pacing, great drinks.",
-    date: "Verified Attendee"
+    publication: "Tight Five Comedy Tournament",
+    badge: "NYC Stand-Up Competition",
+    quote: "One of New York City's largest independent comedy tournaments, with over 150+ comedians bringing their sharpest material to compete for the city's best tight five.",
+    context: "Over 150+ comedians scouted and booked across NYC",
+    year: "Annual Showcase Tournament"
   }
 ];
+
+export const REVIEWS_DATA = PRESS_DATA;
 
 export const FAQS = [
   {

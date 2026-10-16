@@ -2,7 +2,7 @@ import React from 'react';
 import { Ticket, Star, Mic, Flame, ArrowRight, MapPin, Calendar, Sparkles } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
 
-export default function Hero({ onScrollTo, onBuyTickets }) {
+export default function Hero({ onScrollTo }) {
   // Dynamically find the next upcoming future show
   const today = new Date().toISOString().slice(0, 10);
   const upcomingShows = SHOWS_DATA
@@ -27,7 +27,7 @@ export default function Hero({ onScrollTo, onBuyTickets }) {
             <Flame className="w-3.5 h-3.5 text-rose-400" /> NY Comedy Festival Record Holder
           </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-400/10 border border-amber-400/30 text-amber-300">
-            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> 5.0 Star Rated Showcase
+            <MapPin className="w-3.5 h-3.5 text-amber-400" /> St. Marks Comedy Club Residency
           </div>
         </div>
 
@@ -119,36 +119,37 @@ export default function Hero({ onScrollTo, onBuyTickets }) {
               <div className="text-2xl font-black text-white mb-1">
                 {nextShow.price} <span className="text-xs text-zinc-400 font-normal">GA</span>
               </div>
-              <button
-                type="button"
-                onClick={() => (onBuyTickets ? onBuyTickets(nextShow) : onScrollTo('shows'))}
+              <a
+                href={nextShow.ticketUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Ticket className="w-4 h-4 fill-black" />
                 <span>Buy Tickets</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Quick Social Proof Grid */}
+        {/* Real Social Proof Grid */}
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3.5 max-w-4xl mx-auto text-center">
           <div className="tight-glass p-4 rounded-2xl">
-            <div className="text-2xl sm:text-3xl font-extrabold text-white mb-0.5">120+</div>
-            <div className="text-xs text-zinc-400 font-medium">Shows Produced</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-white mb-0.5">100+</div>
+            <div className="text-xs text-zinc-400 font-medium">Shows Produced in NYC</div>
           </div>
           <div className="tight-glass p-4 rounded-2xl">
-            <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 mb-0.5">5.0 ★</div>
-            <div className="text-xs text-zinc-400 font-medium">Audience Rating</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 mb-0.5">NYCF</div>
+            <div className="text-xs text-zinc-400 font-medium">Official Festival Selection</div>
           </div>
           <div className="tight-glass p-4 rounded-2xl">
-            <div className="text-2xl sm:text-3xl font-extrabold text-white mb-0.5">15,000+</div>
-            <div className="text-xs text-zinc-400 font-medium">Laughs Delivered</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-white mb-0.5">150+</div>
+            <div className="text-xs text-zinc-400 font-medium">Tournament Comics Scouted</div>
           </div>
           <div className="tight-glass p-4 rounded-2xl">
-            <div className="text-2xl sm:text-3xl font-extrabold text-rose-400 mb-0.5">#1</div>
-            <div className="text-xs text-zinc-400 font-medium">Indie East Village Room</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-rose-400 mb-0.5">~60</div>
+            <div className="text-xs text-zinc-400 font-medium">Intimate Showroom Seats</div>
           </div>
         </div>
 
