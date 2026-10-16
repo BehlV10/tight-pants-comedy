@@ -10,7 +10,7 @@ export default function Navbar({ onScrollTo }) {
       {/* Top Urgency / Info Bar (Goofs Style) */}
       <div className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black text-xs font-bold py-1.5 px-4 text-center flex items-center justify-center gap-2">
         <span className="inline-block w-2 h-2 rounded-full bg-black animate-ping"></span>
-        <span>NEXT SHOW: THURSDAY @ ST. MARKS COMEDY CLUB (8:30 PM)</span>
+        <span>NEXT SHOW: THU, OCT 29 @ ST. MARKS COMEDY CLUB • HALLOWEEN SHOW 🎃</span>
         <a 
           href="#shows" 
           onClick={(e) => { e.preventDefault(); onScrollTo('shows'); }}

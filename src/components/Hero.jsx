@@ -1,7 +1,15 @@
 import React from 'react';
-import { Ticket, Star, Mic, Flame, ArrowRight, MapPin, Calendar } from 'lucide-react';
+import { Ticket, Star, Mic, Flame, ArrowRight, MapPin, Calendar, Sparkles } from 'lucide-react';
+import { SHOWS_DATA } from '../data/shows';
 
 export default function Hero({ onScrollTo }) {
+  // Dynamically find the next upcoming future show
+  const today = new Date().toISOString().slice(0, 10);
+  const upcomingShows = SHOWS_DATA
+    .filter((s) => s.isoDate >= today)
+    .sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+  const nextShow = upcomingShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
+
   return (
     <section className="relative pt-12 pb-20 md:pt-16 md:pb-28 overflow-hidden">
       {/* Background glow effects */}
@@ -56,7 +64,7 @@ export default function Hero({ onScrollTo }) {
           </button>
         </div>
 
-        {/* Live Next Show Spotlight Card (Real Tight Pants Data) */}
+        {/* Live Next Show Spotlight Card (Dynamically Next Upcoming Show) */}
         <div className="max-w-2xl mx-auto tight-glass-glow rounded-3xl p-6 sm:p-7 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
           
@@ -71,28 +79,35 @@ export default function Hero({ onScrollTo }) {
               </span>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 bg-rose-500/15 border border-rose-500/30 px-3 py-1 rounded-full w-fit">
-              <Flame className="w-3.5 h-3.5" /> 88% Sold Out • 8 Tickets Left
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-400 bg-orange-500/15 border border-orange-500/30 px-3 py-1 rounded-full w-fit">
+              <Sparkles className="w-3.5 h-3.5" /> {nextShow.statusBadge}
             </span>
           </div>
 
           <div className="pt-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
-                Tight Pants Comedy Show
+                {nextShow.title}
               </h3>
               <div className="space-y-1 text-sm text-zinc-300">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span className="font-semibold text-white">Thursday, Oct 15, 2026 • 8:30 PM (Doors 8:00 PM)</span>
+                  <span className="font-semibold text-white">{nextShow.date} • {nextShow.time}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>St. Marks Comedy Club (12 St. Marks Place, NYC)</span>
+                  <span>{nextShow.venue} ({nextShow.address.split(',')[0]}, NYC)</span>
                 </div>
               </div>
+
+              {nextShow.roomCapacityNote && (
+                <div className="text-xs text-amber-300/90 mt-2 font-medium">
+                  📍 {nextShow.roomCapacityNote} • Early arrival recommended
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-1.5 mt-3">
-                {["Netflix", "Kill Tony", "Comedy Cellar", "Don't Tell"].map((credit) => (
+                {nextShow.credits.map((credit) => (
                   <span key={credit} className="text-[11px] font-medium bg-white/5 text-zinc-300 px-2 py-0.5 rounded border border-white/5">
                     {credit}
                   </span>
@@ -102,10 +117,10 @@ export default function Hero({ onScrollTo }) {
 
             <div className="shrink-0 flex flex-col items-start md:items-end justify-center">
               <div className="text-2xl font-black text-white mb-1">
-                $18 <span className="text-xs text-zinc-400 font-normal">($20 after fees)</span>
+                {nextShow.price} <span className="text-xs text-zinc-400 font-normal">GA</span>
               </div>
               <a
-                href="https://www.stmarkscomedy.com/shows/tight-pants-comedy-show-2026-10-15-2cad7303"
+                href={nextShow.ticketUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-amber-400 hover:bg-amber-300 transition-all text-sm"
