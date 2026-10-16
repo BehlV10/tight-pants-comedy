@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Ticket, Calendar, Clock, MapPin, ExternalLink, Flame, CheckCircle, Sparkles, History } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
 
-export default function ShowsSection() {
+export default function ShowsSection({ onBuyTickets }) {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [filterCategory, setFilterCategory] = useState('all');
   const [pastYearFilter, setPastYearFilter] = useState('all');
@@ -29,26 +29,6 @@ export default function ShowsSection() {
     }
   });
 
-  const handleTicketClick = (e, show) => {
-    // If show has Eventbrite Event ID and EBWidgets is loaded, trigger in-page embedded checkout
-    if (show.eventbriteEventId && window.EBWidgets) {
-      e.preventDefault();
-      try {
-        window.EBWidgets.createWidget({
-          widgetType: 'checkout',
-          eventId: show.eventbriteEventId,
-          modal: true,
-          modalTriggerElementId: `ticket-btn-${show.id}`,
-          onOrderComplete: () => {
-            console.log('Ticket order complete!');
-          }
-        });
-      } catch (err) {
-        // Fallback: navigate directly to ticketUrl
-        window.open(show.ticketUrl, '_blank', 'noopener,noreferrer');
-      }
-    }
-  };
 
   const getBadgeStyle = (color) => {
     switch (color) {
@@ -262,18 +242,15 @@ export default function ShowsSection() {
                         <span>Show Concluded</span>
                       </div>
                     ) : (
-                      <a
+                      <button
+                        type="button"
                         id={`ticket-btn-${show.id}`}
-                        href={show.ticketUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => handleTicketClick(e, show)}
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap"
+                        onClick={() => (onBuyTickets ? onBuyTickets(show) : window.open(show.ticketUrl, '_blank'))}
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
                       >
                         <Ticket className="w-4 h-4 fill-black" />
                         <span>Buy Tickets</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
+                      </button>
                     )}
 
                   </div>

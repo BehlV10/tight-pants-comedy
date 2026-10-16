@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { Ticket, Menu, X, Sparkles, MapPin } from 'lucide-react';
 import { InstagramIcon } from './Icons';
+import { SHOWS_DATA } from '../data/shows';
 
-export default function Navbar({ onScrollTo }) {
+export default function Navbar({ onScrollTo, onOpenCheckout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const today = new Date().toISOString().slice(0, 10);
+  const upcomingShows = SHOWS_DATA
+    .filter((s) => s.isoDate >= today)
+    .sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+  const nextShow = upcomingShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
 
   return (
     <>
@@ -11,13 +18,12 @@ export default function Navbar({ onScrollTo }) {
       <div className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black text-xs font-bold py-1.5 px-4 text-center flex items-center justify-center gap-2">
         <span className="inline-block w-2 h-2 rounded-full bg-black animate-ping"></span>
         <span>NEXT SHOW: THU, OCT 29 @ ST. MARKS COMEDY CLUB • HALLOWEEN SHOW 🎃</span>
-        <a 
-          href="#shows" 
-          onClick={(e) => { e.preventDefault(); onScrollTo('shows'); }}
-          className="underline hover:text-zinc-800 transition-colors ml-1 hidden sm:inline"
+        <button 
+          onClick={() => (onOpenCheckout ? onOpenCheckout(nextShow) : onScrollTo('shows'))}
+          className="underline hover:text-zinc-800 transition-colors ml-1 hidden sm:inline cursor-pointer"
         >
           GET TICKETS &rarr;
-        </a>
+        </button>
       </div>
 
       {/* Main Navigation */}
@@ -85,7 +91,7 @@ export default function Navbar({ onScrollTo }) {
             </a>
 
             <button
-              onClick={() => onScrollTo('shows')}
+              onClick={() => (onOpenCheckout ? onOpenCheckout(nextShow) : onScrollTo('shows'))}
               className="relative inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               <Ticket className="w-4 h-4 fill-black" />
@@ -96,8 +102,8 @@ export default function Navbar({ onScrollTo }) {
           {/* Mobile Hamburger */}
           <div className="flex md:hidden items-center gap-2">
             <button
-              onClick={() => onScrollTo('shows')}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold text-black bg-amber-400"
+              onClick={() => (onOpenCheckout ? onOpenCheckout(nextShow) : onScrollTo('shows'))}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold text-black bg-amber-400 cursor-pointer"
             >
               Tickets
             </button>

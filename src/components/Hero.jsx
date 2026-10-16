@@ -2,7 +2,7 @@ import React from 'react';
 import { Ticket, Star, Mic, Flame, ArrowRight, MapPin, Calendar, Sparkles } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
 
-export default function Hero({ onScrollTo }) {
+export default function Hero({ onScrollTo, onBuyTickets }) {
   // Dynamically find the next upcoming future show
   const today = new Date().toISOString().slice(0, 10);
   const upcomingShows = SHOWS_DATA
@@ -119,14 +119,15 @@ export default function Hero({ onScrollTo }) {
               <div className="text-2xl font-black text-white mb-1">
                 {nextShow.price} <span className="text-xs text-zinc-400 font-normal">GA</span>
               </div>
-              <a
-                href={nextShow.ticketUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-amber-400 hover:bg-amber-300 transition-all text-sm"
+              <button
+                type="button"
+                onClick={() => (onBuyTickets ? onBuyTickets(nextShow) : onScrollTo('shows'))}
+                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                Buy Tickets <ArrowRight className="w-4 h-4" />
-              </a>
+                <Ticket className="w-4 h-4 fill-black" />
+                <span>Buy Tickets</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
