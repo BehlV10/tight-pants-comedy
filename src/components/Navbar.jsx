@@ -6,12 +6,12 @@ import { SHOWS_DATA } from '../data/shows';
 export default function Navbar({ onScrollTo }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Dynamically calculate the next upcoming show
+  // Dynamically calculate the next upcoming flagship Tight Pants show (e.g. Halloween Special, St. Marks residency)
   const today = new Date().toISOString().slice(0, 10);
-  const upcomingShows = SHOWS_DATA
-    .filter((s) => s.isoDate >= today)
+  const upcomingMainShows = SHOWS_DATA
+    .filter((s) => s.isoDate >= today && s.category === 'nyc')
     .sort((a, b) => a.isoDate.localeCompare(b.isoDate));
-  const nextShow = upcomingShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
+  const nextShow = upcomingMainShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
 
   return (
     <>

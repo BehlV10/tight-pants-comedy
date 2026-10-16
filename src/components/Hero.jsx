@@ -3,12 +3,12 @@ import { Ticket, Star, Mic, Flame, ArrowRight, MapPin, Calendar, Sparkles } from
 import { SHOWS_DATA } from '../data/shows';
 
 export default function Hero({ onScrollTo }) {
-  // Dynamically find the next upcoming future show
+  // Dynamically find the next upcoming flagship Tight Pants show (e.g. Halloween Special, St. Marks residency)
   const today = new Date().toISOString().slice(0, 10);
-  const upcomingShows = SHOWS_DATA
-    .filter((s) => s.isoDate >= today)
+  const upcomingMainShows = SHOWS_DATA
+    .filter((s) => s.isoDate >= today && s.category === 'nyc')
     .sort((a, b) => a.isoDate.localeCompare(b.isoDate));
-  const nextShow = upcomingShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
+  const nextShow = upcomingMainShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
 
   return (
     <section className="relative pt-10 pb-6 md:pt-14 md:pb-8 overflow-hidden">

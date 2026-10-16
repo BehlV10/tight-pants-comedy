@@ -12,7 +12,12 @@ export default function ShowsSection() {
   
   const upcomingShows = SHOWS_DATA
     .filter((show) => show.isoDate >= today)
-    .sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+    .sort((a, b) => {
+      // Prioritize flagship Tight Pants shows (Halloween & St. Marks Residencies) over secondary open-mic / tournaments
+      if (a.category === 'nyc' && b.category !== 'nyc') return -1;
+      if (b.category === 'nyc' && a.category !== 'nyc') return 1;
+      return a.isoDate.localeCompare(b.isoDate);
+    });
 
   const pastShows = SHOWS_DATA
     .filter((show) => show.isoDate < today)
@@ -114,8 +119,8 @@ export default function ShowsSection() {
           <div className="flex flex-wrap gap-2 mb-6">
             {[
               { id: 'all', label: 'All Upcoming' },
-              { id: 'nyc', label: 'St. Marks Residency' },
-              { id: 'competition', label: 'Tournaments' },
+              { id: 'nyc', label: 'Tight Pants Flagship Showcases' },
+              { id: 'competition', label: 'Tournaments (Comfy Clash)' },
             ].map((tab) => (
               <button
                 key={tab.id}
