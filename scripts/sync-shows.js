@@ -87,7 +87,7 @@ async function sync() {
     const { displayDate, dayOfWeek, fullDateString, timeFormatted } = formatShowDate(s.show_date, s.show_time);
     const isPast = s.show_date < today;
 
-    const isHalloween = s.show_name.toLowerCase().includes('costume') || s.show_date === '2026-10-29';
+    const isHalloween = s.show_name.toLowerCase().includes('costume');
     const isComfyClash = s.show_name.toLowerCase().includes('comfy');
 
     let badge = 'Resident Showcase';
@@ -116,6 +116,9 @@ async function sync() {
       ? "https://www.eventbrite.com/e/comedians-in-costumes-halloween-comedy-show-tickets-2001416968028"
       : directStMarksUrl;
 
+    // Price: Eventbrite Halloween Show is listed at $20 GA; St. Marks in-house shows use venue price
+    const finalPrice = isHalloween ? 20 : Math.round(s.price || 18);
+
     return {
       id: `stmarks-${s.id}`,
       title: isHalloween ? "Comedians in Costumes: Halloween Comedy Show 🎃" : s.show_name,
@@ -127,8 +130,8 @@ async function sync() {
       displayDate,
       dayOfWeek,
       time: timeFormatted,
-      price: `$${Math.round(s.price || 18)}`,
-      priceAfterFees: `$${Math.round(s.price || 18)}.00 GA`,
+      price: `$${finalPrice}`,
+      priceAfterFees: `$${finalPrice}.00 GA`,
       category: isComfyClash ? 'competition' : 'nyc',
       statusBadge: badge,
       badgeColor: color,
