@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Ticket, Calendar, Clock, MapPin, ExternalLink, Flame, CheckCircle, Sparkles, History } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
+import { initEventbriteWidget } from '../utils/eventbrite';
 
 export default function ShowsSection() {
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -33,6 +34,17 @@ export default function ShowsSection() {
       return show.isoDate.startsWith(pastYearFilter);
     }
   });
+
+  // Initialize official Eventbrite overlay for any Eventbrite shows in view
+  useEffect(() => {
+    if (activeTab === 'upcoming') {
+      displayedShows.forEach((show) => {
+        if (show.eventbriteEventId) {
+          initEventbriteWidget(`eb-schedule-btn-${show.id}`, show.eventbriteEventId);
+        }
+      });
+    }
+  }, [activeTab, displayedShows]);
 
   const getProviderInfo = (url = '') => {
     if (url.includes('eventbrite')) {
@@ -277,18 +289,22 @@ export default function ShowsSection() {
                     ) : (
                       <div className="flex flex-col items-start sm:items-end gap-1.5 w-full sm:w-auto">
                         <a
-                          id={`ticket-btn-${show.id}`}
+                          id={show.eventbriteEventId ? `eb-schedule-btn-${show.id}` : `ticket-btn-${show.id}`}
                           href={show.ticketUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0 min-h-[44px]"
                         >
                           <Ticket className="w-4 h-4 fill-black shrink-0" />
-                          <span>{getProviderInfo(show.ticketUrl).label}</span>
+                          <span>
+                            {show.eventbriteEventId ? 'Buy Tickets (In-Page Checkout)' : getProviderInfo(show.ticketUrl).label}
+                          </span>
                           <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                         </a>
                         <span className="text-[11px] text-zinc-400 font-medium">
-                          Official checkout via {getProviderInfo(show.ticketUrl).source}
+                          {show.eventbriteEventId
+                            ? '⚡ Direct Eventbrite overlay checkout'
+                            : `Official checkout via ${getProviderInfo(show.ticketUrl).source}`}
                         </span>
                       </div>
                     )}

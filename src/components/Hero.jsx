@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Ticket, Star, Mic, Flame, ArrowRight, MapPin, Calendar, Sparkles } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
+import { initEventbriteWidget } from '../utils/eventbrite';
 
 export default function Hero({ onScrollTo }) {
   // Dynamically find the next upcoming flagship Tight Pants show (e.g. Halloween Special, St. Marks residency)
@@ -9,6 +10,14 @@ export default function Hero({ onScrollTo }) {
     .filter((s) => s.isoDate >= today && s.category === 'nyc')
     .sort((a, b) => a.isoDate.localeCompare(b.isoDate));
   const nextShow = upcomingMainShows[0] || SHOWS_DATA.find((s) => s.isFeatured) || SHOWS_DATA[0];
+
+  const triggerId = nextShow?.eventbriteEventId ? `eb-hero-btn-${nextShow.eventbriteEventId}` : null;
+
+  useEffect(() => {
+    if (triggerId && nextShow?.eventbriteEventId) {
+      initEventbriteWidget(triggerId, nextShow.eventbriteEventId);
+    }
+  }, [triggerId, nextShow?.eventbriteEventId]);
 
   return (
     <section className="relative pt-10 pb-6 md:pt-14 md:pb-8 overflow-hidden">
@@ -131,16 +140,22 @@ export default function Hero({ onScrollTo }) {
                 <div className="text-2xl font-black text-white">
                   {nextShow.price} <span className="text-xs text-zinc-400 font-normal">GA</span>
                 </div>
-                <a
-                  href={nextShow.ticketUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  <Ticket className="w-4 h-4 fill-black" />
-                  <span>Buy Tickets {nextShow.ticketUrl.includes('eventbrite') ? '(via Eventbrite)' : '(via St. Marks)'}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </a>
+                <div className="flex flex-col items-start sm:items-end gap-1 w-full sm:w-auto">
+                  <a
+                    id={triggerId || "ticket-hero-btn"}
+                    href={nextShow.ticketUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0 min-h-[44px]"
+                  >
+                    <Ticket className="w-4 h-4 fill-black shrink-0" />
+                    <span>{nextShow.eventbriteEventId ? 'Buy Tickets (In-Page Checkout)' : 'Buy Tickets via St. Marks'}</span>
+                    <ArrowRight className="w-4 h-4 shrink-0" />
+                  </a>
+                  <span className="text-[11px] text-zinc-400 font-medium">
+                    {nextShow.eventbriteEventId ? '⚡ Direct Eventbrite overlay checkout' : 'Official checkout via St. Marks Box Office'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
