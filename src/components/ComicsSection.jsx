@@ -17,9 +17,9 @@ export default function ComicsSection() {
                 <Mic className="w-3.5 h-3.5" /> For Stand-Up Comedians
               </div>
 
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight font-display">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
                 Got a Killer Tight Five? <br />
-                <span className="bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 bg-clip-text text-transparent">
+                <span className="text-amber-400">
                   Submit For Booking.
                 </span>
               </h2>

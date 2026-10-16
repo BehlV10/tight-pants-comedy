@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Ticket, Calendar, Clock, MapPin, ExternalLink, Flame, CheckCircle, Sparkles } from 'lucide-react';
+import { Ticket, Calendar, Clock, MapPin, ExternalLink, Flame } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
 
 export default function ShowsSection() {
@@ -33,14 +33,14 @@ export default function ShowsSection() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-white/10">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">
               <Ticket className="w-4 h-4" /> Live Schedule & Tickets
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
               Upcoming Shows
             </h2>
             <p className="text-zinc-400 text-sm sm:text-base mt-2 max-w-xl">
-              Shows consistently sell out. We recommend purchasing in advance on Eventbrite or venue box offices.
+              Shows consistently sell out. We recommend purchasing in advance via St. Marks Comedy Club or Eventbrite.
             </p>
           </div>
 
@@ -50,14 +50,14 @@ export default function ShowsSection() {
               { id: 'all', label: 'All Shows' },
               { id: 'nyc', label: 'NYC (St. Marks)' },
               { id: 'tour', label: 'On Tour (Philly)' },
-              { id: 'competition', label: 'Competitions' },
+              { id: 'competition', label: 'Tournaments' },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setFilter(tab.id)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   filter === tab.id
-                    ? 'bg-amber-400 text-black shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                    ? 'bg-amber-400 text-black font-bold shadow-[0_0_15px_rgba(245,158,11,0.3)]'
                     : 'bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/5'
                 }`}
               >
@@ -77,8 +77,8 @@ export default function ShowsSection() {
               }`}
             >
               {show.isFeatured && (
-                <div className="absolute top-0 right-10 bg-amber-400 text-black text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded-b-md shadow-sm">
-                  Recommended Pick
+                <div className="absolute top-0 right-8 bg-amber-400 text-black text-[10px] font-bold uppercase tracking-wider px-3 py-0.5 rounded-b-md shadow-sm">
+                  Featured Showcase
                 </div>
               )}
 
@@ -87,12 +87,12 @@ export default function ShowsSection() {
                 {/* Date Box + Title & Details */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-5 flex-1">
                   
-                  {/* Big Date Badge */}
+                  {/* Date Badge */}
                   <div className="shrink-0 flex sm:flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl w-full sm:w-24 p-3 text-center">
-                    <span className="text-xs font-bold text-amber-400 uppercase tracking-widest mr-2 sm:mr-0">
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-wider mr-2 sm:mr-0">
                       {show.dayOfWeek}
                     </span>
-                    <span className="text-2xl sm:text-3xl font-black text-white font-display">
+                    <span className="text-2xl sm:text-3xl font-extrabold text-white">
                       {show.displayDate}
                     </span>
                   </div>
@@ -103,7 +103,7 @@ export default function ShowsSection() {
                       <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
                         {show.title}
                       </h3>
-                      <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${getBadgeStyle(show.badgeColor)}`}>
+                      <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${getBadgeStyle(show.badgeColor)}`}>
                         {show.statusBadge}
                       </span>
                     </div>
@@ -128,7 +128,7 @@ export default function ShowsSection() {
                       {show.credits.map((credit) => (
                         <span
                           key={credit}
-                          className="text-[10px] font-semibold text-zinc-400 bg-white/5 px-2 py-0.5 rounded border border-white/5"
+                          className="text-[11px] font-medium text-zinc-400 bg-white/5 px-2 py-0.5 rounded border border-white/5"
                         >
                           {credit}
                         </span>
@@ -140,11 +140,11 @@ export default function ShowsSection() {
                 {/* Right side: Capacity bar, price, and CTA */}
                 <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 pt-4 sm:pt-0 border-t sm:border-t-0 border-white/10 lg:w-56">
                   
-                  {/* Capacity progress (Goofs Urgency Engine) */}
+                  {/* Capacity progress */}
                   <div className="w-full text-right sm:text-left lg:text-right">
-                    <div className="flex items-center justify-between lg:justify-end gap-2 text-[11px] font-bold mb-1">
-                      <span className="text-zinc-400">Availability:</span>
-                      <span className="text-amber-400">{show.remainingTickets} tickets left</span>
+                    <div className="flex items-center justify-between lg:justify-end gap-2 text-[11px] font-medium mb-1">
+                      <span className="text-zinc-400">Tickets:</span>
+                      <span className="text-amber-400 font-semibold">{show.remainingTickets} left</span>
                     </div>
                     <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
                       <div 
@@ -169,7 +169,7 @@ export default function ShowsSection() {
                       className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap"
                     >
                       <Ticket className="w-4 h-4 fill-black" />
-                      <span>Get Tickets</span>
+                      <span>Buy Tickets</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
@@ -184,14 +184,14 @@ export default function ShowsSection() {
         {/* Eventbrite Organizer link banner */}
         <div className="mt-8 tight-glass rounded-2xl p-5 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left">
-            <h4 className="text-sm font-bold text-white">Want to follow Tight Pants on Eventbrite?</h4>
-            <p className="text-xs text-zinc-400">Get automatic alerts directly to your phone whenever new showcase dates drop.</p>
+            <h4 className="text-sm font-bold text-white">Follow Tight Pants on Eventbrite</h4>
+            <p className="text-xs text-zinc-400">Get automatic alerts on your phone whenever new showcase dates drop.</p>
           </div>
           <a
             href="https://tightpantscomedy.eventbrite.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-white/10 hover:bg-white/15 border border-white/10 transition-colors flex items-center gap-2 whitespace-nowrap"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/10 transition-colors flex items-center gap-2 whitespace-nowrap"
           >
             <span>tightpantscomedy.eventbrite.com</span>
             <ExternalLink className="w-3.5 h-3.5" />

@@ -13,7 +13,7 @@ export default function ReviewsSection() {
             <Star className="w-4 h-4 fill-amber-400" /> Real Audience Social Proof
           </div>
           
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
             What Fans Are Saying
           </h2>
 

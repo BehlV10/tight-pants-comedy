@@ -8,13 +8,13 @@ export default function Navbar({ onScrollTo }) {
   return (
     <>
       {/* Top Urgency / Info Bar (Goofs Style) */}
-      <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 text-black text-xs font-bold py-1.5 px-4 text-center tracking-wide flex items-center justify-center gap-2">
+      <div className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black text-xs font-bold py-1.5 px-4 text-center flex items-center justify-center gap-2">
         <span className="inline-block w-2 h-2 rounded-full bg-black animate-ping"></span>
-        <span>NEXT RESIDENCY SHOWCASE: THU OCT 22 @ ST. MARKS COMEDY CLUB</span>
+        <span>NEXT SHOW: THURSDAY @ ST. MARKS COMEDY CLUB (8:30 PM)</span>
         <a 
           href="#shows" 
           onClick={(e) => { e.preventDefault(); onScrollTo('shows'); }}
-          className="underline hover:text-white transition-colors ml-1 hidden sm:inline"
+          className="underline hover:text-zinc-800 transition-colors ml-1 hidden sm:inline"
         >
           GET TICKETS &rarr;
         </a>
@@ -28,11 +28,11 @@ export default function Navbar({ onScrollTo }) {
           <a href="#" className="flex items-center gap-2.5 group">
             <span className="text-2xl transition-transform group-hover:scale-110">👖</span>
             <div className="leading-tight">
-              <span className="text-lg font-black tracking-wider uppercase font-display bg-gradient-to-r from-amber-400 via-rose-400 to-indigo-400 bg-clip-text text-transparent">
-                Tight Pants
+              <span className="text-lg font-black tracking-tight text-white">
+                Tight Pants <span className="text-amber-400">Comedy</span>
               </span>
-              <span className="block text-[10px] font-bold text-zinc-400 tracking-widest uppercase">
-                Comedy • NYC
+              <span className="block text-[10px] font-semibold text-zinc-400 tracking-wider uppercase">
+                St. Marks Comedy Club • NYC
               </span>
             </div>
           </a>

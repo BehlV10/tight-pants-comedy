@@ -17,7 +17,7 @@ export default function FaqSection() {
           <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest mb-3">
             <HelpCircle className="w-4 h-4" /> Need to Know
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
             Venue & FAQ
           </h2>
           <p className="text-zinc-400 text-sm mt-2">
@@ -34,7 +34,7 @@ export default function FaqSection() {
             <div>
               <div className="text-xs text-zinc-400 font-semibold uppercase">Home Residency</div>
               <div className="text-sm font-bold text-white">St. Marks Comedy Club</div>
-              <div className="text-xs text-zinc-400">131 1st Ave, East Village NYC</div>
+              <div className="text-xs text-zinc-400">12 St. Marks Place, NYC</div>
             </div>
           </div>
 

@@ -17,11 +17,11 @@ export default function AboutSection() {
               <span>👖</span> The Origin & Vibe
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight font-display">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
               Two Millennials Who Refuse To Give Up Skinny Jeans.
             </h2>
 
-            <p className="text-base sm:text-lg text-zinc-300 leading-relaxed font-light">
+            <p className="text-base sm:text-lg text-zinc-300 leading-relaxed">
               Gen Z declared skinny jeans dead. Comedians <strong className="text-white">Kyle Wayne</strong> and <strong className="text-white">John Bennett</strong> respectfully disagree. 
               Named playfully after their shared millennial wardrobe allegiance, <strong className="text-amber-300">Tight Pants Comedy</strong> was born out of a simple promise: <em className="text-white">cut the filler, keep the sets tight, and make every minute count.</em>
             </p>
@@ -78,7 +78,7 @@ export default function AboutSection() {
                 <span className="text-xs font-bold uppercase tracking-widest text-rose-400">
                   The Tight Pants Experience
                 </span>
-                <h3 className="text-2xl font-black text-white font-display">
+                <h3 className="text-2xl font-bold text-white tracking-tight">
                   Why Audiences Keep Coming Back
                 </h3>
               </div>

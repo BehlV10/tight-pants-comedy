@@ -13,8 +13,8 @@ export default function Footer({ onScrollTo }) {
           <div className="space-y-3 md:col-span-1">
             <div className="flex items-center gap-2">
               <span className="text-2xl">👖</span>
-              <span className="text-lg font-black tracking-wider uppercase font-display text-white">
-                Tight Pants Comedy
+              <span className="text-lg font-extrabold tracking-tight text-white">
+                Tight Pants <span className="text-amber-400">Comedy</span>
               </span>
             </div>
             <p className="text-xs text-zinc-400 leading-relaxed">
@@ -112,7 +112,7 @@ export default function Footer({ onScrollTo }) {
             <h4 className="text-xs font-bold uppercase tracking-wider text-white">Venues & Partners</h4>
             <p className="text-xs text-zinc-400">
               <strong className="text-zinc-200">St. Marks Comedy Club</strong><br />
-              131 1st Ave, East Village, New York, NY
+              12 St. Marks Place, East Village, New York, NY 10003
             </p>
             <p className="text-xs text-zinc-400">
               <strong className="text-zinc-200">Punch Line Philly</strong><br />

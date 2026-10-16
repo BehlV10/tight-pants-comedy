@@ -18,7 +18,7 @@ export default function NewsletterSection() {
           <div className="max-w-xl mx-auto space-y-4">
             <span className="text-3xl">👖⚡</span>
             
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white font-display">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Never Miss A Show or Drop
             </h3>
             
