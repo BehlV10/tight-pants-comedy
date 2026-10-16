@@ -69,14 +69,16 @@ Submitting an upcoming East Village comedy showcase for your weekly cheap/free e
 Thank you!`
   };
 
-  // 3. Tailored Reddit Drafts for Specific Subreddits
+  // 3. Tailored Reddit Drafts for Specific Subreddits (with Embedded Flyer Image)
   const redditDrafts = [
     {
       subreddit: 'r/nycevents',
       subUrl: 'https://www.reddit.com/r/nycevents',
       title: `[Event] [Comedy] ${show.title} @ ${show.venue} (East Village) - ${show.dayOfWeek} ${show.displayDate}, 8:30 PM (${show.price})`,
       body: 
-`**${show.title}** is back at **${show.venue}** (12 St. Marks Place) in the East Village on **${show.date} @ 8:30 PM** (Doors 8:00 PM).
+`![${show.title} Flyer](${flierImg})
+
+**${show.title}** is back at **${show.venue}** (12 St. Marks Place) in the East Village on **${show.date} @ 8:30 PM** (Doors 8:00 PM).
 
 • **The Show:** Tight Pants Comedy's curated stand-up showcase. Fast-paced sets from comedians featured on Netflix, Comedy Central, Hulu, and the Comedy Cellar. For the Halloween edition, comics are performing in full costume, with audience costume prizes!
 • **The Room:** Intimate ~60 seat subterranean speakeasy room with craft cocktails and Filipino-inspired bites.
@@ -91,7 +93,9 @@ Grab tickets early as this showroom has limited seating!`,
       subUrl: 'https://www.reddit.com/r/WhatsHappeningNYC',
       title: `[${show.displayDate}] ${show.title} @ St. Marks Comedy Club in East Village`,
       body: 
-`If you're looking for weekend or date night plans in lower Manhattan, **Tight Pants Comedy** is producing **${show.title}** at St. Marks Comedy Club (12 St. Marks Place) on **${show.date} @ 8:30 PM**.
+`![${show.title} Flyer](${flierImg})
+
+If you're looking for weekend or date night plans in lower Manhattan, **Tight Pants Comedy** is producing **${show.title}** at St. Marks Comedy Club (12 St. Marks Place) on **${show.date} @ 8:30 PM**.
 
 • **Vibe:** Basement speakeasy club right in the heart of St. Marks Place.
 • **Talent:** Lineup of NYC club headliners (Netflix, Kill Tony, Comedy Cellar regulars).
@@ -104,7 +108,9 @@ Grab tickets early as this showroom has limited seating!`,
       subUrl: 'https://www.reddit.com/r/lowereastside',
       title: `Upcoming Comedy on St. Marks Place: ${show.title} (${show.dayOfWeek} ${show.displayDate})`,
       body: 
-`Hey neighbors! Wanted to share an upcoming local comedy show right by the LES / East Village border.
+`![${show.title} Flyer](${flierImg})
+
+Hey neighbors! Wanted to share an upcoming local comedy show right by the LES / East Village border.
 
 **Tight Pants Comedy** is hosting **${show.title}** at **St. Marks Comedy Club** (12 St. Marks Place) on **${show.date} at 8:30 PM**.
 
@@ -120,7 +126,9 @@ Great intimate room for a local night out!`,
       subUrl: 'https://www.reddit.com/r/eastvillage',
       title: `East Village Event: ${show.title} @ St. Marks Comedy Club (${show.dayOfWeek} ${show.displayDate})`,
       body: 
-`For anyone looking for neighborhood events on St. Marks Place:
+`![${show.title} Flyer](${flierImg})
+
+For anyone looking for neighborhood events on St. Marks Place:
 
 **Tight Pants Comedy** is running **${show.title}** at **St. Marks Comedy Club** (12 St. Marks Place) on **${show.date} @ 8:30 PM**.
 
