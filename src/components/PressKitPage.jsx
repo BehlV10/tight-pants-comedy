@@ -91,32 +91,32 @@ export default function PressKitPage({ onBackToHome }) {
 
   const galleryImages = [
     {
-      url: 'https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/66632345-2280-4c03-b9af-4f3ae8c25216/IMG_0211.jpg',
+      url: '/images/stmarks-crowd.jpg',
       caption: 'Packed Showroom at St. Marks Comedy Club',
       tag: 'Live Atmosphere'
     },
     {
-      url: 'https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png',
+      url: '/images/nycf-poster.png',
       caption: '2024 New York Comedy Festival Official Selection Poster',
       tag: 'Festival Feature'
     },
     {
-      url: 'https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/5362b319-d83e-4c68-8198-94174729c09b/Copy+of+Comedians+Poster+-+Tight+5-2.jpg',
+      url: '/images/tight-five-poster.jpg',
       caption: 'Tight Pants Tight Five Tournament Poster (150+ Comics)',
       tag: 'Competition'
     },
     {
-      url: 'https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/00286830-84f5-4a65-8efa-a982e385d5f2/Kyle+Gordon.jpg',
+      url: '/images/kyle-gordon.jpg',
       caption: 'Guest Headliners & Musical Comedy at St. Marks',
       tag: 'Featured Talent'
     },
     {
-      url: 'https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/8fbf21a6-771c-46c6-b3e3-bf349990c92b/tempImageXVzsTl.jpg',
+      url: '/images/speakeasy-room.jpg',
       caption: 'High-Energy Subterranean Speakeasy Comedy',
       tag: 'The Room'
     },
     {
-      url: 'https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/8eee3145-a5d0-415e-b72c-664383e1fe02/tempImageHrM57N.jpg',
+      url: '/images/live-showcase.jpg',
       caption: 'Tight 7-Minute Sets, No Filler',
       tag: 'Live Showcase'
     }
@@ -417,7 +417,7 @@ export default function PressKitPage({ onBackToHome }) {
               <div className="tight-glass rounded-3xl p-4 border border-white/10 shadow-2xl overflow-hidden group">
                 <div className="rounded-2xl overflow-hidden aspect-[4/5] bg-zinc-900 relative">
                   <img
-                    src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png"
+                    src="/images/nycf-poster.png"
                     alt="Tight Pants Comedy New York Comedy Festival Official Poster"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -461,7 +461,7 @@ export default function PressKitPage({ onBackToHome }) {
                 <div className="flex items-center gap-5">
                   <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 border-2 border-amber-400/30 flex-shrink-0 shadow-lg">
                     <img
-                      src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/abcc127a-b99f-4d86-8676-01090110642d/0Q5A0095+2.jpg"
+                      src="/images/kyle-wayne.jpg"
                       alt="Kyle Wayne - Co-Founder of Tight Pants Comedy"
                       className="w-full h-full object-cover object-top"
                     />
@@ -512,7 +512,7 @@ export default function PressKitPage({ onBackToHome }) {
                 <div className="flex items-center gap-5">
                   <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 border-2 border-white/20 flex-shrink-0 shadow-lg">
                     <img
-                      src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/ed7bcfa0-ea1b-4eb1-9328-0a87f6b5e6ab/tempImageSg1Kyu.jpg"
+                      src="/images/john-bennett.jpg"
                       alt="John Bennett - Co-Founder of Tight Pants Comedy"
                       className="w-full h-full object-cover object-top"
                     />
@@ -726,7 +726,8 @@ export default function PressKitPage({ onBackToHome }) {
             {/* Individual Hi-Res Asset Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
               <a
-                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png"
+                href="/images/nycf-poster.png"
+                download="tight-pants-nycf-poster.png"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
@@ -741,7 +742,8 @@ export default function PressKitPage({ onBackToHome }) {
               </a>
 
               <a
-                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/abcc127a-b99f-4d86-8676-01090110642d/0Q5A0095+2.jpg"
+                href="/images/kyle-wayne.jpg"
+                download="kyle-wayne-headshot.jpg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
@@ -756,7 +758,8 @@ export default function PressKitPage({ onBackToHome }) {
               </a>
 
               <a
-                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/ed7bcfa0-ea1b-4eb1-9328-0a87f6b5e6ab/tempImageSg1Kyu.jpg"
+                href="/images/john-bennett.jpg"
+                download="john-bennett-headshot.jpg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
@@ -771,7 +774,8 @@ export default function PressKitPage({ onBackToHome }) {
               </a>
 
               <a
-                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/66632345-2280-4c03-b9af-4f3ae8c25216/IMG_0211.jpg"
+                href="/images/stmarks-crowd.jpg"
+                download="stmarks-showroom-photo.jpg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"

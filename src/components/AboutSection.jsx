@@ -107,7 +107,7 @@ export default function AboutSection({ onNavigateToPress }) {
             <div className="tight-glass rounded-3xl p-3 sm:p-4 border border-white/10 shadow-2xl relative overflow-hidden group">
               <div className="rounded-2xl overflow-hidden aspect-[4/3] bg-zinc-900 relative">
                 <img
-                  src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/66632345-2280-4c03-b9af-4f3ae8c25216/IMG_0211.jpg"
+                  src="/images/stmarks-crowd.jpg"
                   alt="Tight Pants Comedy Live on Stage"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"

@@ -42,7 +42,7 @@ export default function ReviewsSection({ onNavigateToPress }) {
                 {item.id === 2 && (
                   <div className="mb-4 rounded-xl overflow-hidden border border-white/10 max-h-36 bg-black/60 shadow-lg">
                     <img
-                      src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png"
+                      src="/images/nycf-poster.png"
                       alt="Tight Pants New York Comedy Festival Official Poster"
                       className="w-full h-36 object-cover object-top"
                       loading="lazy"

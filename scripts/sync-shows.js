@@ -142,9 +142,9 @@ async function sync() {
       badgeColor: color,
       flierUrl: s.flier_url || null,
       roomCapacityNote: "Intimate ~60 Seat Showroom",
-      ticketUrl: exactPurchaseUrl,
+      ticketUrl: isComfyClash ? exactPurchaseUrl : (isHalloween ? exactPurchaseUrl : "https://tightpantscomedy.eventbrite.com"),
       eventbriteEventId: isHalloween ? "2001416968028" : null,
-      secondaryUrl: "https://tightpantscomedy.eventbrite.com",
+      secondaryUrl: isComfyClash ? exactPurchaseUrl : "https://tightpantscomedy.eventbrite.com",
       credits: isHalloween 
         ? ["Live In-Character Sets", "Audience Costume Contest", "Spooky Drink Specials", "Guest Judges"]
         : ["Netflix", "Kill Tony", "Comedy Cellar", "Don't Tell Comedy"],
