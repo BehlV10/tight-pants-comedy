@@ -94,7 +94,7 @@ export default function AboutSection({ onNavigateToPress }) {
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
                   >
                     <span>View full producer bios, festival history & media in our Press Kit</span>
-                    <span>&rarr;</span>
+                    <span>→</span>
                   </button>
                 </div>
               )}

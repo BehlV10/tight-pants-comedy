@@ -92,7 +92,7 @@ export default function ReviewsSection({ onNavigateToPress }) {
                 className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer px-3.5 py-1.5 rounded-lg bg-amber-400/10 border border-amber-400/20 hover:bg-amber-400/20"
               >
                 <span>📁 Looking for high-res assets & full festival history?</span>
-                <span className="underline">Open Official Press Kit &rarr;</span>
+                <span className="underline">Open Official Press Kit →</span>
               </button>
             </div>
           )}

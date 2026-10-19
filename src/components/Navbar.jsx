@@ -28,7 +28,7 @@ export default function Navbar({ onScrollTo, onNavigateToPress, currentView }) {
           onClick={() => onScrollTo('shows')}
           className="underline hover:text-zinc-800 transition-colors ml-1 hidden sm:inline cursor-pointer font-bold whitespace-nowrap"
         >
-          {currentView === 'press' ? 'SEE UPCOMING SHOWS &rarr;' : 'GET TICKETS &rarr;'}
+          {currentView === 'press' ? 'SEE UPCOMING SHOWS →' : 'GET TICKETS →'}
         </button>
       </div>
 
