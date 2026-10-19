@@ -58,7 +58,7 @@ export default function Footer({ onScrollTo, onNavigateToPress }) {
               </li>
               <li>
                 <button onClick={onNavigateToPress} className="hover:text-amber-300 transition-colors text-amber-400 font-semibold cursor-pointer">
-                  Press Kit & EPK
+                  Press Kit
                 </button>
               </li>
               <li>

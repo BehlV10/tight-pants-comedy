@@ -20,7 +20,7 @@ export default function Navbar({ onScrollTo, onNavigateToPress, currentView }) {
         <span className="inline-block w-2 h-2 rounded-full bg-black animate-ping"></span>
         <span className="truncate max-w-[280px] sm:max-w-none">
           {currentView === 'press' 
-            ? 'OFFICIAL PRESS KIT (EPK) • NY COMEDY FESTIVAL SELECTION • RECORD SHOWROOM ATTENDANCE'
+            ? 'OFFICIAL PRESS KIT • NY COMEDY FESTIVAL SELECTION • RECORD SHOWROOM ATTENDANCE'
             : `NEXT SHOW: ${nextShow.dayOfWeek}, ${nextShow.displayDate} @ ${nextShow.venue.toUpperCase()} • ${nextShow.title.toUpperCase()}`
           }
         </span>
@@ -71,7 +71,7 @@ export default function Navbar({ onScrollTo, onNavigateToPress, currentView }) {
               onClick={onNavigateToPress}
               className={`transition-colors cursor-pointer ${currentView === 'press' ? 'text-amber-400 font-bold' : 'hover:text-amber-400 text-zinc-300'}`}
             >
-              Press Kit (EPK)
+              Press Kit
             </button>
             <button 
               onClick={() => onScrollTo('reviews')}
@@ -151,7 +151,7 @@ export default function Navbar({ onScrollTo, onNavigateToPress, currentView }) {
               onClick={() => { onNavigateToPress(); setMobileMenuOpen(false); }}
               className="block w-full text-left py-2 text-base font-bold text-amber-400 hover:text-amber-300 cursor-pointer"
             >
-              📁 Press Kit (EPK & Assets)
+              📁 Press Kit & Media Assets
             </button>
             <button
               onClick={() => { onScrollTo('reviews'); setMobileMenuOpen(false); }}

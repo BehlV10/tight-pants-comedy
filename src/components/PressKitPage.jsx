@@ -97,7 +97,7 @@ export default function PressKitPage({ onBackToHome }) {
 
           <div className="flex items-center gap-3">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden sm:inline">
-              Electronic Press Kit (EPK)
+              Official Press Kit
             </span>
             <a
               href="mailto:tightpantscomedy@gmail.com?subject=Press%20Inquiry%20-%20Tight%20Pants%20Comedy"
