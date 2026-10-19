@@ -288,7 +288,7 @@ export default function PressKitPage({ onBackToHome }) {
                 <div className="flex items-center gap-5">
                   <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 border-2 border-amber-400/30 flex-shrink-0 shadow-lg">
                     <img
-                      src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/c9ec9021-7de4-4b71-9f90-2740f96a1422/PNG+transparent+file.jpg"
+                      src="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/ed7bcfa0-ea1b-4eb1-9328-0a87f6b5e6ab/tempImageSg1Kyu.jpg"
                       alt="Kyle Wayne - Co-Founder of Tight Pants Comedy"
                       className="w-full h-full object-cover object-top"
                     />
@@ -503,7 +503,7 @@ export default function PressKitPage({ onBackToHome }) {
                 </a>
 
                 <a
-                  href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/c9ec9021-7de4-4b71-9f90-2740f96a1422/PNG+transparent+file.jpg"
+                  href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/ed7bcfa0-ea1b-4eb1-9328-0a87f6b5e6ab/tempImageSg1Kyu.jpg"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
