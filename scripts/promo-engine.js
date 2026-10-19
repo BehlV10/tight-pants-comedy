@@ -25,7 +25,7 @@ function getDaysUntil(isoDate) {
 
 function buildPromoPayloads(show) {
   const daysUntil = getDaysUntil(show.isoDate);
-  const flierImg = show.flierUrl || 'https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png';
+  const flierImg = show.flierUrl || 'https://tightpantscomedy.com/images/nycf-poster.png';
 
   // 1. DoNYC Submission Package (Requires Image!)
   const donyc = {
