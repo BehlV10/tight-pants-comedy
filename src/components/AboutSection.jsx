@@ -2,7 +2,7 @@ import React from 'react';
 import { Mic, Award, Trophy, Users, CheckCircle, ExternalLink } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 
-export default function AboutSection() {
+export default function AboutSection({ onNavigateToPress }) {
   return (
     <section id="about" className="py-16 md:py-24 relative overflow-hidden">
       {/* Decorative background glow */}
@@ -86,6 +86,18 @@ export default function AboutSection() {
                   </p>
                 </div>
               </div>
+
+              {onNavigateToPress && (
+                <div className="pt-1">
+                  <button
+                    onClick={onNavigateToPress}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                  >
+                    <span>View full producer bios, festival history & media in our Press Kit (EPK)</span>
+                    <span>&rarr;</span>
+                  </button>
+                </div>
+              )}
             </div>
 
           </div>

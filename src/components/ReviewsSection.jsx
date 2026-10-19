@@ -2,7 +2,7 @@ import React from 'react';
 import { Quote, Award, Sparkles, Newspaper, Flame, Trophy } from 'lucide-react';
 import { PRESS_DATA } from '../data/shows';
 
-export default function ReviewsSection() {
+export default function ReviewsSection({ onNavigateToPress }) {
   return (
     <section id="reviews" className="py-16 md:py-24 relative bg-black/30 border-y border-white/5">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,6 +83,19 @@ export default function ReviewsSection() {
             <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">The Comedy Cellar</span>
             <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white">Don't Tell Comedy</span>
           </div>
+
+          {/* Direct Press Kit Link */}
+          {onNavigateToPress && (
+            <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-center">
+              <button
+                onClick={onNavigateToPress}
+                className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer px-3.5 py-1.5 rounded-lg bg-amber-400/10 border border-amber-400/20 hover:bg-amber-400/20"
+              >
+                <span>📁 Looking for high-res assets & full festival history?</span>
+                <span className="underline">Open Official Press Kit (EPK) &rarr;</span>
+              </button>
+            </div>
+          )}
         </div>
 
       </div>

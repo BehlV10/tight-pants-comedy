@@ -2,7 +2,7 @@ import React from 'react';
 import { Ticket, Send, MapPin, Heart } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 
-export default function Footer({ onScrollTo }) {
+export default function Footer({ onScrollTo, onNavigateToPress }) {
   return (
     <footer className="border-t border-white/10 bg-[#07080e] pt-14 pb-12 text-zinc-400 text-sm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,22 +47,27 @@ export default function Footer({ onScrollTo }) {
             <h4 className="text-xs font-bold uppercase tracking-wider text-white">Navigation</h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <button onClick={() => onScrollTo('shows')} className="hover:text-amber-400 transition-colors">
+                <button onClick={() => onScrollTo('shows')} className="hover:text-amber-400 transition-colors cursor-pointer">
                   Upcoming Shows & Tickets
                 </button>
               </li>
               <li>
-                <button onClick={() => onScrollTo('about')} className="hover:text-amber-400 transition-colors">
+                <button onClick={() => onScrollTo('about')} className="hover:text-amber-400 transition-colors cursor-pointer">
                   About Tight Pants
                 </button>
               </li>
               <li>
-                <button onClick={() => onScrollTo('reviews')} className="hover:text-amber-400 transition-colors">
+                <button onClick={onNavigateToPress} className="hover:text-amber-300 transition-colors text-amber-400 font-semibold cursor-pointer">
+                  Press Kit & EPK
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onScrollTo('reviews')} className="hover:text-amber-400 transition-colors cursor-pointer">
                   Audience Reviews
                 </button>
               </li>
               <li>
-                <button onClick={() => onScrollTo('faq')} className="hover:text-amber-400 transition-colors">
+                <button onClick={() => onScrollTo('faq')} className="hover:text-amber-400 transition-colors cursor-pointer">
                   Venue & Policies
                 </button>
               </li>
