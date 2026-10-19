@@ -8,6 +8,7 @@ import ComicsSection from './components/ComicsSection';
 import FaqSection from './components/FaqSection';
 import Footer from './components/Footer';
 import PressKitPage from './components/PressKitPage';
+import EmailStudio from './components/EmailStudio';
 
 export default function App() {
   const isPressHash = () => {
@@ -15,11 +16,25 @@ export default function App() {
     return h === '#/press' || h === '#press' || h === '#/press-kit' || h === '#press-kit';
   };
 
-  const [currentView, setCurrentView] = useState(() => isPressHash() ? 'press' : 'home');
+  const isStudioHash = () => {
+    const h = window.location.hash.toLowerCase();
+    return h === '#/studio' || h === '#studio' || h === '#/email-studio' || h === '#email-studio';
+  };
+
+  const getViewFromHash = () => {
+    if (isStudioHash()) return 'studio';
+    if (isPressHash()) return 'press';
+    return 'home';
+  };
+
+  const [currentView, setCurrentView] = useState(getViewFromHash);
 
   useEffect(() => {
     const handleHashChange = () => {
-      if (isPressHash()) {
+      if (isStudioHash()) {
+        setCurrentView('studio');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (isPressHash()) {
         setCurrentView('press');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (window.location.hash === '' || window.location.hash.startsWith('#shows') || window.location.hash.startsWith('#about') || window.location.hash.startsWith('#reviews') || window.location.hash.startsWith('#faq')) {
@@ -36,8 +51,11 @@ export default function App() {
     if (view === 'press') {
       window.location.hash = '#/press';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'studio') {
+      window.location.hash = '#/studio';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      if (window.location.hash.startsWith('#/press')) {
+      if (window.location.hash.startsWith('#/press') || window.location.hash.startsWith('#/studio')) {
         window.location.hash = targetId ? `#${targetId}` : '';
       }
       if (targetId) {
@@ -66,14 +84,18 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0b0c13] text-zinc-100 flex flex-col font-sans selection:bg-amber-400 selection:text-black">
-      <Navbar 
-        onScrollTo={scrollTo} 
-        onNavigateToPress={() => navigateTo('press')}
-        currentView={currentView}
-      />
+      {currentView !== 'studio' && (
+        <Navbar 
+          onScrollTo={scrollTo} 
+          onNavigateToPress={() => navigateTo('press')}
+          currentView={currentView}
+        />
+      )}
       
       <main className="flex-1">
-        {currentView === 'press' ? (
+        {currentView === 'studio' ? (
+          <EmailStudio onBackToHome={() => navigateTo('home', 'shows')} />
+        ) : currentView === 'press' ? (
           <PressKitPage onBackToHome={() => navigateTo('home', 'shows')} />
         ) : (
           <>
@@ -87,10 +109,12 @@ export default function App() {
         )}
       </main>
 
-      <Footer 
-        onScrollTo={scrollTo} 
-        onNavigateToPress={() => navigateTo('press')}
-      />
+      {currentView !== 'studio' && (
+        <Footer 
+          onScrollTo={scrollTo} 
+          onNavigateToPress={() => navigateTo('press')}
+        />
+      )}
     </div>
   );
 }
