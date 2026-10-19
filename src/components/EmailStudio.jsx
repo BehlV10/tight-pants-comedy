@@ -443,6 +443,30 @@ ${unsubscribeFooter}`;
     setTimeout(() => setCopiedBody(false), 2000);
   };
 
+  const [copiedRichHtml, setCopiedRichHtml] = useState(false);
+
+  const handleCopyRichHtml = async () => {
+    try {
+      if (navigator.clipboard && window.ClipboardItem) {
+        const blobHtml = new Blob([htmlEmail], { type: 'text/html' });
+        const blobText = new Blob([plainTextEmail], { type: 'text/plain' });
+        const item = new ClipboardItem({
+          'text/html': blobHtml,
+          'text/plain': blobText
+        });
+        await navigator.clipboard.write([item]);
+        setCopiedRichHtml(true);
+        setTimeout(() => setCopiedRichHtml(false), 2500);
+        return;
+      }
+    } catch (err) {
+      console.warn('Rich text clipboard copy failed:', err);
+    }
+    navigator.clipboard.writeText(htmlEmail);
+    setCopiedHtml(true);
+    setTimeout(() => setCopiedHtml(false), 2000);
+  };
+
   const handleCopyHtml = () => {
     navigator.clipboard.writeText(htmlEmail);
     setCopiedHtml(true);
@@ -874,30 +898,50 @@ ${unsubscribeFooter}`;
               {/* HTML Visual Preview */}
               <div className="lg:col-span-6 space-y-4">
                 <div className="tight-glass rounded-3xl p-6 border border-white/10 space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="text-base font-bold text-white flex items-center gap-2">
                         <Mail className="w-4 h-4 text-amber-400" />
-                        HTML Email Preview (For Brevo/Mailchimp)
+                        Formatted Email Card
                       </h3>
-                      <p className="text-xs text-zinc-400">Includes flier art, direct buttons, and unsubscribe link.</p>
+                      <p className="text-xs text-zinc-400">Ready to paste directly into Gmail or newsletter tools.</p>
                     </div>
 
-                    <button
-                      onClick={handleCopyHtml}
-                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors flex items-center gap-1.5 cursor-pointer"
-                    >
-                      {copiedHtml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
-                      <span>{copiedHtml ? 'Copied HTML!' : 'Copy HTML'}</span>
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={handleCopyRichHtml}
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-amber-400/20"
+                        title="Copy formatted layout to paste directly into Gmail compose"
+                      >
+                        {copiedRichHtml ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedRichHtml ? 'Ready to Paste in Gmail!' : 'Copy for Gmail (Rich)'}</span>
+                      </button>
+
+                      <button
+                        onClick={handleCopyHtml}
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-zinc-300 hover:text-white border border-white/10 transition-colors flex items-center gap-1.5 cursor-pointer"
+                        title="Copy raw HTML source code"
+                      >
+                        {copiedHtml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <FileText className="w-3.5 h-3.5 text-zinc-400" />}
+                        <span>{copiedHtml ? 'Copied Code!' : 'Raw HTML'}</span>
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black max-h-[460px] overflow-y-auto">
+                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black max-h-[440px] overflow-y-auto">
                     <iframe
                       title="HTML Email Preview"
                       srcDoc={htmlEmail}
-                      className="w-full h-[460px] border-0"
+                      className="w-full h-[440px] border-0"
                     />
+                  </div>
+
+                  {/* Gmail 1-Click Paste Tip */}
+                  <div className="p-3.5 rounded-2xl bg-amber-400/10 border border-amber-400/20 flex items-start gap-2.5 text-xs text-zinc-300">
+                    <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-white">How to paste directly into Gmail:</strong> Click <span className="text-amber-300 font-bold">"Copy for Gmail (Rich)"</span> above, open your Gmail compose window, and press <kbd className="px-1.5 py-0.5 rounded bg-black/60 border border-white/20 text-white font-mono text-[10px]">Cmd + V</kbd>. The poster image, golden ticket button, and styled layout will appear right inside Gmail!
+                    </div>
                   </div>
                 </div>
               </div>
