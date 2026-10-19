@@ -110,13 +110,13 @@ export default function PressKitPage({ onBackToHome }) {
       </div>
 
       {/* Hero Header */}
-      <section className="relative pt-12 pb-16 md:py-20 overflow-hidden border-b border-white/10">
+      <section className="relative pt-6 pb-10 md:pt-8 md:pb-12 overflow-hidden border-b border-white/10">
         {/* Ambient Glows */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="max-w-3xl space-y-5">
+          <div className="max-w-3xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-bold tracking-wide uppercase">
               <span>👖</span> Press Kit & Media Resources
             </div>
@@ -125,7 +125,7 @@ export default function PressKitPage({ onBackToHome }) {
               Tight Pants <span className="text-amber-400">Comedy</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-zinc-300 font-medium leading-relaxed">
+            <p className="text-base sm:text-lg text-zinc-300 font-medium leading-relaxed">
               New York City's premier independent stand-up comedy collective, monthly residency at St. Marks Comedy Club, and official selection of the New York Comedy Festival.
             </p>
 
@@ -377,14 +377,14 @@ export default function PressKitPage({ onBackToHome }) {
       {/* Featured Video Sets */}
       <section className="py-16 md:py-20 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-3 mb-10 text-center max-w-2xl mx-auto">
+          <div className="space-y-3 mb-10 text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <span>🎬</span> Video Reels
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
               Recent Live Sets from St. Marks
             </h2>
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-zinc-400 sm:whitespace-nowrap">
               Watch live clips and showcases recorded directly in our subterranean speakeasy showroom on St. Marks Place.
             </p>
           </div>
