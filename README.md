@@ -2,7 +2,7 @@
 
 A high-converting, modern web application for New York City's premier independent stand-up comedy showcase, **Tight Pants Comedy** (co-produced by comedians **Kyle Wayne** & **John Bennett** at **St. Marks Comedy Club** in the East Village).
 
-Inspired by the direct-to-fan, high-urgency aesthetic of **Goofs Comedy** (`goofscomedy.com`).
+Built with a direct-to-fan, high-urgency aesthetic designed to maximize ticket conversions and community engagement.
 
 ---
 
@@ -27,7 +27,7 @@ npm run preview
 
 ---
 
-## 🎯 Key Design Features (Inspired by Goofs Comedy)
+## 🎯 Key Design Features
 
 1. **High-Urgency Ticketing Engine**:
    - Live availability meters (e.g. *84% Sold Out*, *12 Tickets Left*).
