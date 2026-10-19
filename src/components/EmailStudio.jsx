@@ -14,7 +14,8 @@ import {
   MessageSquare,
   Globe,
   Share2,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
 import { generateRedditCampaign } from '../utils/redditPromo';
@@ -418,6 +419,34 @@ ${unsubscribeFooter}`;
     document.body.removeChild(link);
   };
 
+  const [syncingToSheet, setSyncingToSheet] = useState(false);
+  const [syncedCount, setSyncedCount] = useState(null);
+
+  const handleSyncToSheet = async () => {
+    if (!cleanedAttendees.length || !SITE_CONFIG.googleSheetWebhookUrl) return;
+    setSyncingToSheet(true);
+    setSyncedCount(null);
+    try {
+      await fetch(SITE_CONFIG.googleSheetWebhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'sync_eventbrite',
+          eventName: selectedShow.title,
+          attendees: cleanedAttendees,
+          timestamp: new Date().toLocaleString()
+        })
+      });
+      setSyncedCount(cleanedAttendees.length);
+      setTimeout(() => setSyncedCount(null), 4000);
+    } catch (err) {
+      console.error('Error syncing to sheet:', err);
+    } finally {
+      setSyncingToSheet(false);
+    }
+  };
+
   const handleDownloadWebCsv = () => {
     if (!webSubscribers.length) return;
     const rows = ['Email,Date,Source'];
@@ -777,13 +806,38 @@ ${unsubscribeFooter}`;
                       </div>
                     </div>
 
-                    <button
-                      onClick={handleDownloadCsv}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-colors cursor-pointer w-fit"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Download Clean CSV</span>
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={handleSyncToSheet}
+                        disabled={syncingToSheet}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all cursor-pointer shadow-md shadow-amber-400/20 disabled:opacity-50"
+                      >
+                        {syncingToSheet ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Syncing to Sheet...</span>
+                          </>
+                        ) : syncedCount ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-black" />
+                            <span>Synced {syncedCount} to Sheet!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Share2 className="w-3.5 h-3.5 text-black" />
+                            <span>Sync to Google Sheet</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={handleDownloadCsv}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-colors cursor-pointer w-fit"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download Clean CSV</span>
+                      </button>
+                    </div>
                   </div>
                 )}
 
