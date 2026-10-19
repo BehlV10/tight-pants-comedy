@@ -149,11 +149,11 @@ export default function Hero({ onScrollTo }) {
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0 min-h-[44px]"
                   >
                     <Ticket className="w-4 h-4 fill-black shrink-0" />
-                    <span>{nextShow.eventbriteEventId ? 'Buy Tickets (In-Page Checkout)' : 'Buy Tickets via St. Marks'}</span>
+                    <span>{nextShow.eventbriteEventId ? 'Buy Tickets' : 'Buy Tickets via St. Marks'}</span>
                     <ArrowRight className="w-4 h-4 shrink-0" />
                   </a>
                   <span className="text-[11px] text-zinc-400 font-medium">
-                    {nextShow.eventbriteEventId ? '⚡ Direct Eventbrite overlay checkout' : 'Official checkout via St. Marks Box Office'}
+                    {nextShow.eventbriteEventId ? '⚡ Official Eventbrite Box Office' : 'Official checkout via St. Marks Box Office'}
                   </span>
                 </div>
               </div>

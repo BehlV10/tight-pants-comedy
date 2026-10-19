@@ -297,13 +297,13 @@ export default function ShowsSection() {
                         >
                           <Ticket className="w-4 h-4 fill-black shrink-0" />
                           <span>
-                            {show.eventbriteEventId ? 'Buy Tickets (In-Page Checkout)' : getProviderInfo(show.ticketUrl).label}
+                            {show.eventbriteEventId ? 'Buy Tickets' : getProviderInfo(show.ticketUrl).label}
                           </span>
                           <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                         </a>
                         <span className="text-[11px] text-zinc-400 font-medium">
                           {show.eventbriteEventId
-                            ? '⚡ Direct Eventbrite overlay checkout'
+                            ? '⚡ Official Eventbrite Box Office'
                             : `Official checkout via ${getProviderInfo(show.ticketUrl).source}`}
                         </span>
                       </div>
