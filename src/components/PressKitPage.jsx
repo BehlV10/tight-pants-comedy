@@ -210,8 +210,8 @@ export default function PressKitPage({ onBackToHome }) {
 
         {/* Quick Jump Sub-nav Bar */}
         <div className="border-t border-white/5 bg-[#090b14]/95 overflow-x-auto scrollbar-none">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-2 whitespace-nowrap">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mr-1 hidden md:inline">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-start sm:justify-center gap-2 whitespace-nowrap">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mr-1 hidden lg:inline">
               Jump To:
             </span>
             {navLinks.map((link) => (
@@ -227,14 +227,14 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </div>
 
-      {/* Hero Header */}
-      <section id="overview" className="relative pt-6 pb-9 md:pt-8 md:pb-12 overflow-hidden border-b border-white/10">
+      {/* Hero Header (Centered & Punchy) */}
+      <section id="overview" className="relative pt-6 pb-9 md:pt-10 md:pb-14 overflow-hidden border-b border-white/10">
         {/* Ambient Glows */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="max-w-3xl space-y-3.5">
+          <div className="max-w-3xl mx-auto text-center space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-bold tracking-wide uppercase">
               <span>👖</span> Official Press Kit
             </div>
@@ -243,11 +243,11 @@ export default function PressKitPage({ onBackToHome }) {
               Tight Pants <span className="text-amber-400">Comedy</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-zinc-300 font-medium leading-relaxed">
+            <p className="text-base sm:text-lg text-zinc-300 font-medium leading-relaxed max-w-2xl mx-auto">
               New York City's premier independent stand-up comedy collective, monthly residency at St. Marks Comedy Club, and official selection of the New York Comedy Festival.
             </p>
 
-            <div className="pt-2 flex flex-wrap gap-3">
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
               <a
                 href="https://www.instagram.com/tightpantscomedy/"
                 target="_blank"
@@ -317,29 +317,26 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </section>
 
-      {/* At A Glance / Quick Facts (Feature 2) */}
+      {/* At A Glance / Quick Facts (Centered Header) */}
       <section id="quick-facts" className="py-10 md:py-14 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-2 mb-7">
+          <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-8">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <FileText className="w-3.5 h-3.5" /> Media Fast Facts
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                  At A Glance
-                </h2>
-                <p className="text-sm text-zinc-400">
-                  Quick-reference guide and key details for calendar editors, reviewers, and festival coordinators.
-                </p>
-              </div>
-
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              At A Glance
+            </h2>
+            <p className="text-sm text-zinc-400">
+              Quick-reference guide and key details for calendar editors, reviewers, and festival coordinators.
+            </p>
+            <div className="pt-2">
               <button
                 onClick={handleCopyQuickFacts}
-                className="self-start sm:self-auto inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors cursor-pointer"
               >
                 {copiedFacts ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
-                <span>{copiedFacts ? 'Copied Quick Facts!' : 'Copy Quick Facts'}</span>
+                <span>{copiedFacts ? 'Copied Quick Facts!' : 'Copy Quick Facts to Clipboard'}</span>
               </button>
             </div>
           </div>
@@ -361,21 +358,24 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </section>
 
-      {/* The Story & Brand Background */}
+      {/* The Story & Brand Background (Centered Header) */}
       <section id="story" className="py-10 md:py-14 border-b border-white/10 bg-[#090b14]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-10">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
+              <span>📖</span> About The Brand
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              The Tight Pants Story
+            </h2>
+            <p className="text-sm text-zinc-400">
+              How two millennial comics built one of NYC's fastest-growing independent stand-up collectives.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             <div className="lg:col-span-7 space-y-5">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
-                  <span>📖</span> About The Brand
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                  The Tight Pants Story
-                </h2>
-              </div>
-
               <div className="space-y-4 text-zinc-300 text-sm sm:text-base leading-relaxed">
                 <p>
                   Comedians <strong className="text-white">Kyle Wayne</strong> and <strong className="text-white">John Bennett</strong> joined forces to establish Tight Pants Comedy, an independent comedy collective focused on bringing top-tier talent to their favorite intimate venues in New York City.
@@ -438,10 +438,10 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </section>
 
-      {/* Meet the Co-Producers */}
+      {/* Meet the Co-Producers (Centered Header) */}
       <section id="producers" className="py-10 md:py-14 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-2 mb-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-9">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <span>🎤</span> Leadership & Talent
             </div>
@@ -547,10 +547,10 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </section>
 
-      {/* Featured Video Sets */}
+      {/* Featured Video Sets (Centered Header) */}
       <section id="videos" className="py-10 md:py-14 border-b border-white/10 bg-[#090b14]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-2 mb-8">
+          <div className="text-center max-w-3xl mx-auto space-y-2.5 mb-9">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <span>🎬</span> Video Reels
             </div>
@@ -593,10 +593,10 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </section>
 
-      {/* Photo Gallery & Interactive Lightbox (Feature 4) */}
+      {/* Photo Gallery & Interactive Lightbox (Centered Header) */}
       <section id="gallery" className="py-10 md:py-14 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-2 mb-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-9">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <span>📸</span> Media Gallery
             </div>
@@ -638,10 +638,10 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </section>
 
-      {/* Press Quotes & Reviews Callouts (Feature 5) */}
+      {/* Press Quotes & Reviews Callouts (Centered Header) */}
       <section id="press" className="py-10 md:py-14 border-b border-white/10 bg-[#090b14]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-2 mb-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-9">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <Newspaper className="w-3.5 h-3.5" /> Press & Reviews
             </div>
@@ -686,173 +686,168 @@ export default function PressKitPage({ onBackToHome }) {
         </div>
       </section>
 
-      {/* Press Downloads & Master Package (Feature 6) */}
+      {/* Press Downloads & Master Package (Centered Header) */}
       <section id="downloads" className="py-10 md:py-14 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="tight-glass rounded-3xl p-6 sm:p-10 border border-white/10 relative overflow-hidden">
-            <div className="space-y-6">
-              
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
-                  <span>📁</span> Media Kit Downloads
+          <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-9">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
+              <span>📁</span> Media Kit Downloads
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Promotional Assets & Master Package
+            </h2>
+            <p className="text-sm text-zinc-400">
+              High-resolution posters, producer headshots, and ready-to-paste boilerplate for event calendars and press coverage.
+            </p>
+          </div>
+
+          <div className="tight-glass rounded-3xl p-6 sm:p-10 border border-white/10 space-y-6">
+            {/* Master Press Package Banner */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-400/10 via-amber-300/5 to-purple-500/10 border border-amber-400/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Archive className="w-4 h-4 text-amber-400" />
+                  <span className="text-sm font-bold text-white">Complete Media Kit Package</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-black">ZIP BUNDLE</span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                  Promotional Assets & Master Package
-                </h2>
-                <p className="text-sm text-zinc-300 leading-relaxed max-w-2xl">
-                  High-resolution posters, producer headshots, and ready-to-paste boilerplate for event calendars and press coverage.
+                <p className="text-xs text-zinc-300 max-w-xl">
+                  Need all assets at once for a festival listing or print program? Grab the complete bundle with high-res headshots, logo marks, and official show artwork.
                 </p>
               </div>
 
-              {/* Master Press Package Banner (Feature 6) */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-400/10 via-amber-300/5 to-purple-500/10 border border-amber-400/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Archive className="w-4 h-4 text-amber-400" />
-                    <span className="text-sm font-bold text-white">Complete Media Kit Package</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-black">ZIP BUNDLE</span>
-                  </div>
-                  <p className="text-xs text-zinc-300 max-w-xl">
-                    Need all assets at once for a festival listing or print program? Grab the complete bundle with high-res headshots, logo marks, and official show artwork.
-                  </p>
-                </div>
-
-                <a
-                  href="mailto:tightpantscomedy@gmail.com?subject=Press%20Kit%20Assets%20Bundle%20Request&body=Hi%20Kyle%20and%20John%2C%0A%0APlease%20send%20over%20the%20full-resolution%20Tight%20Pants%20Comedy%20press%20bundle%20(posters%2C%20headshots%2C%20and%20vector%20logos)%20for%20our%20upcoming%20feature%2Fevent.%0A%0AThanks!"
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 transition-colors whitespace-nowrap shadow-md shadow-amber-400/20"
-                >
-                  Request Master Asset ZIP
-                </a>
-              </div>
-
-              {/* Individual Hi-Res Asset Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                <a
-                  href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
-                >
-                  <div className="space-y-0.5">
-                    <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
-                      NYCF Official Poster Art (Hi-Res)
-                    </div>
-                    <div className="text-xs text-zinc-400">PNG Format • 1080x1080</div>
-                  </div>
-                  <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
-                </a>
-
-                <a
-                  href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/abcc127a-b99f-4d86-8676-01090110642d/0Q5A0095+2.jpg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
-                >
-                  <div className="space-y-0.5">
-                    <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
-                      Kyle Wayne Headshot (Hi-Res)
-                    </div>
-                    <div className="text-xs text-zinc-400">Print Quality JPEG</div>
-                  </div>
-                  <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
-                </a>
-
-                <a
-                  href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/ed7bcfa0-ea1b-4eb1-9328-0a87f6b5e6ab/tempImageSg1Kyu.jpg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
-                >
-                  <div className="space-y-0.5">
-                    <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
-                      John Bennett Headshot (Hi-Res)
-                    </div>
-                    <div className="text-xs text-zinc-400">Print Quality JPEG</div>
-                  </div>
-                  <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
-                </a>
-
-                <a
-                  href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/66632345-2280-4c03-b9af-4f3ae8c25216/IMG_0211.jpg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
-                >
-                  <div className="space-y-0.5">
-                    <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
-                      St. Marks Showroom Stage Photo
-                    </div>
-                    <div className="text-xs text-zinc-400">Atmosphere Photography</div>
-                  </div>
-                  <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
-                </a>
-              </div>
-
-              {/* Copyable One-Sheet Text Box */}
-              <div className="pt-2 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-                    Official Press Boilerplate (Ready to Paste)
-                  </span>
-                  <button
-                    onClick={handleCopyBoilerplate}
-                    className="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer"
-                  >
-                    {copiedBio ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedBio ? 'Copied!' : 'Copy to Clipboard'}</span>
-                  </button>
-                </div>
-                <div className="p-4 rounded-2xl bg-black/40 border border-white/10 text-xs text-zinc-300 font-mono leading-relaxed select-all">
-                  {pressBoilerplate}
-                </div>
-              </div>
-
+              <a
+                href="mailto:tightpantscomedy@gmail.com?subject=Press%20Kit%20Assets%20Bundle%20Request&body=Hi%20Kyle%20and%20John%2C%0A%0APlease%20send%20over%20the%20full-resolution%20Tight%20Pants%20Comedy%20press%20bundle%20(posters%2C%20headshots%2C%20and%20vector%20logos)%20for%20our%20upcoming%20feature%2Fevent.%0A%0AThanks!"
+                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 transition-colors whitespace-nowrap shadow-md shadow-amber-400/20"
+              >
+                Request Master Asset ZIP
+              </a>
             </div>
+
+            {/* Individual Hi-Res Asset Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <a
+                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/bdfb91bc-447c-4e41-b103-dce14743c069/Tight+Pants+NYCF+Poster.png"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
+              >
+                <div className="space-y-0.5">
+                  <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
+                    NYCF Official Poster Art (Hi-Res)
+                  </div>
+                  <div className="text-xs text-zinc-400">PNG Format • 1080x1080</div>
+                </div>
+                <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
+              </a>
+
+              <a
+                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/abcc127a-b99f-4d86-8676-01090110642d/0Q5A0095+2.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
+              >
+                <div className="space-y-0.5">
+                  <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
+                    Kyle Wayne Headshot (Hi-Res)
+                  </div>
+                  <div className="text-xs text-zinc-400">Print Quality JPEG</div>
+                </div>
+                <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
+              </a>
+
+              <a
+                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/ed7bcfa0-ea1b-4eb1-9328-0a87f6b5e6ab/tempImageSg1Kyu.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
+              >
+                <div className="space-y-0.5">
+                  <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
+                    John Bennett Headshot (Hi-Res)
+                  </div>
+                  <div className="text-xs text-zinc-400">Print Quality JPEG</div>
+                </div>
+                <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
+              </a>
+
+              <a
+                href="https://images.squarespace-cdn.com/content/v1/62a74b930ed3aa6877a092a0/66632345-2280-4c03-b9af-4f3ae8c25216/IMG_0211.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-between group"
+              >
+                <div className="space-y-0.5">
+                  <div className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
+                    St. Marks Showroom Stage Photo
+                  </div>
+                  <div className="text-xs text-zinc-400">Atmosphere Photography</div>
+                </div>
+                <Download className="w-4 h-4 text-zinc-400 group-hover:text-amber-400" />
+              </a>
+            </div>
+
+            {/* Copyable One-Sheet Text Box */}
+            <div className="pt-2 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                  Official Press Boilerplate (Ready to Paste)
+                </span>
+                <button
+                  onClick={handleCopyBoilerplate}
+                  className="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer"
+                >
+                  {copiedBio ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedBio ? 'Copied!' : 'Copy to Clipboard'}</span>
+                </button>
+              </div>
+              <div className="p-4 rounded-2xl bg-black/40 border border-white/10 text-xs text-zinc-300 font-mono leading-relaxed select-all">
+                {pressBoilerplate}
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* Booking & Media Contact Callout */}
+      {/* Booking & Media Contact Callout (Centered) */}
       <section id="contact" className="pt-10 pb-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="tight-glass rounded-3xl p-8 sm:p-10 border border-white/10 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center text-xl">
-              📬
-            </div>
-            <div className="space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                Media Inquiries & Booking
-              </h2>
-              <p className="text-sm text-zinc-400 max-w-xl">
-                For the fastest response, reach out via direct message on Instagram. For calendar listings, festival programming, or formal media requests, email our producers directly.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <a
-                href="https://www.instagram.com/tightpantscomedy/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white hover:opacity-95 transition-all shadow-lg shadow-pink-500/20 cursor-pointer"
-              >
-                <InstagramIcon className="w-4 h-4 text-white" />
-                <span>DM @tightpantscomedy (Preferred)</span>
-              </a>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center mx-auto text-xl">
+            📬
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Media Inquiries & Booking
+            </h2>
+            <p className="text-sm text-zinc-400 max-w-lg mx-auto">
+              For the fastest response, reach out via direct message on Instagram. For calendar listings, festival programming, or formal media requests, email our producers directly.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <a
+              href="https://www.instagram.com/tightpantscomedy/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white hover:opacity-95 transition-all shadow-lg shadow-pink-500/20 cursor-pointer"
+            >
+              <InstagramIcon className="w-4 h-4 text-white" />
+              <span>DM @tightpantscomedy (Preferred)</span>
+            </a>
 
-              <a
-                href="mailto:tightpantscomedy@gmail.com?subject=Press%20Inquiry%20-%20Tight%20Pants%20Comedy"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors"
-              >
-                <Mail className="w-4 h-4 text-amber-400" />
-                <span>tightpantscomedy@gmail.com</span>
-              </a>
+            <a
+              href="mailto:tightpantscomedy@gmail.com?subject=Press%20Inquiry%20-%20Tight%20Pants%20Comedy"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors"
+            >
+              <Mail className="w-4 h-4 text-amber-400" />
+              <span>tightpantscomedy@gmail.com</span>
+            </a>
 
-              <button
-                onClick={onBackToHome}
-                className="px-6 py-3 rounded-xl text-sm font-bold bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white border border-white/5 transition-colors cursor-pointer"
-              >
-                Back to Upcoming Shows
-              </button>
-            </div>
+            <button
+              onClick={onBackToHome}
+              className="px-6 py-3 rounded-xl text-sm font-bold bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white border border-white/5 transition-colors cursor-pointer"
+            >
+              Back to Upcoming Shows
+            </button>
           </div>
         </div>
       </section>
