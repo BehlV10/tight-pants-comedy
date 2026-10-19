@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Mail, 
@@ -7,16 +7,18 @@ import {
   Sparkles, 
   Download, 
   Users, 
-  Flame, 
-  Clock, 
-  Calendar, 
-  MapPin, 
+  FileText, 
+  Tag, 
+  Gift, 
   ExternalLink,
-  FileText,
-  Send,
-  Filter
+  MessageSquare,
+  Globe,
+  Share2,
+  AlertCircle
 } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
+import { generateRedditCampaign } from '../utils/redditPromo';
+import { SITE_CONFIG } from '../data/config';
 
 export default function EmailStudio({ onBackToHome }) {
   const today = new Date().toISOString().slice(0, 10);
@@ -24,20 +26,51 @@ export default function EmailStudio({ onBackToHome }) {
     return SHOWS_DATA.filter((s) => s.isoDate >= today).sort((a, b) => a.isoDate.localeCompare(b.isoDate));
   }, [today]);
 
+  // Main active tab in studio: 'blast' | 'attendees' | 'reddit'
+  const [activeTab, setActiveTab] = useState('blast');
+
   const [selectedShowId, setSelectedShowId] = useState(upcomingShows[0]?.id || SHOWS_DATA[0]?.id);
   const selectedShow = SHOWS_DATA.find((s) => s.id === selectedShowId) || upcomingShows[0] || SHOWS_DATA[0];
 
-  const [emailStyle, setEmailStyle] = useState('announcement'); // 'announcement' | 'urgency' | 'personal'
+  // 4 Email Tones: announcement | urgency | personal | vip_comp
+  const [emailStyle, setEmailStyle] = useState('announcement');
   const [selectedSubjectIdx, setSelectedSubjectIdx] = useState(0);
   const [copiedSubject, setCopiedSubject] = useState(false);
   const [copiedBody, setCopiedBody] = useState(false);
   const [copiedHtml, setCopiedHtml] = useState(false);
 
+  // VIP Promo Code Settings (for Returning Member Free Tickets)
+  const [promoCode, setPromoCode] = useState('RETURNINGVIP');
+  const [compLimit, setCompLimit] = useState('2 free tickets on us');
+
   // Attendee Cleaner State
   const [rawEmails, setRawEmails] = useState('');
   const [copiedBatchIdx, setCopiedBatchIdx] = useState(null);
 
-  // Email subject line variations
+  // Web Subscribers from localStorage
+  const [webSubscribers, setWebSubscribers] = useState([]);
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('tight_pants_web_subscribers') || '[]');
+      setWebSubscribers(stored);
+    } catch {
+      setWebSubscribers([]);
+    }
+  }, []);
+
+  // Compute ticket link with optional auto-discount
+  const baseTicketLink = selectedShow.ticketUrl || 'https://tightpantscomedy.eventbrite.com';
+  const effectiveTicketLink = useMemo(() => {
+    if (emailStyle === 'vip_comp' && promoCode.trim()) {
+      const cleanCode = encodeURIComponent(promoCode.trim().toUpperCase());
+      return baseTicketLink.includes('?') 
+        ? `${baseTicketLink}&discount=${cleanCode}` 
+        : `${baseTicketLink}?discount=${cleanCode}`;
+    }
+    return baseTicketLink;
+  }, [baseTicketLink, emailStyle, promoCode]);
+
+  // Subject line variations
   const subjectLines = useMemo(() => {
     const show = selectedShow;
     if (emailStyle === 'announcement') {
@@ -53,6 +86,13 @@ export default function EmailStudio({ onBackToHome }) {
         `Tomorrow night: Tight Pants Comedy (Intimate 60-seat showroom)`,
         `Final tickets: ${show.title} this ${show.dayOfWeek}`
       ];
+    } else if (emailStyle === 'vip_comp') {
+      return [
+        `🎁 We held 2 free tickets for you: Tight Pants Comedy (${show.displayDate})`,
+        `VIP Guest Pass: Tight Pants Comedy at St. Marks (${show.displayDate})`,
+        `A quick thank you from Kyle & John (Free tickets inside!)`,
+        `Secret VIP link: Comps for ${show.dayOfWeek} night at St. Marks`
+      ];
     } else {
       return [
         `Hey from Kyle & John (quick invite for ${show.displayDate}!)`,
@@ -62,11 +102,44 @@ export default function EmailStudio({ onBackToHome }) {
     }
   }, [selectedShow, emailStyle]);
 
-  // Plain-text email templates in Kyle & John's signature voice
+  // Plain-text email template with CAN-SPAM compliant unsubscribe footer
   const plainTextEmail = useMemo(() => {
     const show = selectedShow;
-    const ticketLink = show.ticketUrl || 'https://tightpantscomedy.eventbrite.com';
     const creditsStr = show.credits?.join(', ') || 'Netflix, Comedy Central, Comedy Cellar';
+
+    const unsubscribeFooter = `
+--------------------------------------------------
+Tight Pants Comedy • St. Marks Comedy Club • 12 St. Marks Place, New York, NY 10003
+You are receiving this because you attended a past Tight Pants show or joined our VIP guest list.
+To unsubscribe or manage email preferences, reply "unsubscribe" or visit: https://tightpantscomedy.com/#/unsubscribe`;
+
+    if (emailStyle === 'vip_comp') {
+      return `Hey there!
+
+Kyle Wayne and John Bennett here from Tight Pants Comedy.
+
+First off—huge thank you for packing the room with us at past shows. Because you’ve supported our independent showcase in the past, we wanted to hook you up with something special.
+
+We're back at our favorite East Village basement speakeasy at St. Marks Comedy Club on ${show.date} at ${show.time}. We’ve put together another killer lineup (${creditsStr}) and reserved a limited batch of complimentary VIP tickets for returning fans (${compLimit}).
+
+🎟️ Direct VIP Link (Auto-Applies Free Ticket):
+${effectiveTicketLink}
+
+(Clicking the link above will automatically apply promo code "${promoCode.trim().toUpperCase()}" at Eventbrite checkout so your tickets are 100% free!)
+
+Because this intimate subterranean showroom only holds around 60 seats, the comp list is strictly first-come, first-served. Once they're claimed, that's it!
+
+Grab your free VIP seats here:
+👉 ${effectiveTicketLink}
+
+Can't wait to see you back in the showroom!
+
+Best,
+Kyle & John
+Tight Pants Comedy
+@tightpantscomedy | tightpantscomedy.com
+${unsubscribeFooter}`;
+    }
 
     if (emailStyle === 'announcement') {
       return `Hey everyone!
@@ -79,22 +152,25 @@ We're back with our next showcase at St. Marks Comedy Club, and we've put togeth
 ⏰ Time: ${show.time}
 📍 Venue: ${show.venue} (${show.address})
 🎟️ Tickets: ${show.price} GA (${show.roomCapacityNote || 'Intimate ~60 seat room'})
-⚡ Direct Tickets & RSVP: ${ticketLink}
+⚡ Direct Tickets & RSVP: ${effectiveTicketLink}
 
 As always, we're bringing you a rapid-fire, curated lineup featuring comics you've seen on ${creditsStr}—with zero dead time and surprise headliner drop-ins.
 
 Because this subterranean speakeasy room only holds around 60 seats, grabbing your tickets in advance on Eventbrite is strongly recommended before it fills up!
 
 Grab your tickets here:
-${ticketLink}
+${effectiveTicketLink}
 
 Can't wait to see you in the showroom!
 
 Best,
 Kyle & John
 Tight Pants Comedy
-@tightpantscomedy | tightpantscomedy.com`;
-    } else if (emailStyle === 'urgency') {
+@tightpantscomedy | tightpantscomedy.com
+${unsubscribeFooter}`;
+    }
+
+    if (emailStyle === 'urgency') {
       return `Hey everyone!
 
 Quick heads up: our next showcase is coming up this ${show.dayOfWeek}, and tickets are moving fast.
@@ -102,18 +178,20 @@ Quick heads up: our next showcase is coming up this ${show.dayOfWeek}, and ticke
 ${show.title}
 📅 ${show.date} @ ${show.time}
 📍 ${show.venue} (${show.address})
-🎟️ Tickets (${show.price} GA): ${ticketLink}
+🎟️ Tickets (${show.price} GA): ${effectiveTicketLink}
 
 The showroom only holds about 60 seats, so once they're gone, the door is closed. If you've been meaning to come out or bring a group for Thursday date night, grab your seats now on Eventbrite:
 
-👉 ${ticketLink}
+👉 ${effectiveTicketLink}
 
 Lineup includes killers from ${creditsStr}. See you in the basement!
 
 - Kyle & John
-Tight Pants Comedy`;
-    } else {
-      return `Hey comedy lovers!
+Tight Pants Comedy
+${unsubscribeFooter}`;
+    }
+
+    return `Hey comedy lovers!
 
 Just wanted to send a quick personal note to say thank you for coming out to our past shows. 
 
@@ -122,22 +200,26 @@ We're bringing Tight Pants back to our favorite East Village basement showroom a
 We've got an awesome group of comics performing this time around (${creditsStr}), great craft cocktails in the showroom, and that classic high-energy underground NYC comedy vibe.
 
 Here's the direct ticket link:
-${ticketLink}
+${effectiveTicketLink}
 
 Would love to see you there! Feel free to reply directly to this email or DM us on Instagram (@tightpantscomedy) if you have any questions or want to bring a larger crew.
 
 Cheers,
 Kyle Wayne & John Bennett
-Tight Pants Comedy`;
-    }
-  }, [selectedShow, emailStyle]);
+Tight Pants Comedy
+${unsubscribeFooter}`;
+  }, [selectedShow, emailStyle, effectiveTicketLink, promoCode, compLimit]);
 
-  // Clean HTML Email Template (for Brevo, Mailchimp, or HTML copy)
+  // Clean HTML Email Template (for Brevo, Mailchimp, or HTML copy) with Unsubscribe Footer
   const htmlEmail = useMemo(() => {
     const show = selectedShow;
-    const ticketLink = show.ticketUrl || 'https://tightpantscomedy.eventbrite.com';
     const flier = show.flierUrl || 'https://tightpantscomedy.com/images/nycf-poster.png';
     const creditsStr = show.credits?.join(' • ') || 'Netflix • Comedy Central • Comedy Cellar';
+
+    const isVip = emailStyle === 'vip_comp';
+    const buttonLabel = isVip 
+      ? `Claim Your Free VIP Tickets (${promoCode.trim().toUpperCase()}) →` 
+      : `Get Tickets on Eventbrite (${show.price}) →`;
 
     return `<!DOCTYPE html>
 <html>
@@ -165,7 +247,7 @@ Tight Pants Comedy`;
     ${flier ? `
     <tr>
       <td style="padding: 0; background-color: #000000; text-align: center;">
-        <a href="${ticketLink}" target="_blank" style="display: block;">
+        <a href="${effectiveTicketLink}" target="_blank" style="display: block;">
           <img src="${flier}" alt="${show.title}" width="580" style="width: 100%; max-width: 580px; height: auto; display: block; border: 0;" />
         </a>
       </td>
@@ -175,9 +257,25 @@ Tight Pants Comedy`;
     <!-- Show Details Card -->
     <tr>
       <td style="padding: 28px;">
+        
+        ${isVip ? `
+        <!-- VIP Comp Badge Box -->
+        <div style="background: rgba(251, 191, 36, 0.12); border: 1px dashed #fbbf24; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
+          <span style="display: inline-block; font-size: 11px; text-transform: uppercase; font-weight: 800; color: #fbbf24; letter-spacing: 1.5px;">
+            🎁 EXCLUSIVE RETURNING MEMBER PASS
+          </span>
+          <h3 style="margin: 6px 0 2px 0; font-size: 18px; color: #ffffff; font-weight: 800;">
+            Code: <span style="color: #fbbf24; font-family: monospace; letter-spacing: 1px;">${promoCode.trim().toUpperCase()}</span>
+          </h3>
+          <p style="margin: 0; font-size: 12px; color: #d4d4d8;">
+            (${compLimit} • Code automatically applied at link below)
+          </p>
+        </div>
+        ` : `
         <span style="display: inline-block; padding: 4px 12px; border-radius: 999px; background-color: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px;">
           Next Upcoming Showcase
         </span>
+        `}
 
         <h2 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 800; color: #ffffff; line-height: 1.25;">
           ${show.title}
@@ -201,7 +299,7 @@ Tight Pants Comedy`;
           </tr>
           <tr>
             <td style="padding: 6px 0; font-size: 14px; color: #fbbf24; font-weight: 700;">
-              <strong>🎟️ Price:</strong> ${show.price} GA (${show.roomCapacityNote || 'Intimate ~60 Seats'})
+              <strong>🎟️ Admission:</strong> ${isVip ? 'Free with VIP Comp Code' : `${show.price} GA`} (${show.roomCapacityNote || 'Intimate ~60 Seats'})
             </td>
           </tr>
         </table>
@@ -214,31 +312,33 @@ Tight Pants Comedy`;
         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 24px 0;">
           <tr>
             <td align="center">
-              <a href="${ticketLink}" target="_blank" style="display: inline-block; padding: 14px 32px; background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #000000; font-size: 15px; font-weight: 800; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);">
-                Get Tickets on Eventbrite (${show.price}) →
+              <a href="${effectiveTicketLink}" target="_blank" style="display: inline-block; padding: 14px 32px; background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #000000; font-size: 15px; font-weight: 800; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);">
+                ${buttonLabel}
               </a>
             </td>
           </tr>
         </table>
 
         <p style="margin: 0; font-size: 12px; color: #a1a1aa; text-align: center;">
-          ⚡ Seating is assigned based on check-in arrival time. Early booking recommended!
+          ⚡ Seating is assigned based on check-in arrival time. Early booking strongly recommended!
         </p>
       </td>
     </tr>
 
-    <!-- Footer -->
+    <!-- Footer with CAN-SPAM Unsubscribe Link -->
     <tr>
-      <td style="padding: 20px 28px; background-color: #090a10; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: #71717a;">
+      <td style="padding: 24px 28px; background-color: #090a10; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: #71717a;">
         <p style="margin: 0 0 6px 0; font-weight: 600; color: #a1a1aa;">
-          Tight Pants Comedy • St. Marks Comedy Club, East Village, NYC
+          Tight Pants Comedy • St. Marks Comedy Club • 12 St. Marks Place, New York, NY 10003
         </p>
-        <p style="margin: 0 0 10px 0;">
+        <p style="margin: 0 0 12px 0;">
           <a href="https://tightpantscomedy.com" style="color: #fbbf24; text-decoration: none;">tightpantscomedy.com</a> • 
           <a href="https://www.instagram.com/tightpantscomedy" style="color: #fbbf24; text-decoration: none;">@tightpantscomedy</a>
         </p>
-        <p style="margin: 0; font-size: 11px; color: #52525b;">
-          You received this email because you purchased tickets or attended a previous Tight Pants Comedy show.
+        <p style="margin: 0; font-size: 11px; color: #52525b; line-height: 1.5;">
+          You received this email because you attended a past Tight Pants Comedy show or joined our VIP guest list.
+          <br>
+          <a href="https://tightpantscomedy.com" style="color: #a1a1aa; text-decoration: underline;">Unsubscribe or Manage Email Preferences</a>
         </p>
       </td>
     </tr>
@@ -246,18 +346,21 @@ Tight Pants Comedy`;
   </table>
 </body>
 </html>`;
-  }, [selectedShow]);
+  }, [selectedShow, emailStyle, effectiveTicketLink, promoCode, compLimit]);
+
+  // Reddit Campaign Data for 12 Subreddits
+  const redditCampaign = useMemo(() => {
+    return generateRedditCampaign(selectedShow, effectiveTicketLink);
+  }, [selectedShow, effectiveTicketLink]);
 
   // Attendee Cleaner / De-duplicator Logic
   const cleanedAttendees = useMemo(() => {
     if (!rawEmails.trim()) return [];
-    
-    // Extract anything that matches email pattern
     const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
     const matches = rawEmails.match(emailRegex) || [];
     
     const uniqueMap = new Map();
-    matches.forEach(e => {
+    matches.forEach((e) => {
       const normalized = e.trim().toLowerCase();
       if (!uniqueMap.has(normalized)) {
         uniqueMap.set(normalized, normalized);
@@ -267,7 +370,7 @@ Tight Pants Comedy`;
     return Array.from(uniqueMap.values());
   }, [rawEmails]);
 
-  // Split into batches of 90 (to safely stay well under Gmail's 100/500 BCC limit without getting flagged)
+  // Split into batches of 90 for Gmail
   const batches = useMemo(() => {
     const list = cleanedAttendees;
     const size = 90;
@@ -315,6 +418,34 @@ Tight Pants Comedy`;
     document.body.removeChild(link);
   };
 
+  const handleDownloadWebCsv = () => {
+    if (!webSubscribers.length) return;
+    const rows = ['Email,Date,Source'];
+    webSubscribers.forEach((item) => {
+      if (typeof item === 'string') {
+        rows.push(`${item},,Website VIP Signup`);
+      } else {
+        rows.push(`${item.email},${item.date || ''},${item.source || 'Website VIP Signup'}`);
+      }
+    });
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `tight-pants-website-subscribers-${today}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // State for copying Reddit drafts
+  const [copiedRedditIdx, setCopiedRedditIdx] = useState(null);
+  const handleCopyRedditText = (text, idx) => {
+    navigator.clipboard.writeText(text);
+    setCopiedRedditIdx(idx);
+    setTimeout(() => setCopiedRedditIdx(null), 2000);
+  };
+
   return (
     <div className="min-h-screen bg-[#07080f] text-zinc-100 pb-20">
       
@@ -342,243 +473,556 @@ Tight Pants Comedy`;
         {/* Intro Banner */}
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5" /> Producer Newsletter & Audience Studio
+            <Sparkles className="w-3.5 h-3.5" /> Producer Marketing & Audience Studio
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Automated Show Blast & Attendee Cleaner
+            Tight Pants Automation Hub
           </h1>
           <p className="text-sm text-zinc-400 max-w-2xl leading-relaxed">
-            Pulls directly from your scraped shows. Generates high-converting announcement copy, formats HTML/plain text, and de-duplicates raw Eventbrite CSVs without touching Excel.
+            Generate email blasts with auto-discount comp links, split Eventbrite attendee CSVs for Gmail BCC, and draft promotional posts across 12 NYC subreddits with 1 click.
           </p>
         </div>
 
-        {/* Section 1: Show Selector & Style Controls */}
-        <div className="tight-glass rounded-3xl p-6 sm:p-7 border border-white/10 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-400 block mb-1">
-                Step 1: Choose Target Show
-              </span>
-              <select
-                value={selectedShowId}
-                onChange={(e) => setSelectedShowId(e.target.value)}
-                className="bg-black/60 border border-white/15 rounded-xl px-3.5 py-2 text-sm text-white font-semibold focus:outline-none focus:border-amber-400 cursor-pointer"
-              >
-                {upcomingShows.map((s) => (
-                  <option key={s.id} value={s.id} className="bg-zinc-900 text-white">
-                    {s.displayDate} - {s.title} ({s.price})
-                  </option>
-                ))}
-              </select>
-            </div>
+        {/* Tab Switcher */}
+        <div className="flex border-b border-white/10 gap-2">
+          <button
+            onClick={() => setActiveTab('blast')}
+            className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 border-b-2 ${
+              activeTab === 'blast'
+                ? 'border-amber-400 text-amber-400'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Mail className="w-4 h-4" />
+            <span>Email Blast Studio</span>
+          </button>
 
-            {/* Email Tone Style */}
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1">
-                Step 2: Choose Email Tone
-              </span>
-              <div className="flex rounded-xl bg-black/50 p-1 border border-white/10">
-                <button
-                  onClick={() => setEmailStyle('announcement')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    emailStyle === 'announcement' ? 'bg-amber-400 text-black shadow' : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  🎉 Announcement
-                </button>
-                <button
-                  onClick={() => setEmailStyle('urgency')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    emailStyle === 'urgency' ? 'bg-amber-400 text-black shadow' : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  ⏳ 48h Urgency
-                </button>
-                <button
-                  onClick={() => setEmailStyle('personal')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    emailStyle === 'personal' ? 'bg-amber-400 text-black shadow' : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  💬 Personal Note
-                </button>
-              </div>
-            </div>
-          </div>
+          <button
+            onClick={() => setActiveTab('attendees')}
+            className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 border-b-2 ${
+              activeTab === 'attendees'
+                ? 'border-amber-400 text-amber-400'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Attendee Cleaner & Lists</span>
+          </button>
 
-          {/* Subject Line Picker */}
-          <div className="space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-              High-Open Rate Subject Lines (Click to Copy):
-            </span>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-              {subjectLines.map((subj, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    setSelectedSubjectIdx(idx);
-                    handleCopySubject(subj);
-                  }}
-                  className={`p-3 rounded-xl border text-xs font-medium cursor-pointer transition-all flex items-center justify-between ${
-                    selectedSubjectIdx === idx 
-                      ? 'bg-amber-400/10 border-amber-400/40 text-amber-200' 
-                      : 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <span>{subj}</span>
-                  <div className="shrink-0 ml-2">
-                    {copiedSubject && selectedSubjectIdx === idx ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5 text-zinc-500" />
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <button
+            onClick={() => setActiveTab('reddit')}
+            className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 border-b-2 ${
+              activeTab === 'reddit'
+                ? 'border-amber-400 text-amber-400'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Reddit Campaign (12 Subs)</span>
+          </button>
         </div>
 
-        {/* Section 2: Email Draft Output (Plain Text + Visual Preview) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Left Column: Plain-Text Copy Box (For Gmail or manual pasting) */}
-          <div className="lg:col-span-6 space-y-4">
-            <div className="tight-glass rounded-3xl p-6 border border-white/10 space-y-4">
-              <div className="flex items-center justify-between">
+        {/* ========================================================= */}
+        {/* TAB 1: EMAIL BLAST STUDIO */}
+        {/* ========================================================= */}
+        {activeTab === 'blast' && (
+          <div className="space-y-8">
+            
+            {/* Show Selector & Style Controls */}
+            <div className="tight-glass rounded-3xl p-6 sm:p-7 border border-white/10 space-y-6">
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
                 <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-amber-400" />
-                    Plain-Text Version (For Gmail)
-                  </h3>
-                  <p className="text-xs text-zinc-400">Ready to paste directly into Gmail or Apple Mail.</p>
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400 block mb-1">
+                    Step 1: Target Showcase
+                  </span>
+                  <select
+                    value={selectedShowId}
+                    onChange={(e) => setSelectedShowId(e.target.value)}
+                    className="bg-black/60 border border-white/15 rounded-xl px-3.5 py-2 text-sm text-white font-semibold focus:outline-none focus:border-amber-400 cursor-pointer"
+                  >
+                    {upcomingShows.map((s) => (
+                      <option key={s.id} value={s.id} className="bg-zinc-900 text-white">
+                        {s.displayDate} - {s.title} ({s.price})
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <button
-                  onClick={handleCopyBody}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-md shadow-amber-400/20"
-                >
-                  {copiedBody ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedBody ? 'Copied Body!' : 'Copy Text'}</span>
-                </button>
-              </div>
-
-              <textarea
-                readOnly
-                value={plainTextEmail}
-                rows={18}
-                className="w-full bg-black/60 border border-white/10 rounded-2xl p-4 text-xs font-mono text-zinc-200 leading-relaxed focus:outline-none select-all resize-none"
-              />
-            </div>
-          </div>
-
-          {/* Right Column: HTML Visual Preview (For Brevo, Mailchimp, or HTML template) */}
-          <div className="lg:col-span-6 space-y-4">
-            <div className="tight-glass rounded-3xl p-6 border border-white/10 space-y-4">
-              <div className="flex items-center justify-between">
+                {/* Email Tone Style (4 options) */}
                 <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-amber-400" />
-                    HTML Email Preview (For Brevo/Mailchimp)
-                  </h3>
-                  <p className="text-xs text-zinc-400">Includes flier art, buttons, and footer links.</p>
-                </div>
-
-                <button
-                  onClick={handleCopyHtml}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors flex items-center gap-1.5 cursor-pointer"
-                >
-                  {copiedHtml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
-                  <span>{copiedHtml ? 'Copied HTML!' : 'Copy HTML'}</span>
-                </button>
-              </div>
-
-              {/* Live Rendered Iframe */}
-              <div className="rounded-2xl overflow-hidden border border-white/10 bg-black max-h-[460px] overflow-y-auto">
-                <iframe
-                  title="HTML Email Preview"
-                  srcDoc={htmlEmail}
-                  className="w-full h-[460px] border-0"
-                />
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Section 3: Eventbrite Attendee De-Duplicator & Gmail Batch Splitter */}
-        <div className="tight-glass rounded-3xl p-6 sm:p-8 border border-white/10 space-y-6">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-purple-400 uppercase tracking-widest">
-              <Users className="w-3.5 h-3.5" /> Excel Replacement Tool
-            </div>
-            <h2 className="text-2xl font-black text-white tracking-tight">
-              Eventbrite Attendee Cleaner & Gmail Batch Splitter
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
-              Tired of Excel? Paste your raw Eventbrite export or messy email dump below. This tool strips duplicates, cleans the addresses, and splits them into safe batches of 90 (to prevent Gmail from blocking your account).
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <textarea
-              value={rawEmails}
-              onChange={(e) => setRawEmails(e.target.value)}
-              placeholder="Paste raw text, Eventbrite CSV export contents, or comma-separated emails here..."
-              rows={5}
-              className="w-full bg-black/60 border border-white/15 rounded-2xl p-4 text-xs font-mono text-zinc-200 focus:outline-none focus:border-amber-400"
-            />
-
-            {cleanedAttendees.length > 0 && (
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <div className="text-xs text-zinc-300">
-                    <strong className="text-white font-bold">{cleanedAttendees.length} Unique Emails</strong> found • Split into <strong className="text-amber-400">{batches.length} safe batches</strong>
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1">
+                    Step 2: Choose Email Tone
+                  </span>
+                  <div className="flex flex-wrap rounded-xl bg-black/50 p-1 border border-white/10 gap-1">
+                    <button
+                      onClick={() => setEmailStyle('announcement')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        emailStyle === 'announcement' ? 'bg-amber-400 text-black shadow' : 'text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      🎉 Announcement
+                    </button>
+                    <button
+                      onClick={() => setEmailStyle('urgency')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        emailStyle === 'urgency' ? 'bg-amber-400 text-black shadow' : 'text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      ⏳ 48h Urgency
+                    </button>
+                    <button
+                      onClick={() => setEmailStyle('personal')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        emailStyle === 'personal' ? 'bg-amber-400 text-black shadow' : 'text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      💬 Personal Note
+                    </button>
+                    <button
+                      onClick={() => setEmailStyle('vip_comp')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        emailStyle === 'vip_comp' ? 'bg-gradient-to-r from-amber-400 to-yellow-400 text-black shadow font-extrabold' : 'text-amber-400 hover:text-amber-300'
+                      }`}
+                    >
+                      <Gift className="w-3.5 h-3.5" />
+                      <span>🎁 Returning VIP Comp</span>
+                    </button>
                   </div>
                 </div>
-
-                <button
-                  onClick={handleDownloadCsv}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-colors cursor-pointer w-fit"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Download Clean CSV</span>
-                </button>
               </div>
-            )}
 
-            {/* Batch Cards for Gmail BCC */}
-            {batches.length > 0 && (
-              <div className="space-y-2 pt-2">
+              {/* VIP Promo Code Settings Box (Visible only when 'vip_comp' is selected) */}
+              {emailStyle === 'vip_comp' && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-400/10 via-yellow-400/5 to-transparent border border-amber-400/30 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-wider">
+                    <Gift className="w-4 h-4 text-amber-400" />
+                    <span>Auto-Applying Eventbrite Promo Code Settings</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                        Promo Code on Eventbrite
+                      </label>
+                      <input
+                        type="text"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                        placeholder="RETURNINGVIP"
+                        className="w-full bg-black/60 border border-amber-400/40 rounded-xl px-3 py-2 text-sm font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                        Comp Limit Note
+                      </label>
+                      <input
+                        type="text"
+                        value={compLimit}
+                        onChange={(e) => setCompLimit(e.target.value)}
+                        placeholder="2 free tickets on us"
+                        className="w-full bg-black/60 border border-white/15 rounded-xl px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="text-[11px] text-zinc-400 flex items-center gap-1.5 pt-1">
+                    <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>
+                      Direct auto-discount URL: <code className="text-amber-300 font-mono text-[10px] break-all">{effectiveTicketLink}</code>
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Subject Line Picker */}
+              <div className="space-y-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-                  Gmail BCC Batches (Safe under 100 limit):
+                  High-Open Rate Subject Lines (Click to Copy):
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {batches.map((batch, idx) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                  {subjectLines.map((subj, idx) => (
                     <div
                       key={idx}
-                      className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between"
+                      onClick={() => {
+                        setSelectedSubjectIdx(idx);
+                        handleCopySubject(subj);
+                      }}
+                      className={`p-3 rounded-xl border text-xs font-medium cursor-pointer transition-all flex items-center justify-between ${
+                        selectedSubjectIdx === idx 
+                          ? 'bg-amber-400/10 border-amber-400/40 text-amber-200' 
+                          : 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white'
+                      }`}
                     >
-                      <div>
-                        <div className="text-xs font-bold text-white">Batch {idx + 1}</div>
-                        <div className="text-[11px] text-zinc-500">{batch.length} recipients</div>
+                      <span>{subj}</span>
+                      <div className="shrink-0 ml-2">
+                        {copiedSubject && selectedSubjectIdx === idx ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5 text-zinc-500" />
+                        )}
                       </div>
-
-                      <button
-                        onClick={() => handleCopyBatch(batch, idx)}
-                        className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400/15 hover:bg-amber-400/25 text-amber-300 border border-amber-400/30 transition-colors flex items-center gap-1 cursor-pointer"
-                      >
-                        {copiedBatchIdx === idx ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                        <span>{copiedBatchIdx === idx ? 'Copied' : 'Copy BCC'}</span>
-                      </button>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
+
+            </div>
+
+            {/* Email Draft Output: Plain Text + HTML Preview */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              {/* Plain-Text Box (For Gmail/Apple Mail) */}
+              <div className="lg:col-span-6 space-y-4">
+                <div className="tight-glass rounded-3xl p-6 border border-white/10 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-white flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-amber-400" />
+                        Plain-Text Version (For Gmail)
+                      </h3>
+                      <p className="text-xs text-zinc-400">Includes CAN-SPAM compliant unsubscribe footer.</p>
+                    </div>
+
+                    <button
+                      onClick={handleCopyBody}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-md shadow-amber-400/20"
+                    >
+                      {copiedBody ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedBody ? 'Copied Body!' : 'Copy Text'}</span>
+                    </button>
+                  </div>
+
+                  <textarea
+                    readOnly
+                    value={plainTextEmail}
+                    rows={18}
+                    className="w-full bg-black/60 border border-white/10 rounded-2xl p-4 text-xs font-mono text-zinc-200 leading-relaxed focus:outline-none select-all resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* HTML Visual Preview */}
+              <div className="lg:col-span-6 space-y-4">
+                <div className="tight-glass rounded-3xl p-6 border border-white/10 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-white flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-amber-400" />
+                        HTML Email Preview (For Brevo/Mailchimp)
+                      </h3>
+                      <p className="text-xs text-zinc-400">Includes flier art, direct buttons, and unsubscribe link.</p>
+                    </div>
+
+                    <button
+                      onClick={handleCopyHtml}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      {copiedHtml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
+                      <span>{copiedHtml ? 'Copied HTML!' : 'Copy HTML'}</span>
+                    </button>
+                  </div>
+
+                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black max-h-[460px] overflow-y-auto">
+                    <iframe
+                      title="HTML Email Preview"
+                      srcDoc={htmlEmail}
+                      className="w-full h-[460px] border-0"
+                    />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
           </div>
-        </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 2: ATTENDEE CLEANER & SEGMENTED LISTS */}
+        {/* ========================================================= */}
+        {activeTab === 'attendees' && (
+          <div className="space-y-8">
+            
+            {/* Eventbrite CSV Cleaner */}
+            <div className="tight-glass rounded-3xl p-6 sm:p-8 border border-white/10 space-y-6">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 text-xs font-bold text-purple-400 uppercase tracking-widest">
+                  <Users className="w-3.5 h-3.5" /> Audience 1: Past Eventbrite Attendees
+                </div>
+                <h2 className="text-2xl font-black text-white tracking-tight">
+                  Eventbrite Attendee Cleaner & Gmail Batch Splitter
+                </h2>
+                <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
+                  Paste your raw Eventbrite export or email column. Strips duplicates, validates syntax, and chunks into safe batches of 90 (to prevent Gmail from blocking your account).
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <textarea
+                  value={rawEmails}
+                  onChange={(e) => setRawEmails(e.target.value)}
+                  placeholder="Paste raw Eventbrite CSV export text, email column, or comma-separated addresses here..."
+                  rows={5}
+                  className="w-full bg-black/60 border border-white/15 rounded-2xl p-4 text-xs font-mono text-zinc-200 focus:outline-none focus:border-amber-400"
+                />
+
+                {cleanedAttendees.length > 0 && (
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <div className="text-xs text-zinc-300">
+                        <strong className="text-white font-bold">{cleanedAttendees.length} Unique Emails</strong> found • Split into <strong className="text-amber-400">{batches.length} safe batches</strong>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleDownloadCsv}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-colors cursor-pointer w-fit"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download Clean CSV</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Batch Cards for Gmail BCC */}
+                {batches.length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                      Gmail BCC Batches (Safe under 100 limit):
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {batches.map((batch, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between"
+                        >
+                          <div>
+                            <div className="text-xs font-bold text-white">Batch {idx + 1}</div>
+                            <div className="text-[11px] text-zinc-500">{batch.length} recipients</div>
+                          </div>
+
+                          <button
+                            onClick={() => handleCopyBatch(batch, idx)}
+                            className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400/15 hover:bg-amber-400/25 text-amber-300 border border-amber-400/30 transition-colors flex items-center gap-1 cursor-pointer"
+                          >
+                            {copiedBatchIdx === idx ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            <span>{copiedBatchIdx === idx ? 'Copied' : 'Copy BCC'}</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Audience 2: Website VIP Subscribers & Google Sheet Sync */}
+            <div className="tight-glass rounded-3xl p-6 sm:p-8 border border-white/10 space-y-6">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
+                  <Globe className="w-3.5 h-3.5" /> Audience 2: Website VIP Signups
+                </div>
+                <h2 className="text-2xl font-black text-white tracking-tight">
+                  Website VIP Newsletter Registrations
+                </h2>
+                <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
+                  People who subscribed through the form on <code className="text-amber-300">tightpantscomedy.com</code>. Kept isolated from past ticket buyers.
+                </p>
+              </div>
+
+              {/* Google Sheet Sync Card */}
+              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>Target Google Spreadsheet Connected</span>
+                  </div>
+                  <div className="text-[11px] text-zinc-300">
+                    Target Sheet: <a href={SITE_CONFIG.googleSheetUrl} target="_blank" rel="noopener noreferrer" className="underline text-emerald-400 hover:text-emerald-300">Open Google Sheet in Drive ↗</a>
+                  </div>
+                </div>
+
+                {webSubscribers.length > 0 && (
+                  <button
+                    onClick={handleDownloadWebCsv}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-400 text-black hover:bg-emerald-300 transition-colors cursor-pointer w-fit"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Export Web Signups ({webSubscribers.length})</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Local Web Signups Table */}
+              <div className="space-y-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                  Recent Signups Captured Directly on Website ({webSubscribers.length}):
+                </span>
+
+                {webSubscribers.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-black/40 border border-white/5 text-center text-xs text-zinc-500">
+                    No website signups recorded in this browser yet. As visitors enter their email on the homepage, they will populate here and sync to your Google Sheet.
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-white/10 overflow-hidden bg-black/40 max-h-60 overflow-y-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-white/5 text-zinc-400 font-semibold border-b border-white/10">
+                        <tr>
+                          <th className="py-2.5 px-4">Email</th>
+                          <th className="py-2.5 px-4">Date Added</th>
+                          <th className="py-2.5 px-4">Source</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {webSubscribers.map((item, idx) => {
+                          const emailStr = typeof item === 'string' ? item : item.email;
+                          const dateStr = typeof item === 'object' && item.date ? item.date.slice(0, 10) : 'Recent';
+                          return (
+                            <tr key={idx} className="hover:bg-white/5">
+                              <td className="py-2.5 px-4 font-mono text-zinc-200">{emailStr}</td>
+                              <td className="py-2.5 px-4 text-zinc-400">{dateStr}</td>
+                              <td className="py-2.5 px-4 text-amber-400 font-medium">Website VIP Form</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 3: REDDIT CAMPAIGN DRAFTER (12 NYC SUBREDDITS) */}
+        {/* ========================================================= */}
+        {activeTab === 'reddit' && (
+          <div className="space-y-6">
+            
+            <div className="tight-glass rounded-3xl p-6 sm:p-8 border border-white/10 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest">
+                    <MessageSquare className="w-3.5 h-3.5" /> Organic Reddit Marketing
+                  </div>
+                  <h2 className="text-2xl font-black text-white tracking-tight">
+                    Reddit Campaign Drafter: 12 NYC Subreddits
+                  </h2>
+                  <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
+                    Custom titles, compliance tags, and body copy formatted specifically for each subreddit's auto-moderator rules. Click <strong>"1-Click Pre-fill in Reddit"</strong> to launch Reddit with title and text ready to submit!
+                  </p>
+                </div>
+
+                <div className="shrink-0">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1">
+                    Show:
+                  </span>
+                  <select
+                    value={selectedShowId}
+                    onChange={(e) => setSelectedShowId(e.target.value)}
+                    className="bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-amber-400 cursor-pointer"
+                  >
+                    {upcomingShows.map((s) => (
+                      <option key={s.id} value={s.id} className="bg-zinc-900 text-white">
+                        {s.displayDate} - {s.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* 12 Subreddit Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {redditCampaign.map((draft, idx) => (
+                <div
+                  key={idx}
+                  className="tight-glass rounded-3xl p-5 border border-white/10 space-y-4 flex flex-col justify-between hover:border-amber-400/30 transition-all"
+                >
+                  <div className="space-y-3">
+                    
+                    {/* Header */}
+                    <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-extrabold text-white">{draft.sub}</span>
+                        <span className="text-[11px] text-zinc-400">({draft.name})</span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-400/10 text-amber-300 border border-amber-400/25">
+                        Flair: {draft.flair}
+                      </span>
+                    </div>
+
+                    {/* Rule / Guideline */}
+                    <div className="text-[11px] text-zinc-400 flex items-start gap-1.5 bg-black/40 p-2.5 rounded-xl border border-white/5">
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                      <span><strong>Rules:</strong> {draft.rules}</span>
+                    </div>
+
+                    {/* Proposed Title */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                          Proposed Title:
+                        </span>
+                        <button
+                          onClick={() => handleCopyRedditText(draft.title, `title-${idx}`)}
+                          className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
+                        >
+                          {copiedRedditIdx === `title-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          <span>{copiedRedditIdx === `title-${idx}` ? 'Copied' : 'Copy'}</span>
+                        </button>
+                      </div>
+                      <div className="text-xs font-semibold text-zinc-200 bg-black/60 p-2.5 rounded-xl border border-white/10 select-all">
+                        {draft.title}
+                      </div>
+                    </div>
+
+                    {/* Proposed Body */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                          Body Markdown:
+                        </span>
+                        <button
+                          onClick={() => handleCopyRedditText(draft.body, `body-${idx}`)}
+                          className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
+                        >
+                          {copiedRedditIdx === `body-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          <span>{copiedRedditIdx === `body-${idx}` ? 'Copied' : 'Copy'}</span>
+                        </button>
+                      </div>
+                      <div className="text-[11px] text-zinc-400 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 max-h-32 overflow-y-auto whitespace-pre-wrap select-all">
+                        {draft.body}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 1-Click Launch Button */}
+                  <div className="pt-2">
+                    <a
+                      href={draft.prefilledTextPostUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-400/20"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>1-Click Pre-fill in {draft.sub}</span>
+                    </a>
+                  </div>
+
+                </div>
+              ))}
+            </div>
+
+          </div>
+        )}
 
       </div>
 

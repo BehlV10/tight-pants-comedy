@@ -1,13 +1,52 @@
 import React, { useState } from 'react';
-import { Mail, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Mail, CheckCircle2, Loader2 } from 'lucide-react';
+import { SITE_CONFIG } from '../data/config';
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return;
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) return;
+
+    setLoading(true);
+
+    const payload = {
+      email: cleanEmail,
+      source: 'Website VIP Signup',
+      date: new Date().toISOString(),
+      timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+    };
+
+    // 1. Always backup locally to browser storage so no signups are ever lost
+    try {
+      const existing = JSON.parse(localStorage.getItem('tight_pants_web_subscribers') || '[]');
+      if (!existing.some((item) => (typeof item === 'string' ? item : item.email) === cleanEmail)) {
+        existing.push(payload);
+        localStorage.setItem('tight_pants_web_subscribers', JSON.stringify(existing));
+      }
+    } catch (err) {
+      console.warn('Local storage error:', err);
+    }
+
+    // 2. Dispatch to Google Apps Script webhook if configured
+    if (SITE_CONFIG.googleSheetWebhookUrl) {
+      try {
+        await fetch(SITE_CONFIG.googleSheetWebhookUrl, {
+          method: 'POST',
+          mode: 'no-cors', // standard for Google Apps Script web apps
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.warn('Webhook dispatch error:', err);
+      }
+    }
+
+    setLoading(false);
     setSubscribed(true);
   };
 
@@ -27,8 +66,8 @@ export default function NewsletterSection() {
             </p>
 
             {subscribed ? (
-              <div className="pt-4 flex items-center justify-center gap-2 text-emerald-400 font-bold text-sm bg-emerald-500/10 border border-emerald-500/20 py-3 px-6 rounded-xl">
-                <CheckCircle2 className="w-5 h-5" />
+              <div className="pt-4 flex items-center justify-center gap-2 text-emerald-400 font-bold text-sm bg-emerald-500/10 border border-emerald-500/20 py-3 px-6 rounded-xl animate-fade-in">
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
                 <span>You’re on the VIP list! Keep an eye on your inbox.</span>
               </div>
             ) : (
@@ -41,14 +80,17 @@ export default function NewsletterSection() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/50 border border-white/10 focus:border-amber-400 focus:outline-none text-sm text-white placeholder-zinc-500 transition-colors"
+                    disabled={loading}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/50 border border-white/10 focus:border-amber-400 focus:outline-none text-sm text-white placeholder-zinc-500 transition-colors disabled:opacity-50"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm shrink-0 cursor-pointer"
+                  disabled={loading}
+                  className="px-6 py-3 rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all text-sm shrink-0 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Join List
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  <span>{loading ? 'Joining...' : 'Join List'}</span>
                 </button>
               </form>
             )}
