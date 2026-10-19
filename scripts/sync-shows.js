@@ -77,11 +77,47 @@ async function fetchStMarksShows() {
   return fetchedShows;
 }
 
+const EVENTBRITE_ORGANIZER_URL = 'https://www.eventbrite.com/o/tight-pants-comedy-58671695943';
+
+async function fetchEventbriteShows() {
+  console.log('Fetching live shows from Eventbrite organizer profile (tightpantscomedy.eventbrite.com)...');
+  try {
+    const res = await fetch(EVENTBRITE_ORGANIZER_URL, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+      }
+    });
+    if (!res.ok) {
+      console.warn(`Eventbrite fetch responded with status ${res.status}`);
+      return [];
+    }
+    const html = await res.text();
+    const match = html.match(/<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/);
+    if (!match) {
+      console.warn('Could not parse __NEXT_DATA__ from Eventbrite HTML');
+      return [];
+    }
+    const data = JSON.parse(match[1]);
+    const events = data?.props?.pageProps?.upcomingEvents || [];
+    console.log(`Found ${events.length} upcoming events from Eventbrite.`);
+    return events;
+  } catch (err) {
+    console.error('Error fetching Eventbrite shows:', err.message);
+    return [];
+  }
+}
+
 async function sync() {
-  const stMarksShows = await fetchStMarksShows();
-  console.log(`Found ${stMarksShows.length} matching shows from St. Marks.`);
+  const [stMarksShows, eventbriteEvents] = await Promise.all([
+    fetchStMarksShows(),
+    fetchEventbriteShows()
+  ]);
+
+  console.log(`Found ${stMarksShows.length} matching shows from St. Marks, and ${eventbriteEvents.length} from Eventbrite.`);
 
   const today = new Date().toISOString().slice(0, 10);
+  const matchedEventbriteIds = new Set();
 
   const formattedShows = stMarksShows.map((s) => {
     const { displayDate, dayOfWeek, fullDateString, timeFormatted } = formatShowDate(s.show_date, s.show_time);
@@ -89,6 +125,12 @@ async function sync() {
 
     const isHalloween = s.show_name.toLowerCase().includes('costume');
     const isComfyClash = s.show_name.toLowerCase().includes('comfy');
+
+    // Check if Eventbrite has a matching event on this date
+    const matchedEb = eventbriteEvents.find(eb => eb.start_date === s.show_date);
+    if (matchedEb) {
+      matchedEventbriteIds.add(matchedEb.id);
+    }
 
     let badge = 'Resident Showcase';
     let color = 'amber';
@@ -111,13 +153,15 @@ async function sync() {
     const slugName = s.show_name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const directStMarksUrl = `https://www.stmarkscomedy.com/shows/${slugName}-${s.show_date}-${s.id.slice(0, 8)}`;
     
-    // Exact direct Eventbrite URL for Halloween Show
-    const exactPurchaseUrl = isHalloween
-      ? "https://www.eventbrite.com/e/comedians-in-costumes-halloween-comedy-show-tickets-2001416968028"
-      : directStMarksUrl;
+    // Exact purchase URL: If Comfy Clash -> St. Marks; if Eventbrite matched -> exact Eventbrite URL; else Eventbrite profile
+    const exactPurchaseUrl = isComfyClash 
+      ? directStMarksUrl 
+      : (matchedEb ? matchedEb.url : (isHalloween ? "https://www.eventbrite.com/e/comedians-in-costumes-halloween-comedy-show-tickets-2001416968028" : "https://tightpantscomedy.eventbrite.com"));
 
-    // Price: St. Marks Comedy Club box office adds a flat $2.00 venue service fee per ticket at checkout.
-    // Dynamically calculate total ticket price from the database base price + $2 fee:
+    // Flier: Prioritize Eventbrite high-res flier if available, else St. Marks Supabase storage
+    const flierUrl = (matchedEb && matchedEb.image?.url) ? matchedEb.image.url : (s.flier_url || null);
+
+    // Price calculation
     const ST_MARKS_BOX_OFFICE_FEE = 2;
     const basePrice = Math.round(Number(s.price) || 18);
     const finalPrice = isHalloween
@@ -126,7 +170,7 @@ async function sync() {
 
     return {
       id: `stmarks-${s.id}`,
-      title: isHalloween ? "Comedians in Costumes: Halloween Comedy Show 🎃" : s.show_name,
+      title: (matchedEb && !isComfyClash) ? matchedEb.name : (isHalloween ? "Comedians in Costumes: Halloween Comedy Show 🎃" : s.show_name),
       venue: "St. Marks Comedy Club",
       neighborhood: "East Village, NYC",
       address: "12 St. Marks Place, New York, NY 10003",
@@ -140,10 +184,10 @@ async function sync() {
       category: isComfyClash ? 'competition' : 'nyc',
       statusBadge: badge,
       badgeColor: color,
-      flierUrl: s.flier_url || null,
+      flierUrl,
       roomCapacityNote: "Intimate ~60 Seat Showroom",
-      ticketUrl: isComfyClash ? exactPurchaseUrl : (isHalloween ? exactPurchaseUrl : "https://tightpantscomedy.eventbrite.com"),
-      eventbriteEventId: isHalloween ? "2001416968028" : null,
+      ticketUrl: exactPurchaseUrl,
+      eventbriteEventId: matchedEb ? matchedEb.id : (isHalloween ? "2001416968028" : null),
       secondaryUrl: isComfyClash ? exactPurchaseUrl : "https://tightpantscomedy.eventbrite.com",
       credits: isHalloween 
         ? ["Live In-Character Sets", "Audience Costume Contest", "Spooky Drink Specials", "Guest Judges"]
@@ -152,6 +196,41 @@ async function sync() {
       isFeatured: isHalloween || (!isPast && s.show_date === '2026-11-19')
     };
   });
+
+  // Also include any standalone Eventbrite events that aren't on St. Marks calendar
+  for (const eb of eventbriteEvents) {
+    if (!matchedEventbriteIds.has(eb.id)) {
+      const [year, month, day] = eb.start_date.split('-');
+      const { displayDate, dayOfWeek, fullDateString } = formatShowDate(eb.start_date, eb.start_time);
+      const isPast = eb.start_date < today;
+
+      formattedShows.push({
+        id: `eb-${eb.id}`,
+        title: eb.name,
+        venue: eb.primary_venue?.name || "St. Marks Comedy Club",
+        neighborhood: eb.primary_venue?.address?.localized_area_display || "East Village, NYC",
+        address: eb.primary_venue?.address?.localized_address_display || "12 Saint Marks Place, New York, NY 10003",
+        date: fullDateString,
+        isoDate: eb.start_date,
+        displayDate,
+        dayOfWeek,
+        time: "8:30 PM (Doors 8:00 PM)",
+        price: eb.ticket_availability?.minimum_ticket_price?.display || "$20.00",
+        priceAfterFees: `${eb.ticket_availability?.minimum_ticket_price?.display || "$20.00"} GA`,
+        category: 'nyc',
+        statusBadge: isPast ? 'Concluded • Full House' : 'Tickets On Sale',
+        badgeColor: isPast ? 'zinc' : 'emerald',
+        flierUrl: eb.image?.url || null,
+        roomCapacityNote: "Intimate ~60 Seat Showroom",
+        ticketUrl: eb.url,
+        eventbriteEventId: eb.id,
+        secondaryUrl: "https://tightpantscomedy.eventbrite.com",
+        credits: ["Netflix", "Kill Tony", "Comedy Cellar", "Don't Tell Comedy"],
+        description: eb.summary || "Curated stand-up comedy showcase with the Tight Pants crew featuring national and underground talent.",
+        isFeatured: !isPast
+      });
+    }
+  }
 
   // Touring & historical milestone shows across 2024, 2025, and 2026
   const milestoneArchiveShows = [
