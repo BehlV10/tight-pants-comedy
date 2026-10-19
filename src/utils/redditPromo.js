@@ -211,11 +211,17 @@ Tickets on Eventbrite: [Eventbrite Link](${ticketLink})`
     }
   ];
 
-  // Enrich each subreddit draft with 1-click pre-filled links
+  // Enrich each subreddit draft with 1-click pre-filled links and image comment snippets
   return subreddits.map((item) => {
     const subClean = item.sub.replace('r/', '');
+    const commentSnippet = `🎟️ ${show.title} @ ${show.venue} (${show.address})
+📅 Date: ${show.date} @ ${show.time} (${show.price} GA)
+⚡ Tickets & Lineup: ${ticketLink}`;
+
     return {
       ...item,
+      flierImg,
+      commentSnippet,
       prefilledTextPostUrl: `https://www.reddit.com/r/${subClean}/submit?title=${encodeURIComponent(item.title)}&text=${encodeURIComponent(item.body)}`,
       prefilledImagePostUrl: `https://www.reddit.com/r/${subClean}/submit?url=${encodeURIComponent(flierImg)}&title=${encodeURIComponent(item.title)}`
     };
