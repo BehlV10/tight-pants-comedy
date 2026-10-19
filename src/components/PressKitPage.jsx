@@ -42,7 +42,7 @@ export default function PressKitPage({ onBackToHome }) {
     { label: 'Signature Tournament', value: '"Tight Pants Tight Five" (NYC’s largest $5 contest, 150+ comics)' },
     { label: 'Showroom Capacity', value: 'Intimate subterranean speakeasy (~60 seats)' },
     { label: 'General Admission', value: '$20 GA (2-drink minimum required in showroom)' },
-    { label: 'Primary Contact (Preferred)', value: 'Instagram DM @tightpantscomedy (Fastest response)' },
+    { label: 'Instagram Contact', value: '@tightpantscomedy (DM for fastest response)' },
     { label: 'Email Press Contact', value: 'tightpantscomedy@gmail.com' }
   ];
 
@@ -55,7 +55,7 @@ export default function PressKitPage({ onBackToHome }) {
 • Signature Tournament: "Tight Pants Tight Five" (NYC's largest $5 entry contest, 150+ comics)
 • Showroom Capacity: Intimate speakeasy (~60 seats)
 • Ticket Price: $20 GA (+ 2 drink min)
-• Primary Contact (Preferred): Instagram DM @tightpantscomedy (Fastest response)
+• Instagram: @tightpantscomedy (DM for fastest response)
 • Email Contact: tightpantscomedy@gmail.com
 • Official Website: https://behlv10.github.io/tight-pants-comedy/`;
 
@@ -255,7 +255,7 @@ export default function PressKitPage({ onBackToHome }) {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white hover:opacity-95 transition-all shadow-lg shadow-pink-500/20 cursor-pointer"
               >
                 <InstagramIcon className="w-4 h-4 text-white" />
-                <span>DM @tightpantscomedy (Preferred)</span>
+                <span>DM @tightpantscomedy</span>
               </a>
 
               <button
@@ -831,7 +831,7 @@ export default function PressKitPage({ onBackToHome }) {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white hover:opacity-95 transition-all shadow-lg shadow-pink-500/20 cursor-pointer"
             >
               <InstagramIcon className="w-4 h-4 text-white" />
-              <span>DM @tightpantscomedy (Preferred)</span>
+              <span>DM @tightpantscomedy</span>
             </a>
 
             <a
