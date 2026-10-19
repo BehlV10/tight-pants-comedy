@@ -1,0 +1,15 @@
+# Robots.txt for Tight Pants Comedy (https://tightpantscomedy.com)
+
+User-agent: *
+# Disallow search engine indexing of private producer studio & testing routes
+Disallow: /studio
+Disallow: /studio/
+Disallow: /#/studio
+Disallow: /*studio*
+
+# Allow indexing of public showcases, press kit, and venue info
+Allow: /
+Allow: /#shows
+Allow: /#about
+Allow: /#press
+Allow: /press

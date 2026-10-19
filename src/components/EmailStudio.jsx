@@ -15,7 +15,10 @@ import {
   Globe,
   Share2,
   AlertCircle,
-  Loader2
+  Loader2,
+  Lock,
+  Key,
+  ShieldCheck
 } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
 import { generateRedditCampaign } from '../utils/redditPromo';
@@ -58,6 +61,52 @@ export default function EmailStudio({ onBackToHome }) {
       setWebSubscribers([]);
     }
   }, []);
+
+  // Enforce noindex robots meta tag dynamically for privacy
+  useEffect(() => {
+    let meta = document.querySelector('meta[name="robots"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = 'robots';
+      document.head.appendChild(meta);
+    }
+    const previous = meta.content;
+    meta.content = 'noindex, nofollow, noarchive, nosnippet';
+    return () => {
+      meta.content = previous || 'index, follow';
+    };
+  }, []);
+
+  // Producer Passcode Gate (stops crawlers, scrapers & unauthorized visitors)
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('tp_studio_auth') === 'true' || localStorage.getItem('tp_studio_auth') === 'true';
+  });
+  const [passcode, setPasscode] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
+  const [passcodeError, setPasscodeError] = useState(false);
+
+  const handleUnlock = (e) => {
+    e.preventDefault();
+    const clean = passcode.trim().toLowerCase();
+    const validCodes = ['tightpants', '12stmarks', 'kylejohn'];
+    if (validCodes.includes(clean)) {
+      setIsAuthenticated(true);
+      setPasscodeError(false);
+      if (rememberMe) {
+        localStorage.setItem('tp_studio_auth', 'true');
+      } else {
+        sessionStorage.setItem('tp_studio_auth', 'true');
+      }
+    } else {
+      setPasscodeError(true);
+    }
+  };
+
+  const handleLock = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('tp_studio_auth');
+    localStorage.removeItem('tp_studio_auth');
+  };
 
   // Compute ticket link with optional auto-discount
   const baseTicketLink = selectedShow.ticketUrl || 'https://tightpantscomedy.eventbrite.com';
@@ -475,6 +524,86 @@ ${unsubscribeFooter}`;
     setTimeout(() => setCopiedRedditIdx(null), 2000);
   };
 
+  // If not unlocked, render secure Passcode Gate
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#07080f] text-zinc-100 flex flex-col justify-between p-4 sm:p-8">
+        <div className="max-w-md w-full mx-auto my-auto py-12 space-y-6">
+          <div className="tight-glass rounded-3xl p-8 border border-white/10 space-y-6 shadow-2xl">
+            <div className="text-center space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-amber-400/10 border border-amber-400/20 mx-auto flex items-center justify-center text-2xl">
+                🔒
+              </div>
+              <h1 className="text-2xl font-black text-white tracking-tight">
+                Producer Portal
+              </h1>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Private workspace for Kyle Wayne & John Bennett. Please enter your producer passcode to access backstage tools.
+              </p>
+            </div>
+
+            <form onSubmit={handleUnlock} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block">
+                  Producer Passcode
+                </label>
+                <div className="relative">
+                  <Key className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    autoFocus
+                    required
+                    value={passcode}
+                    onChange={(e) => {
+                      setPasscode(e.target.value);
+                      if (passcodeError) setPasscodeError(false);
+                    }}
+                    placeholder="Enter passcode..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/60 border border-white/15 focus:border-amber-400 focus:outline-none text-sm text-white font-mono placeholder-zinc-600 transition-colors"
+                  />
+                </div>
+                {passcodeError && (
+                  <p className="text-[11px] text-rose-400 font-semibold pt-1">
+                    Incorrect passcode. Please try again.
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between text-xs text-zinc-400">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="rounded bg-black/60 border-white/20 text-amber-400 focus:ring-0 cursor-pointer"
+                  />
+                  <span>Remember this device</span>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] text-black transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Lock className="w-4 h-4" />
+                <span>Unlock Backstage Studio</span>
+              </button>
+            </form>
+
+            <div className="pt-2 text-center border-t border-white/5">
+              <button
+                onClick={onBackToHome}
+                className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+              >
+                ← Return to Tight Pants Comedy Homepage
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#07080f] text-zinc-100 pb-20">
       
@@ -489,10 +618,20 @@ ${unsubscribeFooter}`;
             <span>Back to Tight Pants Comedy</span>
           </button>
 
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-400/10 border border-amber-400/25 text-amber-300 uppercase tracking-wider">
-              🔒 Internal Studio • Not Visible on Main Menu
+          <div className="flex items-center gap-3">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-400/10 border border-amber-400/25 text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+              <ShieldCheck className="w-3 h-3 text-emerald-400" />
+              <span>Producer Access</span>
             </span>
+
+            <button
+              onClick={handleLock}
+              title="Lock Studio"
+              className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-400 hover:text-zinc-200 uppercase tracking-wider transition-colors flex items-center gap-1 cursor-pointer"
+            >
+              <Lock className="w-3 h-3" />
+              <span>Lock</span>
+            </button>
           </div>
         </div>
       </div>
