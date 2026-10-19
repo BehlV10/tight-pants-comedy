@@ -42,7 +42,8 @@ export default function PressKitPage({ onBackToHome }) {
     { label: 'Signature Tournament', value: '"Tight Pants Tight Five" (NYC’s largest $5 contest, 150+ comics)' },
     { label: 'Showroom Capacity', value: 'Intimate subterranean speakeasy (~60 seats)' },
     { label: 'General Admission', value: '$20 GA (2-drink minimum required in showroom)' },
-    { label: 'Media & Booking Contact', value: 'tightpantscomedy@gmail.com' }
+    { label: 'Primary Contact (Preferred)', value: 'Instagram DM @tightpantscomedy (Fastest response)' },
+    { label: 'Email Press Contact', value: 'tightpantscomedy@gmail.com' }
   ];
 
   const quickFactsPlainText = `TIGHT PANTS COMEDY - PRESS QUICK FACTS
@@ -54,7 +55,8 @@ export default function PressKitPage({ onBackToHome }) {
 • Signature Tournament: "Tight Pants Tight Five" (NYC's largest $5 entry contest, 150+ comics)
 • Showroom Capacity: Intimate speakeasy (~60 seats)
 • Ticket Price: $20 GA (+ 2 drink min)
-• Media & Booking Contact: tightpantscomedy@gmail.com
+• Primary Contact (Preferred): Instagram DM @tightpantscomedy (Fastest response)
+• Email Contact: tightpantscomedy@gmail.com
 • Official Website: https://behlv10.github.io/tight-pants-comedy/`;
 
   const handleCopyBoilerplate = () => {
@@ -195,10 +197,13 @@ export default function PressKitPage({ onBackToHome }) {
               Official Press Kit
             </span>
             <a
-              href="mailto:tightpantscomedy@gmail.com?subject=Press%20Inquiry%20-%20Tight%20Pants%20Comedy"
-              className="px-3 py-1 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors"
+              href="https://www.instagram.com/tightpantscomedy/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1 rounded-lg text-xs font-bold bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-amber-500/20 hover:from-pink-500/30 hover:to-amber-500/30 text-white border border-pink-500/30 transition-colors inline-flex items-center gap-1.5"
             >
-              Contact Press
+              <InstagramIcon className="w-3.5 h-3.5 text-pink-400" />
+              <span>DM on Instagram</span>
             </a>
           </div>
         </div>
@@ -243,6 +248,16 @@ export default function PressKitPage({ onBackToHome }) {
             </p>
 
             <div className="pt-2 flex flex-wrap gap-3">
+              <a
+                href="https://www.instagram.com/tightpantscomedy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white hover:opacity-95 transition-all shadow-lg shadow-pink-500/20 cursor-pointer"
+              >
+                <InstagramIcon className="w-4 h-4 text-white" />
+                <span>DM @tightpantscomedy (Preferred)</span>
+              </a>
+
               <button
                 onClick={handleCopyBoilerplate}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 transition-all cursor-pointer shadow-lg shadow-amber-400/20"
@@ -256,7 +271,7 @@ export default function PressKitPage({ onBackToHome }) {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-colors"
               >
                 <Download className="w-4 h-4 text-zinc-400" />
-                <span>Download Photos & Logos</span>
+                <span>Downloads</span>
               </a>
 
               <a
@@ -264,7 +279,7 @@ export default function PressKitPage({ onBackToHome }) {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 transition-colors"
               >
                 <Mail className="w-4 h-4 text-amber-400" />
-                <span>tightpantscomedy@gmail.com</span>
+                <span>Email Press</span>
               </a>
             </div>
           </div>
@@ -809,19 +824,31 @@ export default function PressKitPage({ onBackToHome }) {
                 Media Inquiries & Booking
               </h2>
               <p className="text-sm text-zinc-400 max-w-xl">
-                For press coverage, festival bookings, or venue partnerships, reach out directly to the co-founders.
+                For the fastest response, reach out via direct message on Instagram. For calendar listings, festival programming, or formal media requests, email our producers directly.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <a
-                href="mailto:tightpantscomedy@gmail.com?subject=Press%20Inquiry%20-%20Tight%20Pants%20Comedy"
-                className="px-6 py-3 rounded-xl text-sm font-bold bg-amber-400 text-black hover:bg-amber-300 transition-colors shadow-lg shadow-amber-400/20"
+                href="https://www.instagram.com/tightpantscomedy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white hover:opacity-95 transition-all shadow-lg shadow-pink-500/20 cursor-pointer"
               >
-                Email Producers (tightpantscomedy@gmail.com)
+                <InstagramIcon className="w-4 h-4 text-white" />
+                <span>DM @tightpantscomedy (Preferred)</span>
               </a>
+
+              <a
+                href="mailto:tightpantscomedy@gmail.com?subject=Press%20Inquiry%20-%20Tight%20Pants%20Comedy"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors"
+              >
+                <Mail className="w-4 h-4 text-amber-400" />
+                <span>tightpantscomedy@gmail.com</span>
+              </a>
+
               <button
                 onClick={onBackToHome}
-                className="px-6 py-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition-colors cursor-pointer"
+                className="px-6 py-3 rounded-xl text-sm font-bold bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white border border-white/5 transition-colors cursor-pointer"
               >
                 Back to Upcoming Shows
               </button>
