@@ -11,30 +11,32 @@ import PressKitPage from './components/PressKitPage';
 import EmailStudio from './components/EmailStudio';
 
 export default function App() {
-  const isPressHash = () => {
-    const h = window.location.hash.toLowerCase();
-    return h === '#/press' || h === '#press' || h === '#/press-kit' || h === '#press-kit';
+  const isPressRoute = () => {
+    const h = window.location.hash.toLowerCase().replace(/\/+$/, '');
+    const p = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+    return h.includes('press') || p.endsWith('/press') || p.endsWith('/press-kit');
   };
 
-  const isStudioHash = () => {
-    const h = window.location.hash.toLowerCase();
-    return h === '#/studio' || h === '#studio' || h === '#/email-studio' || h === '#email-studio';
+  const isStudioRoute = () => {
+    const h = window.location.hash.toLowerCase().replace(/\/+$/, '');
+    const p = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+    return h.includes('studio') || p.endsWith('/studio') || p.endsWith('/email-studio');
   };
 
-  const getViewFromHash = () => {
-    if (isStudioHash()) return 'studio';
-    if (isPressHash()) return 'press';
+  const getViewFromLocation = () => {
+    if (isStudioRoute()) return 'studio';
+    if (isPressRoute()) return 'press';
     return 'home';
   };
 
-  const [currentView, setCurrentView] = useState(getViewFromHash);
+  const [currentView, setCurrentView] = useState(getViewFromLocation);
 
   useEffect(() => {
-    const handleHashChange = () => {
-      if (isStudioHash()) {
+    const handleLocationChange = () => {
+      if (isStudioRoute()) {
         setCurrentView('studio');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (isPressHash()) {
+      } else if (isPressRoute()) {
         setCurrentView('press');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (window.location.hash === '' || window.location.hash.startsWith('#shows') || window.location.hash.startsWith('#about') || window.location.hash.startsWith('#reviews') || window.location.hash.startsWith('#faq')) {
@@ -42,8 +44,12 @@ export default function App() {
       }
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
   }, []);
 
   const navigateTo = (view, targetId = null) => {

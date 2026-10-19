@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tight Pants Comedy</title>
+    <script>
+      // Single Page App redirect for GitHub Pages custom domains
+      var path = window.location.pathname;
+      var search = window.location.search;
+      var hash = window.location.hash;
+      var cleanPath = path.replace(/^\/+/, '').replace(/\/+$/, '');
+      if (cleanPath) {
+        window.location.replace('/#/' + cleanPath + (search || '') + (hash || ''));
+      } else {
+        window.location.replace('/' + (search || '') + (hash || ''));
+      }
+    </script>
+  </head>
+  <body></body>
+</html>
