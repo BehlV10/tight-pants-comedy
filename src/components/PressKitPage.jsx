@@ -110,15 +110,15 @@ export default function PressKitPage({ onBackToHome }) {
       </div>
 
       {/* Hero Header */}
-      <section className="relative pt-6 pb-10 md:pt-8 md:pb-12 overflow-hidden border-b border-white/10">
+      <section className="relative pt-5 pb-8 md:pt-6 md:pb-10 overflow-hidden border-b border-white/10">
         {/* Ambient Glows */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="max-w-3xl space-y-4">
+          <div className="max-w-3xl space-y-3.5">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-bold tracking-wide uppercase">
-              <span>👖</span> Press Kit & Media Resources
+              <span>👖</span> Official Press Kit
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-none">
@@ -159,7 +159,7 @@ export default function PressKitPage({ onBackToHome }) {
       </section>
 
       {/* By The Numbers / Key Stats */}
-      <section className="py-10 border-b border-white/10 bg-[#090b14]">
+      <section className="py-7 border-b border-white/10 bg-[#090b14]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <div className="tight-glass p-5 rounded-2xl border-white/10 space-y-1">
@@ -190,17 +190,17 @@ export default function PressKitPage({ onBackToHome }) {
       </section>
 
       {/* The Story & Brand Background */}
-      <section className="py-16 md:py-20 border-b border-white/10">
+      <section className="py-10 md:py-14 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7 space-y-5">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
                 <span>📖</span> About The Brand
               </div>
 
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                An Independent Stand-Up Collective Built for Comedians & Fans
+                The Tight Pants Story
               </h2>
 
               <div className="space-y-4 text-zinc-300 text-sm sm:text-base leading-relaxed">
@@ -266,9 +266,9 @@ export default function PressKitPage({ onBackToHome }) {
       </section>
 
       {/* Meet the Co-Producers */}
-      <section className="py-16 md:py-20 border-b border-white/10 bg-[#090b14]">
+      <section className="py-10 md:py-14 border-b border-white/10 bg-[#090b14]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-4 mb-12 text-center max-w-2xl mx-auto">
+          <div className="space-y-2.5 mb-9 text-center max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <span>🎤</span> Leadership & Talent
             </div>
@@ -276,7 +276,7 @@ export default function PressKitPage({ onBackToHome }) {
               Meet the Producers
             </h2>
             <p className="text-sm text-zinc-400">
-              The driving comedic forces behind Tight Pants Comedy showcase shows and tournaments.
+              The co-founders and comedic minds behind Tight Pants shows.
             </p>
           </div>
 
@@ -375,9 +375,9 @@ export default function PressKitPage({ onBackToHome }) {
       </section>
 
       {/* Featured Video Sets */}
-      <section className="py-16 md:py-20 border-b border-white/10">
+      <section className="py-10 md:py-14 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-3 mb-10 text-center max-w-4xl mx-auto">
+          <div className="space-y-2.5 mb-8 text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <span>🎬</span> Video Reels
             </div>
@@ -421,17 +421,17 @@ export default function PressKitPage({ onBackToHome }) {
       </section>
 
       {/* Photo Gallery & Live Action */}
-      <section className="py-16 md:py-20 border-b border-white/10 bg-[#090b14]">
+      <section className="py-10 md:py-14 border-b border-white/10 bg-[#090b14]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-3 mb-10 text-center max-w-2xl mx-auto">
+          <div className="space-y-2.5 mb-8 text-center max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
               <span>📸</span> Media Gallery
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Showroom Atmosphere & Stage Photos
+              Showroom & Stage Photos
             </h2>
             <p className="text-sm text-zinc-400">
-              Editorial photography from Tight Pants Comedy showcases and festivals. Free to use with attribution.
+              Editorial photography from live showcases. Free to use with credit.
             </p>
           </div>
 
@@ -470,20 +470,20 @@ export default function PressKitPage({ onBackToHome }) {
       </section>
 
       {/* Press Downloads & One-Sheet Hub */}
-      <section id="media-assets" className="py-16 md:py-20 border-b border-white/10">
+      <section id="media-assets" className="py-10 md:py-14 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="tight-glass rounded-3xl p-8 sm:p-12 border border-white/10 relative overflow-hidden">
-            <div className="max-w-3xl space-y-6">
+          <div className="tight-glass rounded-3xl p-6 sm:p-10 border border-white/10 relative overflow-hidden">
+            <div className="max-w-3xl space-y-5">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
                 <span>📁</span> Media Kit Downloads
               </div>
 
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                Downloadable Press Kit & Promotional Assets
+                Promotional Assets & Downloads
               </h2>
 
               <p className="text-sm text-zinc-300 leading-relaxed">
-                Need high-resolution promotional materials, producer headshots, or official logo files for event calendars, festival programs, or media coverage?
+                High-resolution posters, producer headshots, and ready-to-paste boilerplate for event calendars and press coverage.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -573,16 +573,16 @@ export default function PressKitPage({ onBackToHome }) {
       </section>
 
       {/* Booking & Media Contact Callout */}
-      <section className="pt-16 pb-6">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center mx-auto text-2xl">
+      <section className="pt-10 pb-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center mx-auto text-xl">
             📬
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
             Media Inquiries & Booking
           </h2>
           <p className="text-sm text-zinc-400 max-w-lg mx-auto">
-            For press coverage, festival bookings, venue partnerships, or comedian submissions, reach out directly to the Tight Pants Comedy producers.
+            For press coverage, festival bookings, or venue partnerships, reach out directly to our team.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <a
