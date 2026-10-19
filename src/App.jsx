@@ -9,8 +9,15 @@ import FaqSection from './components/FaqSection';
 import Footer from './components/Footer';
 import PressKitPage from './components/PressKitPage';
 import EmailStudio from './components/EmailStudio';
+import UnsubscribePage from './components/UnsubscribePage';
 
 export default function App() {
+  const isUnsubscribeRoute = () => {
+    const h = window.location.hash.toLowerCase().replace(/\/+$/, '');
+    const p = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+    return h.includes('unsubscribe') || p.endsWith('/unsubscribe');
+  };
+
   const isPressRoute = () => {
     const h = window.location.hash.toLowerCase().replace(/\/+$/, '');
     const p = window.location.pathname.toLowerCase().replace(/\/+$/, '');
@@ -24,6 +31,7 @@ export default function App() {
   };
 
   const getViewFromLocation = () => {
+    if (isUnsubscribeRoute()) return 'unsubscribe';
     if (isStudioRoute()) return 'studio';
     if (isPressRoute()) return 'press';
     return 'home';
@@ -33,7 +41,10 @@ export default function App() {
 
   useEffect(() => {
     const handleLocationChange = () => {
-      if (isStudioRoute()) {
+      if (isUnsubscribeRoute()) {
+        setCurrentView('unsubscribe');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (isStudioRoute()) {
         setCurrentView('studio');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (isPressRoute()) {
@@ -54,14 +65,17 @@ export default function App() {
 
   const navigateTo = (view, targetId = null) => {
     setCurrentView(view);
-    if (view === 'press') {
+    if (view === 'unsubscribe') {
+      window.location.hash = '#/unsubscribe';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'press') {
       window.location.hash = '#/press';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'studio') {
       window.location.hash = '#/studio';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      if (window.location.hash.startsWith('#/press') || window.location.hash.startsWith('#/studio')) {
+      if (window.location.hash.startsWith('#/press') || window.location.hash.startsWith('#/studio') || window.location.hash.startsWith('#/unsubscribe')) {
         window.location.hash = targetId ? `#${targetId}` : '';
       }
       if (targetId) {
@@ -88,9 +102,11 @@ export default function App() {
     }
   };
 
+  const isBackstage = currentView === 'studio' || currentView === 'unsubscribe';
+
   return (
     <div className="min-h-screen bg-[#0b0c13] text-zinc-100 flex flex-col font-sans selection:bg-amber-400 selection:text-black">
-      {currentView !== 'studio' && (
+      {!isBackstage && (
         <Navbar 
           onScrollTo={scrollTo} 
           onNavigateToPress={() => navigateTo('press')}
@@ -99,7 +115,9 @@ export default function App() {
       )}
       
       <main className="flex-1">
-        {currentView === 'studio' ? (
+        {currentView === 'unsubscribe' ? (
+          <UnsubscribePage onBackToHome={() => navigateTo('home')} />
+        ) : currentView === 'studio' ? (
           <EmailStudio onBackToHome={() => navigateTo('home', 'shows')} />
         ) : currentView === 'press' ? (
           <PressKitPage onBackToHome={() => navigateTo('home', 'shows')} />
@@ -115,7 +133,7 @@ export default function App() {
         )}
       </main>
 
-      {currentView !== 'studio' && (
+      {!isBackstage && (
         <Footer 
           onScrollTo={scrollTo} 
           onNavigateToPress={() => navigateTo('press')}

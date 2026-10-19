@@ -389,7 +389,7 @@ ${unsubscribeFooter}`;
         <p style="margin: 0; font-size: 11px; color: #52525b; line-height: 1.5;">
           You received this email because you attended a past Tight Pants Comedy show or joined our VIP guest list.
           <br>
-          <a href="https://tightpantscomedy.com" style="color: #a1a1aa; text-decoration: underline;">Unsubscribe or Manage Email Preferences</a>
+          <a href="https://tightpantscomedy.com/#/unsubscribe" style="color: #a1a1aa; text-decoration: underline;">Unsubscribe or Manage Email Preferences</a>
         </p>
       </td>
     </tr>
@@ -495,11 +495,14 @@ ${unsubscribeFooter}`;
 
   const [syncingToSheet, setSyncingToSheet] = useState(false);
   const [syncedCount, setSyncedCount] = useState(null);
+  const [syncError, setSyncError] = useState(null);
+  const [copiedSheetTsv, setCopiedSheetTsv] = useState(false);
 
   const handleSyncToSheet = async () => {
     if (!cleanedAttendees.length || !SITE_CONFIG.googleSheetWebhookUrl) return;
     setSyncingToSheet(true);
     setSyncedCount(null);
+    setSyncError(null);
     try {
       await fetch(SITE_CONFIG.googleSheetWebhookUrl, {
         method: 'POST',
@@ -513,12 +516,23 @@ ${unsubscribeFooter}`;
         })
       });
       setSyncedCount(cleanedAttendees.length);
-      setTimeout(() => setSyncedCount(null), 4000);
+      setTimeout(() => setSyncedCount(null), 5000);
     } catch (err) {
       console.error('Error syncing to sheet:', err);
+      setSyncError('Sync request could not reach Google Apps Script. Check deployment permissions or use "Copy Rows for Sheet" below.');
     } finally {
       setSyncingToSheet(false);
     }
+  };
+
+  const handleCopyForSheets = () => {
+    if (!cleanedAttendees.length) return;
+    const now = new Date().toLocaleString();
+    const rows = cleanedAttendees.map(email => `${now}\t${email}\t${selectedShow.title}\tEventbrite Import\tActive`);
+    const tsvData = rows.join('\n');
+    navigator.clipboard.writeText(tsvData);
+    setCopiedSheetTsv(true);
+    setTimeout(() => setCopiedSheetTsv(false), 3000);
   };
 
   const handleDownloadWebCsv = () => {
@@ -992,6 +1006,24 @@ ${unsubscribeFooter}`;
 
                     <div className="flex flex-wrap items-center gap-2">
                       <button
+                        onClick={handleCopyForSheets}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/30 transition-all cursor-pointer shadow-sm"
+                        title="Copy tab-delimited rows to paste directly into Google Sheets (Cmd+V)"
+                      >
+                        {copiedSheetTsv ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Copied Rows for Sheet!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy Rows for Sheet</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
                         onClick={handleSyncToSheet}
                         disabled={syncingToSheet}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all cursor-pointer shadow-md shadow-amber-400/20 disabled:opacity-50"
@@ -1021,6 +1053,18 @@ ${unsubscribeFooter}`;
                         <Download className="w-3.5 h-3.5" />
                         <span>Download Clean CSV</span>
                       </button>
+                    </div>
+                  </div>
+                )}
+
+                {syncError && (
+                  <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2.5">
+                    <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-semibold text-white">{syncError}</p>
+                      <p className="text-[11px] text-zinc-300 leading-relaxed">
+                        Tip: You can click <strong className="text-amber-300">"Copy Rows for Sheet"</strong> above, then open your Google Sheet and press <kbd className="px-1.5 py-0.5 rounded bg-black/60 border border-white/20 text-white font-mono text-[10px]">Cmd + V</kbd> to paste all columns and rows instantly!
+                      </p>
                     </div>
                   </div>
                 )}
