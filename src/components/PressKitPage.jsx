@@ -57,7 +57,7 @@ export default function PressKitPage({ onBackToHome }) {
 • Ticket Price: $20 GA (+ 2 drink min)
 • Instagram: @tightpantscomedy (DM for fastest response)
 • Email Contact: tightpantscomedy@gmail.com
-• Official Website: https://behlv10.github.io/tight-pants-comedy/`;
+• Official Website: https://tightpantscomedy.com`;
 
   const handleCopyBoilerplate = () => {
     navigator.clipboard.writeText(pressBoilerplate);
