@@ -1222,134 +1222,185 @@ ${unsubscribeFooter}`;
 
             {/* 12 Subreddit Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {redditCampaign.map((draft, idx) => (
-                <div
-                  key={idx}
-                  className="tight-glass rounded-3xl p-5 border border-white/10 space-y-4 flex flex-col justify-between hover:border-amber-400/30 transition-all"
-                >
-                  <div className="space-y-3">
-                    
-                    {/* Header */}
-                    <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base font-extrabold text-white">{draft.sub}</span>
-                        <span className="text-[11px] text-zinc-400">({draft.name})</span>
-                      </div>
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-400/10 text-amber-300 border border-amber-400/25">
-                        Flair: {draft.flair}
-                      </span>
-                    </div>
+              {redditCampaign.map((draft, idx) => {
+                const isRed = draft.safety === 'red';
+                const isYellow = draft.safety === 'yellow';
+                const isGreen = draft.safety === 'green';
 
-                    {/* Rule / Guideline */}
-                    <div className="text-[11px] text-zinc-400 flex items-start gap-1.5 bg-black/40 p-2.5 rounded-xl border border-white/5">
-                      <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                      <span><strong>Rules:</strong> {draft.rules}</span>
-                    </div>
-
-                    {/* Proposed Title */}
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                          Proposed Title:
-                        </span>
-                        <button
-                          onClick={() => handleCopyRedditText(draft.title, `title-${idx}`)}
-                          className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
-                        >
-                          {copiedRedditIdx === `title-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                          <span>{copiedRedditIdx === `title-${idx}` ? 'Copied' : 'Copy'}</span>
-                        </button>
-                      </div>
-                      <div className="text-xs font-semibold text-zinc-200 bg-black/60 p-2.5 rounded-xl border border-white/10 select-all">
-                        {draft.title}
-                      </div>
-                    </div>
-
-                    {/* Flier Image & Caption Snippet (For Image Posts) */}
-                    <div className="p-3 rounded-2xl bg-amber-400/5 border border-amber-400/20 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-300">
-                          <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Image Caption & Ticket Comment (Copy & Paste):</span>
+                return (
+                  <div
+                    key={idx}
+                    className={`tight-glass rounded-3xl p-5 border space-y-4 flex flex-col justify-between transition-all ${
+                      isRed 
+                        ? 'border-rose-500/40 bg-rose-950/10' 
+                        : isYellow 
+                        ? 'border-amber-500/30 bg-amber-950/5' 
+                        : 'border-emerald-500/30 hover:border-emerald-400/50'
+                    }`}
+                  >
+                    <div className="space-y-3">
+                      
+                      {/* Header with Subreddit & Safety Badge */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base font-extrabold text-white">{draft.sub}</span>
+                          <span className="text-[11px] text-zinc-400">({draft.name})</span>
                         </div>
-                        <button
-                          onClick={() => handleCopyRedditText(draft.commentSnippet, `snippet-${idx}`)}
-                          className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-bold px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30"
-                        >
-                          {copiedRedditIdx === `snippet-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                          <span>{copiedRedditIdx === `snippet-${idx}` ? 'Copied Link!' : 'Copy Caption & Link'}</span>
-                        </button>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide uppercase ${
+                          isRed
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                            : isYellow
+                            ? 'bg-amber-400/15 text-amber-300 border border-amber-400/30'
+                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                        }`}>
+                          {draft.safetyBadge}
+                        </span>
                       </div>
 
-                      <div className="text-[11px] text-zinc-300 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 select-all whitespace-pre-wrap">
-                        {draft.commentSnippet}
+                      {/* Rule / Guideline */}
+                      <div className={`text-[11px] p-2.5 rounded-xl border flex items-start gap-2 ${
+                        isRed 
+                          ? 'bg-rose-900/20 border-rose-500/30 text-rose-200' 
+                          : isYellow 
+                          ? 'bg-amber-900/10 border-amber-500/20 text-amber-200' 
+                          : 'bg-black/40 border-white/5 text-zinc-300'
+                      }`}>
+                        <AlertCircle className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
+                          isRed ? 'text-rose-400' : isYellow ? 'text-amber-400' : 'text-emerald-400'
+                        }`} />
+                        <div>
+                          <strong>Moderation Note:</strong> {draft.rules}
+                          {draft.strategy && (
+                            <div className="text-[10px] text-zinc-400 pt-0.5">
+                              💡 <strong>Strategy:</strong> {draft.strategy}
+                            </div>
+                          )}
+                        </div>
                       </div>
 
-                      {draft.flierImg && (
-                        <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1">
-                          <span className="truncate max-w-[200px]">Flier: {draft.flierImg.split('?')[0].slice(-24)}</span>
-                          <button
-                            onClick={() => handleCopyRedditText(draft.flierImg, `img-${idx}`)}
-                            className="underline text-amber-400 hover:text-amber-300 cursor-pointer"
-                          >
-                            {copiedRedditIdx === `img-${idx}` ? 'Copied Image URL!' : 'Copy Direct Image URL'}
-                          </button>
+                      {/* Content block: only if not strictly banned */}
+                      {!isRed ? (
+                        <>
+                          {/* Proposed Title */}
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                                Proposed Title (Formatted for Flair: {draft.flair}):
+                              </span>
+                              <button
+                                onClick={() => handleCopyRedditText(draft.title, `title-${idx}`)}
+                                className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
+                              >
+                                {copiedRedditIdx === `title-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                                <span>{copiedRedditIdx === `title-${idx}` ? 'Copied' : 'Copy'}</span>
+                              </button>
+                            </div>
+                            <div className="text-xs font-semibold text-zinc-200 bg-black/60 p-2.5 rounded-xl border border-white/10 select-all">
+                              {draft.title}
+                            </div>
+                          </div>
+
+                          {/* Flier Image & Caption Snippet (For Image Posts) */}
+                          <div className="p-3 rounded-2xl bg-amber-400/5 border border-amber-400/20 space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-300">
+                                <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+                                <span>Image Caption & Ticket Comment (Copy & Paste):</span>
+                              </div>
+                              <button
+                                onClick={() => handleCopyRedditText(draft.commentSnippet, `snippet-${idx}`)}
+                                className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-bold px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30"
+                              >
+                                {copiedRedditIdx === `snippet-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                                <span>{copiedRedditIdx === `snippet-${idx}` ? 'Copied Link!' : 'Copy Caption & Link'}</span>
+                              </button>
+                            </div>
+
+                            <div className="text-[11px] text-zinc-300 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 select-all whitespace-pre-wrap">
+                              {draft.commentSnippet}
+                            </div>
+
+                            {draft.flierImg && (
+                              <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1">
+                                <span className="truncate max-w-[200px]">Flier: {draft.flierImg.split('?')[0].slice(-24)}</span>
+                                <button
+                                  onClick={() => handleCopyRedditText(draft.flierImg, `img-${idx}`)}
+                                  className="underline text-amber-400 hover:text-amber-300 cursor-pointer"
+                                >
+                                  {copiedRedditIdx === `img-${idx}` ? 'Copied Image URL!' : 'Copy Direct Image URL'}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Collapsible Alternative: Text Post Markdown */}
+                          <details className="text-xs group">
+                            <summary className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 cursor-pointer hover:text-zinc-200 list-none flex items-center justify-between py-1">
+                              <span>📝 Alternative: View Full Text Post Markdown</span>
+                              <span className="text-amber-400 group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div className="space-y-1.5 pt-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] text-zinc-500">Full Text Body:</span>
+                                <button
+                                  onClick={() => handleCopyRedditText(draft.body, `body-${idx}`)}
+                                  className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
+                                >
+                                  {copiedRedditIdx === `body-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                                  <span>{copiedRedditIdx === `body-${idx}` ? 'Copied' : 'Copy'}</span>
+                                </button>
+                              </div>
+                              <div className="text-[11px] text-zinc-400 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 max-h-28 overflow-y-auto whitespace-pre-wrap select-all">
+                                {draft.body}
+                              </div>
+                            </div>
+                          </details>
+                        </>
+                      ) : (
+                        <div className="p-4 rounded-2xl bg-rose-950/30 border border-rose-500/20 text-xs text-rose-200 space-y-2">
+                          <p className="font-bold">⚠️ Post Blocked by Community Rules</p>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed">
+                            {draft.body}
+                          </p>
                         </div>
                       )}
+
                     </div>
 
-                    {/* Collapsible Alternative: Text Post Markdown */}
-                    <details className="text-xs group">
-                      <summary className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 cursor-pointer hover:text-zinc-200 list-none flex items-center justify-between py-1">
-                        <span>📝 Alternative: View Full Text Post Markdown</span>
-                        <span className="text-amber-400 group-open:rotate-180 transition-transform">▼</span>
-                      </summary>
-                      <div className="space-y-1.5 pt-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-zinc-500">Full Text Body:</span>
-                          <button
-                            onClick={() => handleCopyRedditText(draft.body, `body-${idx}`)}
-                            className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
-                          >
-                            {copiedRedditIdx === `body-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                            <span>{copiedRedditIdx === `body-${idx}` ? 'Copied' : 'Copy'}</span>
-                          </button>
-                        </div>
-                        <div className="text-[11px] text-zinc-400 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 max-h-28 overflow-y-auto whitespace-pre-wrap select-all">
-                          {draft.body}
-                        </div>
+                    {/* 1-Click Launch Buttons: only available if not strictly banned */}
+                    {!isRed ? (
+                      <div className="pt-2 flex flex-col sm:flex-row gap-2">
+                        <a
+                          href={draft.prefilledImagePostUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-400/20"
+                          title="Opens Reddit with flier pre-loaded as an Image Post"
+                        >
+                          <ImageIcon className="w-3.5 h-3.5" />
+                          <span>1-Click Image Post</span>
+                        </a>
+
+                        <a
+                          href={draft.prefilledTextPostUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2.5 px-3 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/15 text-zinc-200 border border-white/10 transition-colors flex items-center justify-center gap-1.5"
+                          title="Opens Reddit with full text markdown"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
+                          <span>Text Post</span>
+                        </a>
                       </div>
-                    </details>
+                    ) : (
+                      <div className="pt-2 text-center text-[11px] text-rose-400 font-semibold border-t border-rose-500/20 py-1">
+                        Do not submit direct links to this subreddit.
+                      </div>
+                    )}
 
                   </div>
-
-                  {/* 1-Click Launch Buttons: Image Post & Text Post */}
-                  <div className="pt-2 flex flex-col sm:flex-row gap-2">
-                    <a
-                      href={draft.prefilledImagePostUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-400/20"
-                      title="Opens Reddit with flier pre-loaded as an Image Post"
-                    >
-                      <ImageIcon className="w-3.5 h-3.5" />
-                      <span>1-Click Image Post</span>
-                    </a>
-
-                    <a
-                      href={draft.prefilledTextPostUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="py-2.5 px-3 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/15 text-zinc-200 border border-white/10 transition-colors flex items-center justify-center gap-1.5"
-                      title="Opens Reddit with full text markdown"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Text Post</span>
-                    </a>
-                  </div>
-
-                </div>
-              ))}
+                );
+              })}
             </div>
 
           </div>
