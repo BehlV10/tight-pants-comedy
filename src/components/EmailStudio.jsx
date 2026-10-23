@@ -19,10 +19,15 @@ import {
   Lock,
   Key,
   ShieldCheck,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Megaphone,
+  Search,
+  Calendar,
+  Send,
+  Newspaper
 } from 'lucide-react';
 import { SHOWS_DATA } from '../data/shows';
-import { generateRedditCampaign } from '../utils/redditPromo';
+import { generateRedditCampaign, generateNycDirectories } from '../utils/redditPromo';
 import { SITE_CONFIG } from '../data/config';
 
 export default function EmailStudio({ onBackToHome }) {
@@ -399,10 +404,25 @@ ${unsubscribeFooter}`;
 </html>`;
   }, [selectedShow, emailStyle, effectiveTicketLink, promoCode, compLimit]);
 
-  // Reddit Campaign Data for 12 Subreddits
+  // Reddit Campaign Data (Direct boards & Megathreads)
   const redditCampaign = useMemo(() => {
     return generateRedditCampaign(selectedShow, effectiveTicketLink);
   }, [selectedShow, effectiveTicketLink]);
+
+  // NYC Event Directories & Newsletters Data (The Skint, DoNYC, Nonsense NYC, Patch, etc.)
+  const nycDirectories = useMemo(() => {
+    return generateNycDirectories(selectedShow, effectiveTicketLink);
+  }, [selectedShow, effectiveTicketLink]);
+
+  // Sub-tab inside NYC Promo & Event Boards: 'direct' | 'megathreads' | 'directories'
+  const [promoSubTab, setPromoSubTab] = useState('direct');
+  const [copiedDirIdx, setCopiedDirIdx] = useState(null);
+
+  const handleCopyDirText = (text, idx) => {
+    navigator.clipboard.writeText(text);
+    setCopiedDirIdx(idx);
+    setTimeout(() => setCopiedDirIdx(null), 2000);
+  };
 
   // Attendee Cleaner / De-duplicator Logic
   const cleanedAttendees = useMemo(() => {
@@ -724,8 +744,8 @@ ${unsubscribeFooter}`;
                 : 'border-transparent text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <MessageSquare className="w-4 h-4" />
-            <span>Reddit Campaign (12 Subs)</span>
+            <Megaphone className="w-4 h-4" />
+            <span>NYC Promo Hub & The Skint</span>
           </button>
         </div>
 
@@ -1182,28 +1202,29 @@ ${unsubscribeFooter}`;
         )}
 
         {/* ========================================================= */}
-        {/* TAB 3: REDDIT CAMPAIGN DRAFTER (12 NYC SUBREDDITS) */}
+        {/* ========================================================= */}
+        {/* TAB 3: NYC PROMOTION & EVENT DISTRIBUTION HUB */}
         {/* ========================================================= */}
         {activeTab === 'reddit' && (
           <div className="space-y-6">
             
-            <div className="tight-glass rounded-3xl p-6 sm:p-8 border border-white/10 space-y-4">
+            <div className="tight-glass rounded-3xl p-6 sm:p-8 border border-white/10 space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest">
-                    <MessageSquare className="w-3.5 h-3.5" /> Organic Reddit Marketing
+                  <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
+                    <Megaphone className="w-3.5 h-3.5" /> Promotion & Distribution Hub
                   </div>
                   <h2 className="text-2xl font-black text-white tracking-tight">
-                    Reddit Campaign Drafter: 12 NYC Subreddits
+                    NYC Event Promotion & Distribution Hub
                   </h2>
                   <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
-                    Custom titles, compliance tags, and body copy formatted specifically for each subreddit's auto-moderator rules. Click <strong>"1-Click Pre-fill in Reddit"</strong> to launch Reddit with title and text ready to submit!
+                    Verified safe standalone subreddits, direct 1-click links to active weekly megathreads, and pre-formatted drafts for top NYC event calendars like <strong>The Skint</strong>, <strong>DoNYC</strong>, <strong>Nonsense NYC</strong>, and <strong>East Village Patch</strong>.
                   </p>
                 </div>
 
                 <div className="shrink-0">
                   <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1">
-                    Show:
+                    Showcase:
                   </span>
                   <select
                     value={selectedShowId}
@@ -1218,164 +1239,129 @@ ${unsubscribeFooter}`;
                   </select>
                 </div>
               </div>
+
+              {/* Sub-tab Navigation */}
+              <div className="flex flex-wrap gap-2 pt-2 border-t border-white/10">
+                <button
+                  onClick={() => setPromoSubTab('direct')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    promoSubTab === 'direct'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
+                      : 'bg-black/40 text-zinc-400 hover:text-white border border-white/10'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>Direct Reddit Posts ({redditCampaign.directSubs.length})</span>
+                </button>
+
+                <button
+                  onClick={() => setPromoSubTab('megathreads')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    promoSubTab === 'megathreads'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                      : 'bg-black/40 text-zinc-400 hover:text-white border border-white/10'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-amber-400" />
+                  <span>Reddit Megathreads ({redditCampaign.megathreadSubs.length})</span>
+                </button>
+
+                <button
+                  onClick={() => setPromoSubTab('directories')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    promoSubTab === 'directories'
+                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm'
+                      : 'bg-black/40 text-zinc-400 hover:text-white border border-white/10'
+                  }`}
+                >
+                  <Newspaper className="w-3.5 h-3.5 text-purple-400" />
+                  <span>NYC Calendars & The Skint ({nycDirectories.length})</span>
+                </button>
+              </div>
             </div>
 
-            {/* 12 Subreddit Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {redditCampaign.map((draft, idx) => {
-                const isRed = draft.safety === 'red';
-                const isYellow = draft.safety === 'yellow';
-                const isGreen = draft.safety === 'green';
-
-                return (
-                  <div
-                    key={idx}
-                    className={`tight-glass rounded-3xl p-5 border space-y-4 flex flex-col justify-between transition-all ${
-                      isRed 
-                        ? 'border-rose-500/40 bg-rose-950/10' 
-                        : isYellow 
-                        ? 'border-amber-500/30 bg-amber-950/5' 
-                        : 'border-emerald-500/30 hover:border-emerald-400/50'
-                    }`}
-                  >
-                    <div className="space-y-3">
-                      
-                      {/* Header with Subreddit & Safety Badge */}
-                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base font-extrabold text-white">{draft.sub}</span>
-                          <span className="text-[11px] text-zinc-400">({draft.name})</span>
-                        </div>
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide uppercase ${
-                          isRed
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                            : isYellow
-                            ? 'bg-amber-400/15 text-amber-300 border border-amber-400/30'
-                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                        }`}>
-                          {draft.safetyBadge}
-                        </span>
-                      </div>
-
-                      {/* Rule / Guideline */}
-                      <div className={`text-[11px] p-2.5 rounded-xl border flex items-start gap-2 ${
-                        isRed 
-                          ? 'bg-rose-900/20 border-rose-500/30 text-rose-200' 
-                          : isYellow 
-                          ? 'bg-amber-900/10 border-amber-500/20 text-amber-200' 
-                          : 'bg-black/40 border-white/5 text-zinc-300'
-                      }`}>
-                        <AlertCircle className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
-                          isRed ? 'text-rose-400' : isYellow ? 'text-amber-400' : 'text-emerald-400'
-                        }`} />
-                        <div>
-                          <strong>Moderation Note:</strong> {draft.rules}
-                          {draft.strategy && (
-                            <div className="text-[10px] text-zinc-400 pt-0.5">
-                              💡 <strong>Strategy:</strong> {draft.strategy}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Content block: only if not strictly banned */}
-                      {!isRed ? (
-                        <>
-                          {/* Proposed Title */}
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                                Proposed Title (Formatted for Flair: {draft.flair}):
-                              </span>
-                              <button
-                                onClick={() => handleCopyRedditText(draft.title, `title-${idx}`)}
-                                className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
-                              >
-                                {copiedRedditIdx === `title-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                                <span>{copiedRedditIdx === `title-${idx}` ? 'Copied' : 'Copy'}</span>
-                              </button>
-                            </div>
-                            <div className="text-xs font-semibold text-zinc-200 bg-black/60 p-2.5 rounded-xl border border-white/10 select-all">
-                              {draft.title}
-                            </div>
+            {/* ======================================================= */}
+            {/* SUB-TAB 1: DIRECT REDDIT POSTS (100% Safe Standalone) */}
+            {/* ======================================================= */}
+            {promoSubTab === 'direct' && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {redditCampaign.directSubs.map((draft, idx) => (
+                    <div
+                      key={idx}
+                      className="tight-glass rounded-3xl p-5 border border-emerald-500/30 hover:border-emerald-400/50 space-y-4 flex flex-col justify-between transition-all"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base font-extrabold text-white">{draft.sub}</span>
+                            <span className="text-[11px] text-zinc-400">({draft.members})</span>
                           </div>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide uppercase bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                            {draft.safetyBadge}
+                          </span>
+                        </div>
 
-                          {/* Flier Image & Caption Snippet (For Image Posts) */}
-                          <div className="p-3 rounded-2xl bg-amber-400/5 border border-amber-400/20 space-y-2.5">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-300">
-                                <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                                <span>Image Caption & Ticket Comment (Copy & Paste):</span>
-                              </div>
-                              <button
-                                onClick={() => handleCopyRedditText(draft.commentSnippet, `snippet-${idx}`)}
-                                className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-bold px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30"
-                              >
-                                {copiedRedditIdx === `snippet-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                                <span>{copiedRedditIdx === `snippet-${idx}` ? 'Copied Link!' : 'Copy Caption & Link'}</span>
-                              </button>
-                            </div>
-
-                            <div className="text-[11px] text-zinc-300 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 select-all whitespace-pre-wrap">
-                              {draft.commentSnippet}
-                            </div>
-
-                            {draft.flierImg && (
-                              <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1">
-                                <span className="truncate max-w-[200px]">Flier: {draft.flierImg.split('?')[0].slice(-24)}</span>
-                                <button
-                                  onClick={() => handleCopyRedditText(draft.flierImg, `img-${idx}`)}
-                                  className="underline text-amber-400 hover:text-amber-300 cursor-pointer"
-                                >
-                                  {copiedRedditIdx === `img-${idx}` ? 'Copied Image URL!' : 'Copy Direct Image URL'}
-                                </button>
+                        <div className="text-[11px] p-2.5 rounded-xl border bg-black/40 border-white/5 text-zinc-300 flex items-start gap-2">
+                          <AlertCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                          <div>
+                            <strong>Rules:</strong> {draft.rules}
+                            {draft.strategy && (
+                              <div className="text-[10px] text-zinc-400 pt-0.5">
+                                💡 <strong>Strategy:</strong> {draft.strategy}
                               </div>
                             )}
                           </div>
-
-                          {/* Collapsible Alternative: Text Post Markdown */}
-                          <details className="text-xs group">
-                            <summary className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 cursor-pointer hover:text-zinc-200 list-none flex items-center justify-between py-1">
-                              <span>📝 Alternative: View Full Text Post Markdown</span>
-                              <span className="text-amber-400 group-open:rotate-180 transition-transform">▼</span>
-                            </summary>
-                            <div className="space-y-1.5 pt-2">
-                              <div className="flex items-center justify-between">
-                                <span className="text-[10px] text-zinc-500">Full Text Body:</span>
-                                <button
-                                  onClick={() => handleCopyRedditText(draft.body, `body-${idx}`)}
-                                  className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
-                                >
-                                  {copiedRedditIdx === `body-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                                  <span>{copiedRedditIdx === `body-${idx}` ? 'Copied' : 'Copy'}</span>
-                                </button>
-                              </div>
-                              <div className="text-[11px] text-zinc-400 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 max-h-28 overflow-y-auto whitespace-pre-wrap select-all">
-                                {draft.body}
-                              </div>
-                            </div>
-                          </details>
-                        </>
-                      ) : (
-                        <div className="p-4 rounded-2xl bg-rose-950/30 border border-rose-500/20 text-xs text-rose-200 space-y-2">
-                          <p className="font-bold">⚠️ Post Blocked by Community Rules</p>
-                          <p className="text-[11px] text-zinc-300 leading-relaxed">
-                            {draft.body}
-                          </p>
                         </div>
-                      )}
 
-                    </div>
+                        {/* Proposed Title */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                              Proposed Title (Flair: {draft.flair}):
+                            </span>
+                            <button
+                              onClick={() => handleCopyRedditText(draft.title, `dir-title-${idx}`)}
+                              className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
+                            >
+                              {copiedRedditIdx === `dir-title-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedRedditIdx === `dir-title-${idx}` ? 'Copied' : 'Copy'}</span>
+                            </button>
+                          </div>
+                          <div className="text-xs font-semibold text-zinc-200 bg-black/60 p-2.5 rounded-xl border border-white/10 select-all">
+                            {draft.title}
+                          </div>
+                        </div>
 
-                    {/* 1-Click Launch Buttons: only available if not strictly banned */}
-                    {!isRed ? (
+                        {/* Image Caption & Ticket Comment */}
+                        <div className="p-3 rounded-2xl bg-amber-400/5 border border-amber-400/20 space-y-2.5">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-300">
+                              <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Image Caption & Ticket Comment (Post after image):</span>
+                            </div>
+                            <button
+                              onClick={() => handleCopyRedditText(draft.commentSnippet, `dir-snip-${idx}`)}
+                              className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-bold px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30"
+                            >
+                              {copiedRedditIdx === `dir-snip-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedRedditIdx === `dir-snip-${idx}` ? 'Copied!' : 'Copy Caption'}</span>
+                            </button>
+                          </div>
+
+                          <div className="text-[11px] text-zinc-300 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 select-all whitespace-pre-wrap">
+                            {draft.commentSnippet}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 1-Click Launch Buttons */}
                       <div className="pt-2 flex flex-col sm:flex-row gap-2">
                         <a
                           href={draft.prefilledImagePostUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-400/20"
-                          title="Opens Reddit with flier pre-loaded as an Image Post"
+                          className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-400/20 cursor-pointer"
                         >
                           <ImageIcon className="w-3.5 h-3.5" />
                           <span>1-Click Image Post</span>
@@ -1385,23 +1371,197 @@ ${unsubscribeFooter}`;
                           href={draft.prefilledTextPostUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="py-2.5 px-3 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/15 text-zinc-200 border border-white/10 transition-colors flex items-center justify-center gap-1.5"
-                          title="Opens Reddit with full text markdown"
+                          className="py-2.5 px-3 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/15 text-zinc-200 border border-white/10 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                         >
                           <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
                           <span>Text Post</span>
                         </a>
                       </div>
-                    ) : (
-                      <div className="pt-2 text-center text-[11px] text-rose-400 font-semibold border-t border-rose-500/20 py-1">
-                        Do not submit direct links to this subreddit.
-                      </div>
-                    )}
+                    </div>
+                  ))}
+                </div>
 
+                {/* Excluded Subreddits Policy Card */}
+                <div className="p-5 rounded-3xl bg-rose-950/20 border border-rose-500/30 space-y-2 text-xs">
+                  <div className="flex items-center gap-2 text-rose-300 font-bold text-sm">
+                    <AlertCircle className="w-4 h-4 text-rose-400" />
+                    <span>Permanently Excluded Subreddits (To Protect Account Standing)</span>
                   </div>
-                );
-              })}
-            </div>
+                  <p className="text-zinc-300 text-[11px] leading-relaxed">
+                    The following boards have been removed from your active posting rota to prevent bans:
+                  </p>
+                  <ul className="list-disc pl-5 text-[11px] text-zinc-400 space-y-1">
+                    <li><strong className="text-rose-300">r/eastvillage:</strong> Enacts Rule 6 which explicitly bans comedy clubs and shows (half-strike penalty).</li>
+                    <li><strong className="text-rose-300">r/nycmeetups:</strong> Strictly bans external commercial promoters and ticket links.</li>
+                    <li><strong className="text-rose-300">r/Standup:</strong> Global forum that bans local gig flyers and event ads.</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* ======================================================= */}
+            {/* SUB-TAB 2: REDDIT MEGATHREADS & COMMENT MINING */}
+            {/* ======================================================= */}
+            {promoSubTab === 'megathreads' && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {redditCampaign.megathreadSubs.map((draft, idx) => (
+                    <div
+                      key={idx}
+                      className="tight-glass rounded-3xl p-5 border border-amber-500/30 hover:border-amber-400/50 space-y-4 flex flex-col justify-between transition-all"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base font-extrabold text-white">{draft.sub}</span>
+                            <span className="text-[11px] text-zinc-400">({draft.members})</span>
+                          </div>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide uppercase bg-amber-400/15 text-amber-300 border border-amber-400/30">
+                            {draft.badge}
+                          </span>
+                        </div>
+
+                        <div className="text-[11px] p-2.5 rounded-xl border bg-amber-950/15 border-amber-500/25 text-amber-200 flex items-start gap-2">
+                          <Search className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                          <span>{draft.instruction}</span>
+                        </div>
+
+                        {/* Comment Blurb */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                              Formatted Comment to Paste:
+                            </span>
+                            <button
+                              onClick={() => handleCopyRedditText(draft.commentBody, `mega-snip-${idx}`)}
+                              className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-bold px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30"
+                            >
+                              {copiedRedditIdx === `mega-snip-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedRedditIdx === `mega-snip-${idx}` ? 'Copied Comment!' : 'Copy Comment'}</span>
+                            </button>
+                          </div>
+
+                          <div className="text-[11px] text-zinc-300 font-mono bg-black/60 p-3 rounded-xl border border-white/10 select-all whitespace-pre-wrap leading-relaxed">
+                            {draft.commentBody}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 1-Click Open Live Thread / Search Link */}
+                      <div className="pt-2">
+                        <a
+                          href={draft.threadUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/15 text-white border border-white/15 hover:border-amber-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <span>{draft.actionLabel}</span>
+                          <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ======================================================= */}
+            {/* SUB-TAB 3: TOP NYC EVENT CALENDARS & THE SKINT */}
+            {/* ======================================================= */}
+            {promoSubTab === 'directories' && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {nycDirectories.map((dir, idx) => (
+                    <div
+                      key={dir.id}
+                      className="tight-glass rounded-3xl p-5 border border-purple-500/30 hover:border-purple-400/50 space-y-4 flex flex-col justify-between transition-all"
+                    >
+                      <div className="space-y-3">
+                        {/* Header */}
+                        <div className="border-b border-white/10 pb-3 space-y-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="text-base font-extrabold text-white flex items-center gap-1.5">
+                              <Newspaper className="w-4 h-4 text-purple-400" />
+                              <span>{dir.name}</span>
+                            </h3>
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                              {dir.cost}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400">{dir.tagline}</p>
+                        </div>
+
+                        {/* Reach & Deadline Badges */}
+                        <div className="flex flex-wrap gap-2 text-[10px] font-semibold text-zinc-300">
+                          <span className="px-2.5 py-1 rounded-lg bg-black/50 border border-white/10 text-purple-300">
+                            👥 Reach: {dir.audience}
+                          </span>
+                          <span className="px-2.5 py-1 rounded-lg bg-black/50 border border-white/10 text-amber-300">
+                            ⏱️ {dir.deadline}
+                          </span>
+                        </div>
+
+                        {/* Strategy Tip */}
+                        <div className="text-[11px] p-2.5 rounded-xl border bg-black/40 border-white/5 text-zinc-300 flex items-start gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
+                          <span><strong>Pro-Tip:</strong> {dir.tips}</span>
+                        </div>
+
+                        {/* Pre-formatted Title */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                              Listing Title:
+                            </span>
+                            <button
+                              onClick={() => handleCopyDirText(dir.title, `dir-t-${idx}`)}
+                              className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
+                            >
+                              {copiedDirIdx === `dir-t-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedDirIdx === `dir-t-${idx}` ? 'Copied' : 'Copy'}</span>
+                            </button>
+                          </div>
+                          <div className="text-xs font-semibold text-zinc-200 bg-black/60 p-2.5 rounded-xl border border-white/10 select-all">
+                            {dir.title}
+                          </div>
+                        </div>
+
+                        {/* Pre-formatted Blurb */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                              Submission Blurb / Description:
+                            </span>
+                            <button
+                              onClick={() => handleCopyDirText(dir.blurb, `dir-b-${idx}`)}
+                              className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-semibold"
+                            >
+                              {copiedDirIdx === `dir-b-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedDirIdx === `dir-b-${idx}` ? 'Copied' : 'Copy Description'}</span>
+                            </button>
+                          </div>
+                          <div className="text-[11px] text-zinc-300 font-mono bg-black/60 p-2.5 rounded-xl border border-white/10 max-h-24 overflow-y-auto whitespace-pre-wrap select-all">
+                            {dir.blurb}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 1-Click Action Button */}
+                      <div className="pt-2">
+                        <a
+                          href={dir.submitUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white shadow-md shadow-purple-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <span>{dir.actionLabel}</span>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
         )}
