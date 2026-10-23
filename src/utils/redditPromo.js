@@ -2,7 +2,7 @@
  * NYC Event Promotion & Distribution Hub
  * 
  * 1. Reddit Direct Standalone Boards (verified safe)
- * 2. Reddit Megathreads & Recommendation Search Threads (with direct search links)
+ * 2. Reddit Discussion Threads & Recommendation Searches (real working links)
  * 3. Top NYC Event Calendars & Newsletters (The Skint, DoNYC, Nonsense NYC, Patch, etc.)
  */
 
@@ -12,7 +12,7 @@ export function generateRedditCampaign(show, customTicketUrl) {
   const creditsStr = show.credits?.join(', ') || 'Netflix, Comedy Central, Comedy Cellar';
 
   // -------------------------------------------------------------------------
-  // CATEGORY 1: DIRECT STANDALONE POSTS (100% Verified Safe)
+  // CATEGORY 1: DIRECT STANDALONE POSTS (100% Verified Safe for Standalone)
   // -------------------------------------------------------------------------
   const directSubs = [
     {
@@ -32,6 +32,23 @@ export function generateRedditCampaign(show, customTicketUrl) {
 • **Eventbrite Checkout & RSVP:** [Eventbrite Link](${ticketLink})
 
 Seating is assigned based on check-in time and this intimate room caps quickly, so grabbing tickets in advance is recommended!`
+    },
+    {
+      sub: 'r/lowereastside',
+      name: 'Lower East Side (Borders St. Marks)',
+      subUrl: 'https://www.reddit.com/r/lowereastside',
+      members: '16k members',
+      flair: '📍 Local Event',
+      rules: 'Local neighborhood board bordering St. Marks Place. Independent comedy shows are actively posted here.',
+      strategy: 'Highlight proximity right on the LES / East Village corridor (12 St. Marks Place).',
+      title: `Upcoming Comedy on St. Marks: ${show.title} (${show.dayOfWeek} ${show.displayDate})`,
+      body: `Hey neighbors! Sharing an upcoming local comedy showcase right at the LES / East Village border.
+
+**Tight Pants Comedy** is at **St. Marks Comedy Club** (12 St. Marks Place) on **${show.date} at ${show.time}**.
+
+• Format: Rapid-fire 7-minute sets from top club regulars (${creditsStr}).
+• Room: Intimate speakeasy subterranean room.
+• Tickets: ${show.price} GA on [Eventbrite](${ticketLink})`
     },
     {
       sub: 'r/WhatsHappeningNYC',
@@ -86,17 +103,17 @@ Tickets (${show.price} GA): [Eventbrite Link](${ticketLink})`
   ];
 
   // -------------------------------------------------------------------------
-  // CATEGORY 2: MEGATHREADS & RECOMMENDATION SEARCH THREADS (1-Click Links)
+  // CATEGORY 2: PINNED DISCUSSION THREADS & RECOMMENDATION SEARCHES
   // -------------------------------------------------------------------------
   const megathreadSubs = [
     {
       sub: 'r/nyc',
       name: 'NYC (Largest NYC Board)',
       members: '1.1M members',
-      badge: '📌 Weekly Events Megathread',
-      threadUrl: 'https://www.reddit.com/r/nyc/search/?q=%22Things+to+do%22+OR+%22Events%22&sort=new&restrict_sr=on',
-      actionLabel: 'Open Weekly Events Megathread ↗',
-      instruction: 'Click the link to open the latest pinned "Things To Do" thread on r/nyc. Drop the comment blurb below in the comments.',
+      badge: '📌 Pinned Monthly Discussion Thread',
+      threadUrl: 'https://www.reddit.com/r/nyc/',
+      actionLabel: 'Open r/nyc (Look for pinned 📌 Discussion Thread) ↗',
+      instruction: 'Reddit moderators stopped posting automated weekly event threads. Instead, the community uses the "Monthly Discussion Thread" pinned with a green pin 📌 right at the top of r/nyc! Drop this blurb in the comments.',
       commentTitle: `Tight Pants Comedy @ St. Marks Comedy Club (${show.dayOfWeek} ${show.displayDate})`,
       commentBody: `**Tight Pants Comedy** showcase at **St. Marks Comedy Club** (12 St. Marks Place, East Village) on **${show.date} @ ${show.time}**.
 Curated 75-minute underground stand-up with comics from ${creditsStr}. Intimate ~60 seat speakeasy room.
@@ -106,23 +123,35 @@ Tickets (${show.price} GA): ${ticketLink}`
       sub: 'r/newyorkcity',
       name: 'New York City (Local Culture)',
       members: '320k members',
-      badge: '📌 Weekly Events Thread',
-      threadUrl: 'https://www.reddit.com/r/newyorkcity/search/?q=%22Things+to+do%22+OR+%22Weekend%22&sort=new&restrict_sr=on',
-      actionLabel: 'Open r/newyorkcity Events Feed ↗',
-      instruction: 'Paste as a comment in the weekly pinned events thread to avoid Rule 7 spam auto-removal.',
+      badge: '📌 Pinned Discussion Thread',
+      threadUrl: 'https://www.reddit.com/r/newyorkcity/',
+      actionLabel: 'Open r/newyorkcity (Look for pinned 📌 Thread) ↗',
+      instruction: 'Click the link to open r/newyorkcity. Look for the stickied pinned discussion thread at the very top and post your show comment there.',
       commentTitle: `Indie Stand-Up Showcase: ${show.title} (${show.displayDate})`,
       commentBody: `Hey everyone! Co-founders Kyle Wayne & John Bennett are hosting **${show.title}** at **St. Marks Comedy Club** (12 St. Marks Place) on **${show.date} @ ${show.time}**.
 Top comics seen on ${creditsStr}. Rapid-fire 7-minute sets, zero dead time.
 Eventbrite: ${ticketLink}`
     },
     {
+      sub: 'r/astoria',
+      name: 'Astoria (Weekly Rumor Mill)',
+      members: '75k members',
+      badge: '📌 Weekly Friday Rumor Mill',
+      threadUrl: 'https://www.reddit.com/r/astoria/search/?q=title%3A%22Rumor+Mill%22&sort=new',
+      actionLabel: 'Open Latest Astoria "Rumor Mill" Thread ↗',
+      instruction: 'Astoria doesn\'t have an events megathread—instead, every single Friday morning the moderators post "The Weekly Rumor Mill" for weekend plans and neighborhood talk. Click the link to find this week\'s Friday thread and comment!',
+      commentTitle: `Direct N/W Ride: ${show.title} @ St. Marks Comedy Club (${show.displayDate})`,
+      commentBody: `For anyone heading into Manhattan this ${show.dayOfWeek} (right off the 8th St-NYU N/W stop): **Tight Pants Comedy** showcase at **St. Marks Comedy Club** on **${show.date} @ ${show.time}**. Top comics from ${creditsStr}.
+Tickets: ${ticketLink}`
+    },
+    {
       sub: 'r/AskNYC',
       name: 'AskNYC (Recommendation Mining)',
       members: '540k members',
       badge: '💬 Search & Reply to Questions',
-      threadUrl: 'https://www.reddit.com/r/AskNYC/search/?q=%22comedy+club%22+OR+%22stand+up+comedy%22+OR+%22date+night%22&sort=new&restrict_sr=on',
-      actionLabel: 'Search Comedy Recommendation Threads ↗',
-      instruction: 'Click the link to find users currently asking for comedy club recommendations or date night plans, and reply with this helpful suggestion.',
+      threadUrl: 'https://www.reddit.com/r/AskNYC/search/?q=comedy&sort=new',
+      actionLabel: 'Search Live Comedy Recommendation Threads ↗',
+      instruction: 'AskNYC does NOT have a megathread—it is a Q&A board! Click the link to view real users actively asking for comedy club recommendations, and comment with this recommendation.',
       commentTitle: 'Helpful Comedy Recommendation Comment',
       commentBody: `If you want an authentic indie comedy club vibe without the midtown tourist barkers, check out **Tight Pants Comedy** at **St. Marks Comedy Club** (12 St. Marks Place). 
 
@@ -133,9 +162,9 @@ They do an underground speakeasy showcase in an intimate ~60 seat room with comi
       name: 'NYU (Student & Downtown Community)',
       members: '68k members',
       badge: '🎓 Off-Campus Events & Plans',
-      threadUrl: 'https://www.reddit.com/r/nyu/search/?q=events+OR+weekend&sort=new&restrict_sr=on',
-      actionLabel: 'Search NYU Weekend & Event Threads ↗',
-      instruction: 'St. Marks Place is literally in NYU\'s backyard. Post in student weekend discussion threads or off-campus event roundups.',
+      threadUrl: 'https://www.reddit.com/r/nyu/',
+      actionLabel: 'Open r/nyu Community Board ↗',
+      instruction: 'St. Marks Place is literally in NYU\'s backyard. Click to open r/nyu and share in student weekend discussions or off-campus event roundups.',
       commentTitle: `Cheap Downtown Comedy: ${show.title} on St. Marks Place (${show.displayDate})`,
       commentBody: `Steps from campus (12 St. Marks Place): **Tight Pants Comedy** is having their next showcase on **${show.date} @ ${show.time}** at St. Marks Comedy Club.
 Awesome intimate room with headliners from ${creditsStr}.
@@ -145,34 +174,22 @@ Tickets (${show.price} GA): ${ticketLink}`
       sub: 'r/Bushwick',
       name: 'Bushwick',
       members: '52k members',
-      badge: '📌 Pinned Community Promo Thread',
-      threadUrl: 'https://www.reddit.com/r/Bushwick/search/?q=%22promo%22+OR+%22events%22&sort=new&restrict_sr=on',
-      actionLabel: 'Open Bushwick Promo Thread ↗',
-      instruction: 'Rule 7 prohibits standalone commercial posts. Paste this inside the monthly stickied event/promo thread.',
+      badge: '🎪 L-Train Hop Community',
+      threadUrl: 'https://www.reddit.com/r/Bushwick/',
+      actionLabel: 'Open r/Bushwick ↗',
+      instruction: 'Bushwick does not have a static weekly megathread. Share as a conversational community post or inside general discussion threads. Highlight the easy 1-stop L-train hop.',
       commentTitle: `East Village Stand-Up: ${show.title} @ St. Marks (${show.displayDate})`,
       commentBody: `Quick L-train hop across the river to 1st Ave: **Tight Pants Comedy** is back at **St. Marks Comedy Club** on **${show.date} @ ${show.time}**. Curated lineup of club regulars (${creditsStr}) in an underground speakeasy.
 Tickets (${show.price} GA): ${ticketLink}`
     },
     {
-      sub: 'r/astoria',
-      name: 'Astoria',
-      members: '75k members',
-      badge: '📌 Weekend Discussion Thread',
-      threadUrl: 'https://www.reddit.com/r/astoria/search/?q=%22Weekend%22+OR+%22Rumor+Mill%22&sort=new&restrict_sr=on',
-      actionLabel: 'Open Astoria Weekend Thread ↗',
-      instruction: 'Share inside the famous weekly Astoria "Rumor Mill / Weekend Plans" discussion thread.',
-      commentTitle: `Direct N/W Ride: ${show.title} @ St. Marks Comedy Club (${show.displayDate})`,
-      commentBody: `For anyone heading into Manhattan this ${show.dayOfWeek} (right off the 8th St-NYU N/W stop): **Tight Pants Comedy** showcase at **St. Marks Comedy Club** on **${show.date} @ ${show.time}**. Top comics from ${creditsStr}.
-Tickets: ${ticketLink}`
-    },
-    {
       sub: 'r/williamsburg',
       name: 'Williamsburg',
       members: '38k members',
-      badge: '📌 Weekly Neighborhood Thread',
-      threadUrl: 'https://www.reddit.com/r/williamsburg/search/?q=events+OR+weekend&sort=new&restrict_sr=on',
-      actionLabel: 'Open Williamsburg Event Thread ↗',
-      instruction: 'Paste in weekly discussion threads. Highlight it is only one stop on the L train to Manhattan.',
+      badge: '🍻 1-Stop L Train Community',
+      threadUrl: 'https://www.reddit.com/r/williamsburg/',
+      actionLabel: 'Open r/williamsburg ↗',
+      instruction: 'Open r/williamsburg to post in general neighborhood discussion. Highlight that the show is only one stop away on the L train to Manhattan.',
       commentTitle: `Live Comedy in East Village: ${show.title} (${show.displayDate})`,
       commentBody: `One stop on the L train to Manhattan: **Tight Pants Comedy** at St. Marks Comedy Club (12 St. Marks Place) on **${show.date} @ ${show.time}**. Intimate subterranean showroom with craft drinks and comics from ${creditsStr}.
 Tickets: ${ticketLink}`
