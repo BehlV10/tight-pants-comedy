@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Core Main Site -->
+  <url>
+    <loc>https://tightpantscomedy.com/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://tightpantscomedy.com/images/nycf-poster.png</image:loc>
+      <image:title>Tight Pants Comedy NYC - St. Marks Comedy Club</image:title>
+      <image:caption>NYC's premier independent stand-up comedy showcase at St. Marks Comedy Club in the East Village</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://tightpantscomedy.com/images/live-showcase.jpg</image:loc>
+      <image:title>Tight Pants Comedy Live Showroom</image:title>
+      <image:caption>Intimate 60-seat subterranean speakeasy comedy showroom at 12 St. Marks Place</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Official Press Kit & Media Hub -->
+  <url>
+    <loc>https://tightpantscomedy.com/press</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://tightpantscomedy.com/images/kyle-wayne.jpg</image:loc>
+      <image:title>Kyle Wayne - Co-Founder Tight Pants Comedy</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tightpantscomedy.com/images/john-bennett.jpg</image:loc>
+      <image:title>John Bennett - Co-Founder Tight Pants Comedy</image:title>
+    </image:image>
+  </url>
+
+  <!-- High-Intent Programmatic & Search Query Landing Hubs -->
+  <url>
+    <loc>https://tightpantscomedy.com/#shows</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#east-village-comedy</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#st-marks-comedy-club</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#speakeasy-comedy-nyc</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#nyc-date-night-comedy</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#comics</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#about</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#reviews</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#faq</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#new-york-comedy-festival</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://tightpantscomedy.com/#tight-five-tournament</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+</urlset>

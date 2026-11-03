@@ -1,15 +1,66 @@
 # Robots.txt for Tight Pants Comedy (https://tightpantscomedy.com)
+# Primary venue: St. Marks Comedy Club, 12 St. Marks Place, New York, NY 10003
 
 User-agent: *
-# Disallow search engine indexing of private producer studio & testing routes
+Allow: /
 Disallow: /studio
 Disallow: /studio/
 Disallow: /#/studio
 Disallow: /*studio*
+Disallow: /unsubscribe
+Disallow: /#/unsubscribe
 
-# Allow indexing of public showcases, press kit, and venue info
+# Search Engine Crawlers
+User-agent: Googlebot
 Allow: /
-Allow: /#shows
-Allow: /#about
-Allow: /#press
-Allow: /press
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: Bingbot
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: Applebot
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+# AI Answer Engines & Generative Search Crawlers (GEO / AEO)
+User-agent: GPTBot
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: cohere-ai
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+User-agent: meta-externalagent
+Allow: /
+Disallow: /studio
+Disallow: /*studio*
+
+# Canonical XML Sitemap
+Sitemap: https://tightpantscomedy.com/sitemap.xml

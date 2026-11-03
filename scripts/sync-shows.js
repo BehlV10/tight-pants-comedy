@@ -410,6 +410,20 @@ export const FAQS = [
   const outputPath = path.resolve(__dirname, '../src/data/shows.js');
   fs.writeFileSync(outputPath, outputCode, 'utf-8');
   console.log(`Successfully synced ${allShows.length} shows to ${outputPath}!`);
+
+  // Update sitemap.xml lastmod date to today
+  try {
+    const sitemapPath = path.resolve(__dirname, '../public/sitemap.xml');
+    if (fs.existsSync(sitemapPath)) {
+      const today = new Date().toISOString().split('T')[0];
+      let sitemap = fs.readFileSync(sitemapPath, 'utf-8');
+      sitemap = sitemap.replace(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/g, `<lastmod>${today}</lastmod>`);
+      fs.writeFileSync(sitemapPath, sitemap, 'utf-8');
+      console.log(`Updated public/sitemap.xml <lastmod> timestamps to ${today}`);
+    }
+  } catch (sitemapErr) {
+    console.warn('Could not update sitemap.xml lastmod:', sitemapErr.message);
+  }
 }
 
 sync().catch(err => {
